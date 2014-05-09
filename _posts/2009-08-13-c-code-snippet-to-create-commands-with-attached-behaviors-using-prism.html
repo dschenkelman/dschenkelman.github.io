@@ -1,0 +1,73 @@
+---
+layout: post
+title: C# Code Snippet to Create Commands with Attached Behaviors using Prism
+categories:
+- Attached Behaviors
+- Composite Application Guidance for WPF &amp; SL
+- p&amp;p
+- Patterns &amp; Practices
+- Prism-v2
+- Silverlight
+- Windows Presentation Foundation
+- WPF
+tags:
+- Attached Behaviors
+- Composite Application Guidance for WPF &amp; SL
+- p&amp;p
+- Patterns &amp; Practices
+- Prism-v2
+- Silverlight
+- Windows Presentation Foundation
+- WPF
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+  dsq_thread_id: '1552821615'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>One of the most common questions we get at the <a href="http://www.codeplex.com/CompositeWPF/Thread/List.aspx">Prism forums</a> is of the type: "How do I execute my command when X happens?" (X not being a button being clicked :) ).  A sample of this type of question can be seen <a href="http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=64106">here</a>, where a particular command needs to be executed whenever a textbox's text changes. Our answer usually is that the user can create a command with an attached behavior. However, users are not always happy with this answer because of the complexity of having to create an attached behavior to hook up the command</p>
+<p>For this reason, with the help of <a href="http://blogs.southworks.net/matiasb/">Matias Bonaventura</a>, and <a href="http://blogs.southworks.net/dpoza/2008/08/06/snippet-creator-10-released/">Diego Poza's Snippet Creator tool</a> and this <a href="http://msdn.microsoft.com/en-us/library/ms165392.aspx">group of MSDN sites</a> we created a code snippet that will enable developers to easily create this commands with attached behaviors.<br />
+<a href="http://blogs.southworks.net/dschenkelman/files/2009/08/snippet.png"><img class="aligncenter size-medium wp-image-128" style="float: none;margin-left: auto;margin-right: auto" src="http://blogs.southworks.net/dschenkelman/files/2009/08/snippet.png" alt="Command Attached Behavior snippet" width="300" height="188" /></a></p>
+<h2>Pre-Requirements</h2>
+<ol>
+<li><a href="http://cid-09f63fc7ac065e5e.skydrive.live.com/self.aspx/p%7C0p%20Samples/CommandBehaviorSnippet.vsi">Download the Snippet Visual Studio installer</a> and run the installer (the snippet is provided "AS IS" with no warranties and confers no rights).</li>
+<li>The class where you run the snippet must have the following using statements:
+<ul>
+<li>The namespace of the Control that has the event your command will attach to.</li>
+<li><strong>Microsoft.Practices.Composite.Presentation.Commands. </strong>The snippet uses the CommandBehaviorBase&lt;T&gt; class of Prism-v2. MSDN site <a href="http://msdn.microsoft.com/en-us/library/cc707819.aspx">here</a>.</li>
+<li><strong>System.Windows: </strong>For DependencyProperty class for example.</li>
+<li><strong>System.Windows.Input: </strong>Has the ICommand interface.</li>
+</ul>
+</li>
+</ol>
+<h2>Using the snippet</h2>
+<p>Once you have performed the previous steps, you must take into account the following considerations:</p>
+<ul>
+<li>The snippet will create two classes. You will probably want to put the code it generates in a separate class file, dedicated to that particular command.</li>
+<li>The shortcut to insert the code snippet is: <strong>cmdbehavior</strong>. You must press TAB as any other code snippet requires to be inserted in your code.</li>
+<li>You must fill four replacements (the rectangles in green):
+<ol>
+<li><strong>CommandAction:</strong> A description of what the behavior handles. Example: TextChanged.</li>
+<li><strong>BehaviorNameCommandBehavior</strong>: Replace with the name of the command behavior. Example: TextBoxTextChangedCommandBehavior.</li>
+<li><strong>ControlType</strong>: The type of the control that has the events your command will attach to. Example: TextBox.</li>
+<li><strong>EventName: </strong>The event of your control you will attach to.</li>
+</ol>
+</li>
+<li>To bind the command in XAML, you simply need to add a definition to the namespace and then bind the command property of the $CommandAction$ class to the command in your ViewModel. Example:
+<pre><span style="color: blue">&lt;</span><span style="color: #a31515">Window </span><span style="color: red">x</span><span style="color: blue">:</span><span style="color: red">Class</span><span style="color: blue">="WpfApplication1.Window1"
+    ...
+    </span><span style="color: red">xmlns</span><span style="color: blue">:</span><span style="color: red">cmd</span><span style="color: blue">="clr-namespace:Commanding.Modules.Order.Views"&gt;
+    &lt;</span><span style="color: #a31515">Grid</span><span style="color: blue">&gt;
+        &lt;</span><span style="color: #a31515">TextBox </span><span style="color: red">cmd</span><span style="color: blue">:</span><span style="color: red">TextChanged.Command</span><span style="color: blue">="{</span><span style="color: #a31515">Binding </span><span style="color: red">Path</span><span style="color: blue">=TextChangedCommand}"&gt;&lt;/</span><span style="color: #a31515">TextBox</span><span style="color: blue">&gt;
+    &lt;/</span><span style="color: #a31515">Grid</span><span style="color: blue">&gt;
+&lt;/</span><span style="color: #a31515">Window</span><span style="color: blue">&gt;</span></pre>
+<p><a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a></li>
+</ul>
+<p>I hope this snippet is useful for you, and that you are able to save time and problems using it. I know I am :) .</p>

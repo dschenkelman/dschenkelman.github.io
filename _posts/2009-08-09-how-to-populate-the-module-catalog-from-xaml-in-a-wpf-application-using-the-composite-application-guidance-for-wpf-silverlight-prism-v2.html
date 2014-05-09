@@ -1,0 +1,51 @@
+---
+layout: post
+title: 'How to: Populate the Module Catalog from XAML in a WPF application using the
+  Composite Application Guidance for WPF & Silverlight (Prism-v2)'
+categories:
+- Composite Application Guidance for WPF &amp; SL
+- p&amp;p
+- Patterns &amp; Practices
+- Prism-v2
+- Windows Presentation Foundation
+- WPF
+tags:
+- Composite Application Guidance for WPF &amp; SL
+- p&amp;p
+- Patterns &amp; Practices
+- Prism-v2
+- Windows Presentation Foundation
+- WPF
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+  dsq_thread_id: '1552821314'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>The other day I was trying to create a new WPF Prism application and I wanted to be able to load modules from XAML. To make things simpler I decided to <a href="http://msdn.microsoft.com/en-us/library/dd458873.aspx">check the documentation</a>, but was not able to find any example on how to get this done, as the <a href="http://msdn.microsoft.com/en-us/library/dd490828.aspx">sample is for Silverlight applications</a>. After this "revelation" I started my research on how this could be done. The most important question was what to put in the <strong>Ref</strong> attribute, which is where the module assembly is located.</p>
+<p>First, and as it is done in the Silverlight approach, the <strong>GetModuleCatalog</strong> method of the <strong>UnityBootstrapper</strong> must be overriden with code similar to this:</p>
+<pre><span style="color: blue">protected override </span>IModuleCatalog GetModuleCatalog()
+      {
+          <span style="color: blue">return
+             </span><span style="color: #2b91af">ModuleCatalog</span>.CreateFromXaml(
+                 <span style="color: blue">new </span><span style="color: #2b91af">Uri</span>(<span style="color: #a31515">"/ProjectName;component/ModulesCatalog.xaml"</span>, <span style="color: #2b91af">UriKind</span>.Relative));
+      }</pre>
+<p>It came to my mind that I had once answered a <a href="http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=58512">related question</a> in the <a href="http://www.codeplex.com/CompositeWPF/Thread/List.aspx">Prism forums</a>, so I thought that would be a good place to start. As it is explained in the question, the Ref attribute must start "file://", but what else should I add to this attribute?</p>
+<p>It turns out the answer is quiet simple (fortunately). You simply have to make sure the module's assembly is copied when built in the same folder as your Shell project is and since one of the module's I wanted to load was called SearchModule, this is the XAML outcome:</p>
+<blockquote>
+<pre><span style="color: blue">&lt;</span><span style="color: #a31515">prism</span><span style="color: blue">:</span><span style="color: #a31515">ModuleInfo </span><span style="color: red">Ref</span><span style="color: blue">="file://SearchModule.dll"
+            </span><span style="color: red">ModuleName</span><span style="color: blue">="SearchModule"
+            </span><span style="color: red">ModuleType</span><span style="color: blue">="SearchModule.ModuleInit, SearchModule, Version=1.0.0.0"
+            </span><span style="color: red">InitializationMode</span><span style="color: blue">="WhenAvailable"&gt;
+&lt;/</span><span style="color: #a31515">prism</span><span style="color: blue">:</span><span style="color: #a31515">ModuleInfo</span><span style="color: blue">&gt;</span></pre>
+</blockquote>
+<p><a href="http://11011.net/software/vspaste"></a></p>
+<p>The rest of the attributes remain the same as in the Silverlight approach.</p>
+<p>I hope this is useful and saves you some trouble for you if you take this approach to load modules in your Prism WPF application.</p>

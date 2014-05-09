@@ -1,0 +1,45 @@
+---
+layout: post
+title: Updating Prism-v2 Reference Implementation from Static to Remote (Dynamic)
+  Module Loading
+categories:
+- Composite Application Guidance for WPF &amp; SL
+- p&amp;p
+- Patterns &amp; Practices
+- Prism-v2
+- Remote Module Loading
+- Silverlight
+tags:
+- Composite Application Guidance for WPF &amp; SL
+- p&amp;p
+- Patterns &amp; Practices
+- Prism-v2
+- Silverlight
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>Today, the Patterns &amp; Practices Sustained Engineering Team, added a new article to the <a href="http://www.codeplex.com/CompositeWPF/Wiki/View.aspx?title=Knowledge%20Base&amp;referringTitle=Home">Composite WPF &amp; Silverlight Knowledge Base</a> that explains the required steps to <a href="http://www.codeplex.com/CompositeWPF/Wiki/View.aspx?title=Migrating%20Prism%20v2%20RI%20from%20static%20to%20dynamic%20module%20loading&amp;referringTitle=Modularity">migrate the Prism-v2 Reference Implementation to use Dynamic Module Loading</a>.</p>
+<p>Although the article explains the specific migration steps for the <a href="http://www.codeplex.com/CompositeWPF/Release/ProjectReleases.aspx?ReleaseId=22566">latest drop's</a> (drop 10) Reference Implementation, it provides the necessary concepts to be able to enable Remote (or Dynamic) Module Loading in any Prism-v2 Solution that uses Static Module Loading and was not created to use Remote Module Loading. Performing the migration does not have a great level of difficulty and the amount of time it takes depends mainly on how many modules your solution has.</p>
+<p>The main steps covered by the article are:</p>
+<ul>
+<li>Updating Silverlight class libraries to Silverlight applications to generate xap files</li>
+<li>Setting up remote module loading</li>
+<li>Creating a Web Application to host the RI</li>
+</ul>
+<p>Below is a picture of the solution explorer's outcome once the migration has been performed.</p>
+<p>We have uploaded the article in .pdf format and the source code of the RI using Dynamic Module Loading:</p>
+<ul>
+<li> <a href="http://www.codeplex.com/Project/Download/FileDownload.aspx?ProjectName=CompositeWPF&amp;DownloadId=56997">PDF version of the article</a></li>
+<li><a href="http://www.codeplex.com/Project/Download/FileDownload.aspx?ProjectName=CompositeWPF&amp;DownloadId=56998">Source Code of the Prism-v2 Reference Implementation using Remote Module Loading</a>.</li>
+</ul>
+<p><strong>Disclaimer:</strong> The code is provided "AS IS" with no warranties, and confers no rights.</p>
+<p>Hope this is useful.</p>

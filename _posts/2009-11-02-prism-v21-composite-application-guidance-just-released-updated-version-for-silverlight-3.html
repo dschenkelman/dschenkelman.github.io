@@ -1,0 +1,50 @@
+---
+layout: post
+title: Prism 2.1 (Composite Application Guidance for WPF & Silverlight 3) just released
+  (updated version for Silverlight 3)
+categories:
+- Composite Application Guidance for WPF &amp; SL
+- p&amp;p
+- Patterns &amp; Practices
+- Prism-v2
+- Prism-v2.1
+- Releases
+- Silverlight
+- Silverlight 3
+- Windows Presentation Foundation
+- WPF
+tags:
+- Composite Application Guidance for WPF &amp; SL
+- p&amp;p
+- Patterns &amp; Practices
+- Prism-v2
+- Prism-v2.1
+- Releases
+- Silverlight
+- Silverlight 3
+- Windows Presentation Foundation
+- WPF
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+  dsq_thread_id: '1818430305'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>The patterns &amp; practices team has just released Prism-v2.1, an updated version of the <a href="http://msdn.microsoft.com/en-us/library/dd458809.aspx" target="_blank">Composite Application Guidance for WPF &amp; Silverlight</a>, which has <a href="http://msdn.microsoft.com/en-us/library/ee712881.aspx" target="_blank">some breaking changes</a>, mostly related to Silverlight 3 (from the "New in this release" article):</p>
+<p><a href="http://blogs.southworks.net/dschenkelman/files/2009/11/image.png"><img style="margin-left: 0px;margin-right: 0px" src="http://blogs.southworks.net/dschenkelman/files/2009/11/image-thumb.png" border="0" alt="image" width="192" height="109" align="right" /></a></p>
+<ul>
+<li><em>All Visual Studio projects (Composite Application Library, reference implementation, and Quickstarts) were migrated to use Silverlight 3.</em></li>
+<li><em><strong>TabRegionControlAdapter</strong> was modified to support binding in the <strong>TabItem</strong>'s control header in Silverlight 3.</em></li>
+<li><em><strong>CreateXap.bat</strong> file was modified to search for Silverlight 3 assemblies if the Silverlight 2 reference assemblies cannot be found.</em></li>
+<li><em>Implemented the <a id="ctl00_MTCS_main_ctl01" href="http://msdn.microsoft.com/en-us/library/aa970850.aspx">WeakEvent Pattern</a> for the <strong>DelegateCommand</strong>'s and <strong>CompositeComand</strong>'s </em>(more on this below)<em>.</em><strong> </strong></li>
+</ul>
+<p>If you were using Prism 2.0, either for <strong>WPF</strong> or <strong>Silverlight</strong> development, I would recommend you to start using this new version, as there is also an implementation<em> "of the </em><a href="http://msdn.microsoft.com/en-us/library/aa970850.aspx"><em>WeakEvent Pattern</em></a><em> for the <strong>DelegateCommand</strong>'s and <strong>CompositeComand</strong>'s<strong> CanExecuteChanged</strong> event to fix a possible memory leak in the applications using the Composite Application Library commands"</em>.</p>
+<p>You can download the latest version of the guidance from <a href="http://www.microsoft.com/downloads/details.aspx?displaylang=en&amp;FamilyID=387c7a59-b217-4318-ad1b-cbc2ea453f40" target="_blank">here</a>.</p>
+<p>Kudos to the Prism team!!!</p>

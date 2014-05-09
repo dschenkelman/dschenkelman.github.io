@@ -1,0 +1,48 @@
+---
+layout: post
+title: Composite Application Guidance (Prism-v2) sample application using Silverlight
+  3 Child Window
+categories:
+- Composite Application Guidance for WPF &amp; SL
+- Event Aggregation
+- p&amp;p
+- Patterns &amp; Practices
+- Prism-v2
+- Silverlight
+- Silverlight 3
+tags:
+- Composite Application Guidance for WPF &amp; SL
+- Event Aggregation
+- p&amp;p
+- Patterns &amp; Practices
+- Prism-v2
+- Silverlight
+- Silverlight 3
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+  dsq_thread_id: '1613557512'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>Today I tweaked the <a href="http://msdn.microsoft.com/en-us/library/dd458918.aspx">Event Aggregator Quickstart</a> that comes with the <a href="http://msdn.microsoft.com/en-us/library/dd458809.aspx">Prism-v2</a> source code to show how Silverlight 3 Child Windows could be used in a Silverlight Composite Application.</p>
+<h4>Child Window Overview</h4>
+<p>Silverlight 3 has a new template called ChildWindow. It is basically a user control (unlike a Popup you can edit its XAML), but it allows you to create modal windows for your application, such as dialogs.</p>
+<p><a href="http://blogs.southworks.net/dschenkelman/files/2009/06/childwindow.png"><img class="alignnone size-full wp-image-108" src="http://blogs.southworks.net/dschenkelman/files/2009/06/childwindow.png" alt="Template Dialog to add Child Window control" width="500" height="303" /></a></p>
+<p>To use this dialog, you just have to create a new instance of it and call its <strong>Show</strong> method. As this call is asynchronic, you need to handle the Closed event to know when the dialog interaction has finished.</p>
+<h4>Sample Scenario</h4>
+<p>The Quickstart's scenario shows how to use the Event Aggregator to add funds of a particular customer, so what I did is add a confirmation dialog before adding the fund. After you select the customer and fund (both of them as in the original Quickstart) and click the <strong>Add</strong> button following dialog pops up:</p>
+<p><a href="http://blogs.southworks.net/dschenkelman/files/2009/06/popup.png"></a></p>
+<p> <a href="http://blogs.southworks.net/dschenkelman/files/2009/06/popup1.png"><img class="alignnone size-full wp-image-110" src="http://blogs.southworks.net/dschenkelman/files/2009/06/popup1.png" alt="Dialog to decide whether to add the fund or not" width="500" height="415" /></a></p>
+<p>As expected, if you click "Yes" the fund will be added, and if you click "No" or close the dialog it won't.</p>
+<h5>Child Window Sample</h5>
+<h6>Disclaimer</h6>
+<p>This code is provided “AS IS” with no warranties, and confers no rights.</p>
+<h6>Download</h6>
+<p>You can get the sample from here: <a href="http://cid-09f63fc7ac065e5e.skydrive.live.com/self.aspx/p%7C0p%20Samples/ChildWindowSample.zip">ChildWindowSample.zip</a>.</p>

@@ -1,0 +1,39 @@
+---
+layout: post
+title: Intro to OWIN talk and a simple IP filtering middleware sample
+categories:
+- Emerging Technology
+- Katana
+- OWIN
+tags:
+- Emerging Technology
+- Katana
+- OWIN
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+  dsq_thread_id: '1552848638'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>Last week I introduced OWIN during a brown bag talk at Southworks. I’m by no means an expert on the subject, but the reason I decided to do it was that I felt it was very hard for me to find a single blog post/video that provided the information required to understand what OWIN was, why it exists and how it can be used.</p>
+<p>That’s why while preparing the talk I decided to create a <a href="https://github.com/dschenkelman/owin-talk" target="_blank">Github repository</a> to store the source, slides, demo script and some links in a single, centralized place. Please, head over to the site if you would like to check out the slides or get more context on OWIN, as I won’t be including everything in this post.</p>
+<p><a href="http://blogs.southworks.net/dschenkelman/files/2013/07/image2.png"><img style="padding-left: 0px;padding-right: 0px;padding-top: 0px;border-width: 0px" title="image" alt="image" src="http://blogs.southworks.net/dschenkelman/files/2013/07/image_thumb2.png" width="617" height="352" border="0" /></a></p>
+<p>I also realized that this provides an easy way to share the asset’s once the talk is over, so I’ll probably continue doing this in the future.</p>
+<h2>IP Filtering Middleware</h2>
+<p>As you learned from checking the <a href="https://github.com/dschenkelman/owin-talk" target="_blank">Github project</a> out, OWIN allows you to setup a pipeline of middleware components that are allowed to inspects, routes, or modifies request and/or response messages. With the goal of providing a simple sample, I used Katana (Microsoft’s implementation of OWIN) to create an IP filtering middleware component. It allows you to provide a simple Func to determine whether a request should be rejected based on the client’s IP address. Of course this is not something that you would use in production, but it gives an idea of the kind of things that can be achieved with OWIN and Katana.</p>
+<code data-gist-id="7c3b4abaa741d53c8a6c" data-gist-file="IpFilterMiddleware.cs"></code>
+<p>I also created an extension method that allows you to easily integrate the middleware component into the pipeline:</p>
+<code data-gist-id="7c3b4abaa741d53c8a6c" data-gist-file="Extensions.cs"></code>
+<h2>Integrating with the pipeline</h2>
+<p>For example, if you wanted to reject requests that are not from a private network nor the local machine you could set things up like this:</p>
+<code data-gist-id="7c3b4abaa741d53c8a6c" data-gist-file="Startup.cs"></code>
+<h2>Wrapping up</h2>
+<p>This is by no means a full intro to OWIN (for that refer to the resources provided in Github), but I hope it provides an initial idea of the kind of things that you can do with OWIN and Katana.</p>
+<p>If you have feedback please let me know.</p>

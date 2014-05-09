@@ -1,0 +1,50 @@
+---
+layout: post
+title: 'Prism-v2: Register views with names using View Discovery'
+categories:
+- Composite Application Guidance for WPF &amp; SL
+- p&amp;p
+- Patterns &amp; Practices
+- Prism-v2
+- Prism-v2.1
+- Silverlight
+- Windows Presentation Foundation
+- WPF
+tags:
+- Composite Application Guidance for WPF &amp; SL
+- p&amp;p
+- Patterns &amp; Practices
+- Prism-v2
+- Prism-v2.1
+- Silverlight
+- Windows Presentation Foundation
+- WPF
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+  dsq_thread_id: '1555737637'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>The holidays are over, happy new year everyone and I hope it is a good one for all of you. It's time for the first post of the year, which continuing last year's trend will deal with <a href="http://msdn.microsoft.com/en-us/library/dd458809.aspx">Prism</a>.</p>
+<p>A couple of weeks ago this question in the Prism forum got <a href="http://blogs.southworks.net/fantivero/">Fer</a> and I thinking how to set the name of views in a region <a href="http://msdn.microsoft.com/en-us/library/dd458809.aspx">using View Discovery</a>. As Prism does not support this out of the box (which is kind of weird), we had a talk with <a href="http://blogs.southworks.net/ejadib/">Ezequiel </a>and <a href="http://blogs.southworks.net/jdominguez/">Julian</a> and decided to use Prism's extensibility to get this done (this means not changing the Prism source code at all :) ).</p>
+<p>A couple of changes needed to be performed to achieve this functionality:</p>
+<ol>
+<li>Create a new <strong>RegionViewRegistry</strong>. Its API would allow passing the name of the view as the parameter when registering it with a region:</li>
+<pre><span style="color: blue">public interface </span><span style="color: #2b91af">IRegionViewWithNamesRegistry </span>: <span style="color: #2b91af">IRegionViewRegistry
+  </span>{
+      <span style="color: blue">void </span>RegisterViewWithRegion(<span style="color: blue">string </span>regionName, <span style="color: #2b91af">Type </span>viewType, <span style="color: blue">string </span>viewName);
+      <span style="color: blue">void </span>RegisterViewWithRegion(<span style="color: blue">string </span>regionName, <span style="color: #2b91af">Func</span>&lt;<span style="color: blue">object</span>&gt; getContentDelegate, <span style="color: blue">string </span>viewName);
+  }</pre>
+<p><a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a></p>
+<li>Extend the <strong>AutoPopulateRegionBehavior</strong> to register the view using its name. To get this done we inherited from the <strong>RegionBehavior</strong> base class.</li>
+</ol>
+<p>Finally to check that everything worked correctly we created a small sample using the <a href="http://msdn.microsoft.com/en-us/library/dd458934.aspx">ViewDiscovery-UIComposition QS</a> for Silverlight (the new registry and behavior must be registered in the bootstrapper).</p>
+<p>You can download the code from <a href="http://cid-09f63fc7ac065e5e.skydrive.live.com/self.aspx/p%5E0p%20Samples/ViewRegistryWithNames.zip">here</a> (use the <strong>ViewDiscoveryComposition.sln</strong>). The code is provided "AS IS" with no warranties and confers no rights.</p>
+

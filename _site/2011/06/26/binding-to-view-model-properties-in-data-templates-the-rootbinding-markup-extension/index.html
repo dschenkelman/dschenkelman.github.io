@@ -1,0 +1,228 @@
+<!doctype html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if (IE 7)&!(IEMobile)]><html class="no-js lt-ie9 lt-ie8" lang="en"><![endif]-->
+<!--[if (IE 8)&!(IEMobile)]><html class="no-js lt-ie9" lang="en"><![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"><!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<title>Binding to View Model properties in Data Templates. The RootBinding Markup Extension &#8211; A sea of code</title>
+<meta name="description" content="Pseudo-random thoughts related to software development...">
+<meta name="keywords" content="Data Binding, Emerging Technology, Markup Extensions, MVVM, Silverlight, Silverlight 5">
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://localhost:4000/images/site-logo.jpg">
+<meta name="twitter:title" content="Binding to View Model properties in Data Templates. The RootBinding Markup Extension">
+<meta name="twitter:description" content="Pseudo-random thoughts related to software development...">
+<meta name="twitter:creator" content="@dschenkelman">
+
+<!-- Open Graph -->
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Binding to View Model properties in Data Templates. The RootBinding Markup Extension">
+<meta property="og:description" content="Pseudo-random thoughts related to software development...">
+<meta property="og:url" content="http://localhost:4000/2011/06/26/binding-to-view-model-properties-in-data-templates-the-rootbinding-markup-extension/">
+<meta property="og:site_name" content="A sea of code">
+
+
+
+
+
+<link rel="canonical" href="http://localhost:4000/2011/06/26/binding-to-view-model-properties-in-data-templates-the-rootbinding-markup-extension/">
+<link href="http://localhost:4000/feed.xml" type="application/atom+xml" rel="alternate" title="A sea of code Feed">
+
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="http://localhost:4000/assets/css/main.min.css">
+<!-- Webfonts -->
+<script src="//use.edgefonts.net/source-sans-pro:n2,i2,n3,i3,n4,i4,n6,i6,n7,i7,n9,i9;source-code-pro:n4,n7;volkhov.js"></script>
+
+<meta http-equiv="cleartype" content="on">
+
+<!-- Load Modernizr -->
+<script src="http://localhost:4000/assets/js/vendor/modernizr-2.6.2.custom.min.js"></script>
+
+<!-- Icons -->
+<!-- 16x16 -->
+<link rel="shortcut icon" href="http://localhost:4000/favicon.ico">
+<!-- 32x32 -->
+<link rel="shortcut icon" href="http://localhost:4000/favicon.png">
+<!-- 57x57 (precomposed) for iPhone 3GS, pre-2011 iPod Touch and older Android devices -->
+<link rel="apple-touch-icon-precomposed" href="http://localhost:4000/images/apple-touch-icon-precomposed.png">
+<!-- 72x72 (precomposed) for 1st generation iPad, iPad 2 and iPad mini -->
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://localhost:4000/images/apple-touch-icon-72x72-precomposed.png">
+<!-- 114x114 (precomposed) for iPhone 4, 4S, 5 and post-2011 iPod Touch -->
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://localhost:4000/images/apple-touch-icon-114x114-precomposed.png">
+<!-- 144x144 (precomposed) for iPad 3rd and 4th generation -->
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://localhost:4000/images/apple-touch-icon-144x144-precomposed.png">
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/gist-embed/1.7/gist-embed.min.js"></script>
+
+</head>
+
+<body id="post">
+
+<div class="navigation-wrapper">
+	<nav role="navigation" id="site-nav" class="animated drop">
+	    <ul>
+	        
+			<li>
+				
+					<a href="http://localhost:4000/">Home</a>
+				 
+			</li>
+	        
+			<li>
+				
+					<a href="http://localhost:4000/about/">About</a>
+				 
+			</li>
+	        
+			<li>
+				
+					<a href="/articles/">Articles</a>
+				 
+			</li>
+	        
+	        <li><a href="http://localhost:4000/feed.xml" title="Atom/RSS feed"><i class="icon-rss"></i> Feed</a></li>
+	        <li class="dosearch"><i class="icon-search"></i> Search</li>
+	    </ul>
+	</nav>
+</div><!-- /.navigation-wrapper -->
+
+<!--[if lt IE 9]><div class="upgrade"><strong><a href="http://whatbrowser.org/">Your browser is quite old!</strong> Why not upgrade to a different browser to better enjoy this site?</a></div><![endif]-->
+
+<div class="search-wrapper">
+	<div class="search-form">
+		<input type="text" class="search-field" placeholder="Search...">
+		<i class="icon-remove-sign icon-2x"></i>
+		<ul class="search-results post-list"></ul><!-- /.search-results -->
+	</div><!-- /.search-form -->
+</div><!-- ./search-wrapper -->
+
+<header class="masthead">
+	<div class="wrap">
+        
+    		<a href="http://localhost:4000/" class="site-logo" rel="home" title="A sea of code"><img src="http://localhost:4000/images/site-logo.jpg" width="200" height="200" alt="A sea of code logo" class="animated fadeInUp"></a>
+        
+        <h1 class="site-title animated fadeIn"><a href="http://localhost:4000/">A sea of code</a></h1>
+		<h2 class="site-description animated fadeIn" itemprop="description">Pseudo-random thoughts related to software development...</h2>
+	</div>
+</header><!-- /.masthead -->
+
+
+<div id="main" role="main">
+  <article class="hentry">
+    
+    <div class="entry-wrapper">
+      <header class="entry-header">
+        <span class="entry-tags"><a href="http://localhost:4000/tags/#Data Binding" title="Pages tagged Data Binding">Data Binding</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#Emerging Technology" title="Pages tagged Emerging Technology">Emerging Technology</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#Markup Extensions" title="Pages tagged Markup Extensions">Markup Extensions</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#MVVM" title="Pages tagged MVVM">MVVM</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#Silverlight" title="Pages tagged Silverlight">Silverlight</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#Silverlight 5" title="Pages tagged Silverlight 5">Silverlight 5</a></span>
+        
+          <h1 class="entry-title">Binding to View Model properties in Data Templates. The RootBinding Markup Extension</h1>
+        
+      </header>
+      <footer class="entry-meta">
+        <img src="http://localhost:4000/images/bio-photo.jpg" alt="Damian Schenkelman photo" class="author-photo">
+        <span class="author vcard">By <span class="fn"><a href="http://localhost:4000/about/" title="About Damian Schenkelman">Damian Schenkelman</a></span></span>
+        <span class="entry-date date published"><time datetime="2011-06-26T00:00:00-04:00"><i class="icon-calendar-empty"></i> June 26, 2011</time></span>
+        
+        
+        <span><a href="http://localhost:4000/2011/06/26/binding-to-view-model-properties-in-data-templates-the-rootbinding-markup-extension/" rel="bookmark" title="Binding to View Model properties in Data Templates. The RootBinding Markup Extension"><i class="icon-link"></i> Permalink</a></span>
+        
+      </footer>
+      <div class="entry-content">
+        <p>If you work with Silverlight and MVVM, you must have probably been forced to do some weird thing to bind to a property in your view model (say a Command) from a DataTemplate. Some of the common approaches I have seen and used myself are:</p>
+<ul>
+<li>Using some kind of binding helper as a View’s resource.</li>
+<li>Having a View Model wrap the entity of each collection item, and add the command to the View Model.</li>
+</ul>
+<p>Although these are perfectly valid approaches, they require extra work compared to the good old {Binding} syntax we are all used to.</p>
+<p>Now that Silverlight 5 Beta is out, we can take advantage of the <a href="http://msdn.microsoft.com/en-us/library/system.windows.markup.markupextension(VS.96).aspx">XAML Markup Extensions</a> to help is in this kind of tasks, using a simpler and more intuitive approach.</p>
+<p>I have created a <strong>RootBindingExtension</strong>, which can be used as follows:</p>
+<code data-gist-id="714725b67ed06edb2436" data-gist-file="Usage.xaml"></code>
+<p>The <strong>RootBindingExtension </strong>uses the <strong>Path</strong> property to create a Binding that binds to a property of that name in the View’s <strong>DataContext</strong>.</p>
+<code data-gist-id="714725b67ed06edb2436" data-gist-file="RootBindingExtension.cs"></code>
+<p>You can download the RootBindingExtension and a sample that uses it from <a href="https://skydrive.live.com/#!/?cid=09f63fc7ac065e5e&amp;sc=documents&amp;nl=1&amp;uc=2&amp;id=9F63FC7AC065E5E%21215">here</a>.</p>
+<p>Let me know if you have used it.</p>
+
+        
+      </div><!-- /.entry-content -->
+    </div><!-- /.entry-wrapper -->
+    <nav class="pagination" role="navigation">
+      
+        <a href="http://localhost:4000/2011/06/01/microsoft-media-platform-video-editor-sp2-released/" class="btn" title="Microsoft Media Platform Video Editor SP2 Released">Previous article</a>
+      
+      
+        <a href="http://localhost:4000/2011/07/18/needle-container-fluency-and-mapping-types/" class="btn" title="Needle Container: Fluency and Mapping Types">Next article</a>
+      
+    </nav><!-- /.pagination -->
+  </article>
+</div><!-- /#main -->
+
+<div class="footer-wrapper">
+  <footer role="contentinfo">
+    <span>&copy; 2014 Damian Schenkelman. Powered by <a href="http://jekyllrb.com">Jekyll</a> using the <a href="http://mademistakes.com/so-simple/">So Simple Theme</a>.</span>
+<div class="social-icons">
+	<a href="http://twitter.com/dschenkelman" title="Damian Schenkelman on Twitter" target="_blank"><i class="icon-twitter icon-2x"></i></a>
+	
+	
+	<a href="http://linkedin.com/in/damianschenkelman" title="Damian Schenkelman on LinkedIn" target="_blank"><i class="icon-linkedin icon-2x"></i></a>
+	
+	
+	
+	<a href="http://github.com/dschenkelman" title="Damian Schenkelman on Github" target="_blank"><i class="icon-github icon-2x"></i></a>
+	
+</div><!-- /.social-icons -->
+  </footer>
+</div><!-- /.footer-wrapper -->
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="http://localhost:4000/assets/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script src="http://localhost:4000/assets/js/scripts.min.js"></script>
+
+<!-- Jekyll Simple Search option -->
+<script>
+  $(document).ready(function() {
+      $('.search-field').simpleJekyllSearch({
+          jsonFile : 'http://localhost:4000/search.json',
+          searchResults : '.search-results',
+          template : '<li><article><a href="{url}">{title} <span class="entry-date"><time datetime="{date}">{shortdate}</time></span></a></article></li>',
+          noResults: '<p>Nothing found.</p>'
+        });
+  });
+
+  (function( $, window, undefined ) {
+    
+     var bs = {
+          close: $(".icon-remove-sign"),
+          searchform: $(".search-form"),
+          canvas: $("body"),
+          dothis: $('.dosearch')
+      };
+    
+    bs.dothis.on('click', function() {
+      $('.search-wrapper').css({ display: "block" });
+      bs.searchform.toggleClass('active');
+      bs.searchform.find('input').focus();
+      bs.canvas.toggleClass('search-overlay');
+    });
+    
+      bs.close.on('click', function() {
+        $('.search-wrapper').removeAttr( 'style' );
+        bs.searchform.toggleClass('active');
+        bs.canvas.removeClass('search-overlay');
+    });
+  })( jQuery, window );
+</script>
+
+
+	        
+
+</body>
+</html>

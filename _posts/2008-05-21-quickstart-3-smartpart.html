@@ -1,0 +1,92 @@
+---
+layout: post
+title: 'CAB Quickstarts: SmartPart'
+categories:
+- C#
+- CAB
+- Composite UI Application Block
+- p&amp;p
+- Patterns &amp; Practices
+tags:
+- C#
+- CAB
+- Composite UI Application Block
+- p&amp;p
+- Patterns &amp; Practices
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+  dsq_thread_id: '2345501434'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>This is the third post of a <a title="http://blogs.southworks.net/dschenkelman/category/cab/" href="http://blogs.southworks.net/dschenkelman/category/cab/" target="_blank">series</a> that covers the basic ground of CAB QuickStarts from a simple point of view.</p>
+<h4>Other posts in this series</h4>
+<ul>
+<li><a title="http://blogs.southworks.net/dschenkelman/2008/05/13/cab-quickstarts-event-broker/" href="http://blogs.southworks.net/dschenkelman/2008/05/13/cab-quickstarts-event-broker/" target="_blank">Event Broker QS</a></li>
+<li><a title="http://blogs.southworks.net/dschenkelman/2008/05/21/quickstart-3-smartpart/" href="http://blogs.southworks.net/dschenkelman/2008/05/21/quickstart-3-smartpart/" target="_blank">Module Loader QS</a></li>
+<li><a title="http://blogs.southworks.net/dschenkelman/2008/05/28/cab-quickstarts-commands/" href="http://blogs.southworks.net/dschenkelman/2008/05/28/cab-quickstarts-commands/" target="_blank">Commands QS</a></li>
+<li><a title="http://blogs.southworks.net/dschenkelman/2008/06/12/quickstart-5-bankteller/" href="http://blogs.southworks.net/dschenkelman/2008/06/12/quickstart-5-bankteller/" target="_blank">BankTeller QS</a></li>
+</ul>
+<p>For more information about CAB see:</p>
+<ul>
+<li><a href="http://msdn.microsoft.com/en-us/library/aa480450.aspx">http://msdn.microsoft.com/en-us/library/aa480450.aspx</a></li>
+<li><a href="/blogs/mconverti/archive/tags/CAB/default.aspx">CAB introduction posts </a>(Spanish) by <a href="/blogs/mconverti/">Mariano</a></li>
+<li><a href="/blogs/jcisneros/archive/2008/02/13/Yet-Another-Post-about-CAB.aspx">Composite UI Application Block</a>(Spanish) by <a href="/blogs/jcisneros/">Jonathan</a></li>
+</ul>
+<h3>SmartPart QS</h3>
+<p>This is a list of the procedures in this post:</p>
+<ul>
+<li><a href="#_Startup">Startup</a></li>
+<li><a href="#_SelectedIndexChanged_Event_(ListVie">SelectedIndexChanged Event (ListView)</a></li>
+<li><a href="/controlpanel/blogs/posteditor.aspx?SelectedNavItem=Posts&amp;sectionid=92&amp;postid=114379#_Comments_Button">Comments Button</a></li>
+</ul>
+<h4><a title="_Startup" name="_Startup"></a>Startup</h4>
+<ol>
+<li>The <strong>shell </strong>defines <strong>BrowseCustomerWorkItem</strong> as the default <strong>WorkItem </strong>and MainForm as the starting <strong>view</strong>.</li>
+<li>The List is set in the OVERLOADED <strong>BeforeShellCreated()</strong> method.</li>
+<li>The <strong>Run() </strong>method is called in the root <strong>WorkItem </strong>(<strong>BrowseCustomerWorkItem</strong>).</li>
+<li>The <strong>OnRunStarted()</strong> method at <strong>BrowseCustomerWorkItem </strong>starts the <strong>CustomerView</strong> <strong>SmartPart </strong>in the <strong>MainForm</strong>’s <strong>Workspace.</strong></li>
+<li>The customer view is split (<strong>SplitContainer</strong>) between a <strong>CustomerListView</strong> <strong>SmartPart </strong>and a <strong>DeckWorkspace</strong>.</li>
+<li>Using Dependency Injection [<strong>CreateNew</strong>] initializes a new instance of <strong>CustomerControllers</strong>.</li>
+<li>The <strong>CustomerControllers </strong>gets the list of Customers (<strong>[State("</strong>Customers<strong>"</strong><strong>)])</strong></li>
+<li>The <strong>OnLoad() </strong>event handler fills the customers at the <strong>Controller</strong> and by using the <strong>State</strong> updates <strong>List</strong>&lt;<strong>Customers</strong>&gt; in the <strong>view</strong> to fill the ListBox.</li>
+<li>Then it  registers the <strong>SelectedIndexChanged</strong> <strong>event</strong> from the ListBox.</li>
+</ol>
+<h4><a title="_SelectedIndexChanged_Event_(ListVie" name="_SelectedIndexChanged_Event_(ListVie"></a>SelectedIndexChanged Event (ListView)</h4>
+<ol>
+<li>The SelectedIndexChanged <strong>event</strong> fires and calls the <strong>controller’s</strong> <strong>ShowCustomerDetails</strong>() Method, passing the customer as a parameter.</li>
+<li>The <strong>controller</strong> then calls the <strong>ShowCustomerDetails() </strong>method<strong> </strong>of the <strong>BrowseCustomersWorkItem</strong>.</li>
+<li>The <strong>ShowCustomerDetails() </strong>method injects the “Customer” <strong>State</strong> into Child <strong>Workitems</strong>.</li>
+<li>It then adds a new <strong>ViewCustomerWorkItem (</strong>as a child WorkItem<strong>)</strong> and assigns the customerWorkItem.Customer property to the current “Customer” <strong>State</strong>.</li>
+<li>The <strong>customerWorkItem</strong>.<strong>Run()</strong> Method is called passing the <strong>CustomersDeckedWorkspace</strong> as a parameter.</li>
+<li>The <strong>Run </strong>method creates the <strong>views</strong> to be used by the <strong>WorkItem</strong> (<strong>CustomerTabView</strong>, which has the <strong>DetailsView</strong> in the <strong>CustomerTabView</strong> designer <strong>(this.</strong>customerDetailView1<strong> = new </strong>SmartPartQuickStart<strong>.</strong>ViewCustomerWorkItem<strong>.CustomerDetailView</strong>();<strong>)</strong>,  and the <strong>CustomerSummaryView</strong>)</li>
+<li>Then calls the <strong>workspace.Show() </strong>method, with the <strong>CustomerTabView </strong>as a parameter, to show the <strong>view</strong> in the <strong>workspace</strong>.</li>
+<li>The <strong>CustomerDetailView</strong> uses <strong>dependency</strong> <strong>injection</strong> to [CreateNew]<strong>CustomerController</strong> (no “s”).</li>
+<li>The OnLoadMethod adds the customer to the controls.</li>
+</ol>
+<h4><a title="_Comments_Button" name="_Comments_Button"></a>Comments Button</h4>
+<ol>
+<li>Gets the [<strong>State</strong> (“Customer”)] from the <strong>ViewCustomerWorkItem</strong>.</li>
+<li>The <strong>OnLoad</strong>() <strong>event</strong> handler adds the Customer (provided by the <strong>State</strong>) to the BindingSource<strong>.</strong></li>
+<li>Fires the Click <strong>event</strong> handler.</li>
+<li>Calls the <strong>CutomerController</strong> <strong>ShowCustomerComments()</strong> method.</li>
+<li>By using [Service Dependency], the <strong>Controller</strong> gets a reference to <strong>ViewCustomerWorkItem</strong>.</li>
+<li>Then the <strong>ShowCustomerComments()</strong> method calls the <strong>ViewCustomerWorkItem</strong><strong>ShowCustomerComments()</strong> method.</li>
+<li>Creates a <strong>Workspace</strong> called <strong>tabbedspace</strong>.</li>
+<li>Adds a <strong>CustomerCommentsView</strong> <strong>SmartPart</strong> to the <strong>ViewCustomerWorkItem.</strong></li>
+<li>The <strong>CustomerCommentsView</strong>:
+<ol>
+<li>Creates a <strong>new</strong> <strong>SmartPartInfo</strong> and assigns (“Comments”) to the <strong>SmartPartInfo</strong> title.</li>
+<li>Registers the <strong>SmartPartInfo</strong> to the <strong>CustomerCommentsView</strong>.</li>
+<li>Shows the <strong>tabbedspace</strong> (<strong>WorkSpace</strong>).</li>
+</ol>
+</li>
+</ol>
+<p>The <a title="http://blogs.southworks.net/dschenkelman/2008/05/28/cab-quickstarts-commands/" href="http://blogs.southworks.net/dschenkelman/2008/05/28/cab-quickstarts-commands/" target="_blank">next post</a> will be about the Commands QS, be sure to read it.</p>

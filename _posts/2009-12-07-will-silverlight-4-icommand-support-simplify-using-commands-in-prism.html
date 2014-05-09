@@ -1,0 +1,44 @@
+---
+layout: post
+title: Will Silverlight 4 ICommand support simplify using commands in Prism?
+categories:
+- Composite Application Guidance for WPF &amp; SL
+- p&amp;p
+- Patterns &amp; Practices
+- Prism-v2
+- Prism-v2.1
+- Silverlight
+- Silverlight 4 Beta
+tags:
+- Composite Application Guidance for WPF &amp; SL
+- p&amp;p
+- Patterns &amp; Practices
+- Prism-v2
+- Prism-v2.1
+- Silverlight
+- Silverlight 4 Beta
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+  dsq_thread_id: '1552821957'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>As I thought this is a question that could interest many people, instead of answering <a href="http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=75604" target="_blank">this question</a> directly in the <a href="http://compositewpf.codeplex.com/Thread/List.aspx" target="_blank">Prism codeplex forum</a> I decided to create a short blog post and answer it here.</p>
+<div>The answer is "kind of". <a href="http://silverlight.net/getstarted/silverlight-4-beta/" target="_blank">Silverlight 4 Beta</a>, so far, only supports binding commands to <a href="http://msdn.microsoft.com/en-us/library/system.windows.controls.primitives.buttonbase.command%28VS.96%29.aspx" target="_blank">controls that inherit from ButtonBase</a> (Button and HyperlinkButton), as you can read in <a href="http://timheuer.com/blog/archive/2009/11/18/whats-new-in-silverlight-4-complete-guide-new-features.aspx?utm_source=feedburner&amp;utm_medium=feed&amp;utm_campaign=Feed%3A+timheuer+%28Method+~+of+~+failed+by+Tim+Heuer%29#commands" target="_blank">Tim's</a> and <a href="http://mtaulty.com/CommunityServer/blogs/mike_taultys_blog/archive/2009/11/18/silverlight-4-rough-notes-commanding.aspx" target="_blank">Mike's</a> posts.</div>
+<div>Therefore, if you are using Prism, these are the things that you will not need any more, and those that you will:</div>
+<h4>No longer necessary</h4>
+<div><strong>ButtonBaseCommandBehavior</strong> and <strong>Click</strong> classes from the CompositePresentationSilverlight assembly. As these are used to hook the command and the click event through XAML, you can bypass this by using the new command support.</div>
+<pre><span style="color: blue">&lt;</span><span style="color: #a31515">Button </span><span style="color: red">Content</span><span style="color: blue">=</span>"<span style="color: blue">Save</span>" <span style="color: red">Command</span><span style="color: blue">=</span>"<span style="color: blue">{<span style="color: #a31515">Binding</span> <span style="color: red">Path</span>=SaveOrderCommand}</span>"<span style="color: blue">/&gt;</span></pre>
+<p><a href="http://11011.net/software/vspaste"></a></p>
+<h4>Still necessary</h4>
+<p>As there is not an actual implementation of the <strong>ICommand</strong> interface, the <a href="http://msdn.microsoft.com/en-us/library/dd458928.aspx" target="_blank">DelegateCommand and CompositeCommand</a> are still useful. Also, as controls other than Buttons do not have the possibility to bind their events to commands in the ViewModel, <a href="http://blogs.southworks.net/jdominguez/2008/08/icommand-for-silverlight-with-attached-behaviors/" target="_blank">using attached behaviors</a> is a good approach. You can use <a href="http://blogs.southworks.net/dschenkelman/2009/08/13/c-code-snippet-to-create-commands-with-attached-behaviors-using-prism/" target="_blank">this code snippet</a> to simplify the work.</p>
+<h4>Wrapping up</h4>
+<p>I hope this helps clarify this topic a bit, and if you have any doubts <a href="http://compositewpf.codeplex.com/Thread/List.aspx" target="_blank">drop by the Codeplex forum</a> and ask away (if you are shy you can always leave me a comment).</p>
+<p>In case you want a working sample, I have made a couple of changes to the Commanding Quickstart to use the Command property instead of Prism's attached behavior. You can find it <a href="http://cid-09f63fc7ac065e5e.skydrive.live.com/self.aspx/p%5E0p%20Samples/SL4%20Commands.zip" target="_blank">here</a>. The code is provided "AS IS" with no warranties and confers no rights.</p>

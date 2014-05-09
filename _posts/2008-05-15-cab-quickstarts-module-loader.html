@@ -1,0 +1,77 @@
+---
+layout: post
+title: 'CAB QuickStarts: Module Loader'
+categories:
+- C#
+- CAB
+- Composite UI Application Block
+- p&amp;p
+- Patterns &amp; Practices
+tags:
+- C#
+- CAB
+- Composite UI Application Block
+- p&amp;p
+- Patterns &amp; Practices
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+  dsq_thread_id: '1552820718'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>This is the second post of a <a title="http://blogs.southworks.net/dschenkelman/category/cab/" href="http://blogs.southworks.net/dschenkelman/category/cab/" target="_blank">series</a> that covers the basic ground of CAB QuickStarts from a simple point of view.</p>
+<h3>Other posts in this series</h3>
+<ul>
+<li><a title="http://blogs.southworks.net/dschenkelman/2008/05/13/cab-quickstarts-event-broker/" href="http://blogs.southworks.net/dschenkelman/2008/05/13/cab-quickstarts-event-broker/" target="_blank">Event Broker QS</a></li>
+<li><a title="http://blogs.southworks.net/dschenkelman/2008/05/21/quickstart-3-smartpart/" href="http://blogs.southworks.net/dschenkelman/2008/05/21/quickstart-3-smartpart/" target="_blank">SmartPart QS</a></li>
+<li><a title="http://blogs.southworks.net/dschenkelman/2008/05/28/cab-quickstarts-commands/" href="http://blogs.southworks.net/dschenkelman/2008/05/28/cab-quickstarts-commands/" target="_blank">Commands QS</a></li>
+<li><a title="http://blogs.southworks.net/dschenkelman/2008/06/12/quickstart-5-bankteller/" href="http://blogs.southworks.net/dschenkelman/2008/06/12/quickstart-5-bankteller/" target="_blank">BankTeller QS</a></li>
+</ul>
+<p>For more information about CAB see:</p>
+<ul>
+<li> <a title="http://msdn.microsoft.com/en-us/library/aa480450.aspx" href="http://msdn.microsoft.com/en-us/library/aa480450.aspx" target="_blank">http://msdn.microsoft.com/en-us/library/aa480450.aspx</a></li>
+<li><a title="http://staff.southworks.net/blogs/mconverti/archive/tags/CAB/default.aspx" href="/blogs/mconverti/archive/tags/CAB/default.aspx" target="_blank">CAB introduction posts </a>(Spanish) by <a title="http://staff.southworks.net/blogs/mconverti/" href="/blogs/mconverti/" target="_blank">Mariano</a></li>
+<li><a title="http://staff.southworks.net/blogs/jcisneros/archive/2008/02/13/Yet-Another-Post-about-CAB.aspx" href="/blogs/jcisneros/archive/2008/02/13/Yet-Another-Post-about-CAB.aspx" target="_blank"> Composite UI Application Block</a> (Spanish) by <a title="http://staff.southworks.net/blogs/jcisneros/" href="/blogs/jcisneros/" target="_blank">Jonathan</a></li>
+</ul>
+<h4>Module Loader QS</h4>
+<p>This is a list of the procedures in this post:</p>
+<ul>
+<li><a href="#_Run">Run</a></li>
+<li><a href="#_Get_Latitude_Button">Get Latitude Button</a></li>
+<li><a href="#_Get_Distance_Button">Get Distance Button</a></li>
+</ul>
+<h4><a title="_Run" name="_Run"></a>Run</h4>
+<ol>
+<li>The <strong>shell</strong> loads the GPSModule.dll <strong>MODULE</strong> specified in <strong>ProfileCatalog</strong>.<strong>xml</strong>, and gets there by using default implementations from the CAB.</li>
+<li>Gets the <strong>ROOTWORKITEM</strong> by using <strong>ServiceDependency</strong> (is a dependency in a service and will be dependency injected when added to a work item)</li>
+<li>The Load Method, adds a <strong>SampleWorkItem</strong> <span style="text-decoration: underline">from the GPS module</span> (DOES NOT EXIST IN CAB STRUCTURE).</li>
+<li>The <strong>SampleWorkItem </strong>overloads the OnRunStarted Method.</li>
+<li>The <strong>OnRunStarted</strong> Method:
+<ol>
+<li>Calls base.<strong>OnRunStarted.</strong></li>
+<li>References to the Deck Workspace ["MainWorkSpace"] on the MainForm.</li>
+<li>Shows the workspace by previously adding <strong>GPSview</strong> as a <em>SmartPart.</em></li>
+</ol>
+</li>
+<li>The <strong>GPSview</strong> gets the values from <strong>GPSService</strong>, because it has a <strong>Service Dependency.</strong></li>
+<li>The <strong>GPSService</strong> has a <strong>service attribute</strong> (means that it is automatically loaded into the <strong>WorkItem</strong>).</li>
+<li>The reason a message box appears the first time the <strong>GetDistance</strong> <strong>Event</strong> is triggered is because the <strong>DistanceCalculatorService</strong> <strong><span style="text-decoration: underline">has a service attribute containing the property (AddOnDemand = true) </span>([Service(typeof(IDistanceCalculatorService), AddOnDemand = true)]).</strong></li>
+</ol>
+<h4><a title="_Get_Latitude_Button" name="_Get_Latitude_Button"></a>Get Latitude Button</h4>
+<ol>
+<li>The button event is fired.<strong></strong></li>
+<li>The event handler calls the <strong>IGPSService</strong>.GetLatitude() Method.<strong></strong></li>
+<p><strong>GPSService</strong> has the [Service(<strong>typeof(IGPSService</strong>))] meaning that when the methods described in the <strong>service</strong> are executed the ones called are in <strong>GPSService NOT IGPSService</strong> (the <strong>class</strong>, not the <strong>interface</strong>)<strong>.</strong></ol>
+<h4>Get Distance Button</h4>
+<ol>
+<li> The <strong>IDistanceCalculatorService</strong>.ComputeDistance() Method is called by the event handler passing as values the Latitude and Longitud from the <strong>GPSService</strong>.</li>
+<li>The results return because the <strong>DistanceCalculatorService </strong>has the [Service(<strong>typeof(</strong> <strong>IDistanceCalculatorService</strong>))] meaning that when the methods described in the service are executed the ones called are in <strong>DistanceCalculatorService </strong>has <strong>NOT IDistanceCalculatorService </strong>(the <strong>class</strong>, not the <strong>interface</strong>)<strong>.</strong></li>
+</ol>
+<p>The <a title="http://blogs.southworks.net/dschenkelman/2008/05/21/quickstart-3-smartpart/" href="http://blogs.southworks.net/dschenkelman/2008/05/21/quickstart-3-smartpart/">next post</a> will be about SmartPart QS, so don't go anywhere.</p>

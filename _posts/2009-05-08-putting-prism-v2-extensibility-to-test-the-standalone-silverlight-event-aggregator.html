@@ -1,0 +1,53 @@
+---
+layout: post
+title: Putting Prism-v2 extensibility to test. The standalone Silverlight Event Aggregator
+categories:
+- Composite Application Guidance for WPF &amp; SL
+- Event Aggregation
+- p&amp;p
+- Patterns &amp; Practices
+- Prism-v2
+- Silverlight
+tags:
+- Composite Application Guidance for WPF &amp; SL
+- Event Aggregation
+- p&amp;p
+- Patterns &amp; Practices
+- Prism-v2
+- Silverlight
+- Silverlight 3
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+  dsq_thread_id: '1552820894'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>This is a post I have had pending for a long time. As usual it came up after I saw <a href="http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=50536">this question</a> in the <a href="http://www.codeplex.com/CompositeWPF/Thread/List.aspx">Composite WPF &amp; Silverlight forums</a> at Codeplex.</p>
+<p>The user wanted a lightweight download, and was only using the <a href="http://msdn.microsoft.com/en-us/library/dd458915.aspx">Event Aggregator</a> from the <a href="http://www.microsoft.com/downloads/details.aspx?FamilyID=fa07e1ce-ca3f-4b9b-a21b-e3fa10d013dd&amp;DisplayLang=en">CAL's latest bits</a>. I thought that this would really test Prism's extensibility, so I created a single assembly which only contained things required by the Silverlight <a href="http://msdn.microsoft.com/en-us/library/dd458915.aspx">Event Aggregator</a>.</p>
+<table border="1">
+<tbody>
+<tr>
+<td><strong>UPDATE: </strong>This assembly also works when using Silverlight 3 Beta version.</td>
+</tr>
+</tbody>
+</table>
+<p>The following picture will easen the process of explaining/understanding all the classes this assembly requires. It was taken using the .Net Reflector. (Clicking it will probably make it easier to read)</p>
+<p><a href="http://blogs.southworks.net/dschenkelman/files/2009/05/evag.png"><img class="alignnone size-medium wp-image-77" src="http://blogs.southworks.net/dschenkelman/files/2009/05/evag.png" alt="" width="400" height="500" /></a></p>
+<p>Afterwards I tested the correct functionality of this assembly using the EventAggregator Quickstart by replacing the events used in it with events from this new assembly.Everything worked like a charm, so Prism-v2 passed this "extensibility test" :)</p>
+<p><a href="http://blogs.msdn.com/gblock/">Glenn Block</a> has a post that explains how to perform <a href="http://blogs.msdn.com/gblock/archive/2009/02/23/event-aggregation-with-mef-with-and-without-eventaggregator.aspx">Event Aggregation with MEF (with and without EventAggregator)</a>, so perhaps you could find that post interesting if you have read this far.</p>
+<p>You can check out other posts in this series:</p>
+<ul>
+<li><a href="http://blogs.southworks.net/dschenkelman/2009/05/14/putting-prism-v2-extensibility-to-test-part-ii-the-compositecommandswpf-assembly/">Putting Prism-v2 extensibility to test (Part II). The Composite.Commands.Wpf assembly</a></li>
+</ul>
+<h4>Standalone Silverlight Event Aggregator Binaries</h4>
+<h5>Disclaimer</h5>
+<p>This assembly is provided "AS IS" with no warranties, and confers no rights.</p>
+<h4>Download</h4>
+<p>You can get the assembly here: <a href="http://blogs.southworks.net/dschenkelman/files/2009/05/compositeeventaggregatorsilverlight.zip">Composite.EventAggregator.Silverlight</a>.</p>

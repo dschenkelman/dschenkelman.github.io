@@ -1,0 +1,112 @@
+---
+layout: post
+title: 'How to: Add a View to a Region in a particular index with Prism-v2'
+categories:
+- C#
+- Composite Application Guidance for WPF &amp; SL
+- Extension methods
+- p&amp;p
+- Patterns &amp; Practices
+- Prism-v2
+- Silverlight
+- Windows Presentation Foundation
+- WPF
+tags:
+- C#
+- Composite Application Guidance for WPF &amp; SL
+- Extension methods
+- p&amp;p
+- Patterns &amp; Practices
+- Prism-v2
+- Silverlight
+- Windows Presentation Foundation
+- WPF
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+  dsq_thread_id: '1552821433'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>Yesterday a <a href="http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=50138">question</a> in the <a href="http://compositewpf.codeplex.com/Thread/List.aspx">Prism codeplex forum</a> made me realize that there is no out-of-the-box way to specify the order in which a view will be added to a Region with the Composite Application Library's code shipped with the <a href="http://msdn.microsoft.com/en-us/library/dd458809.aspx">Composite Application Guidance for WPF &amp; Silverlight</a>.</p>
+<p>After discussing with <a href="http://blogs.southworks.net/matiasb/">Matias Bonaventura</a> what the best way to get this done was, we decided to use an <a href="http://msdn.microsoft.com/en-us/library/bb383977.aspx">extension method</a> for the <strong>RegionManager</strong> class.</p>
+<h5>RegisterViewWithRegionInIndex method</h5>
+<ol>
+<li>Create a new <strong>public static</strong> class named <strong>RegionManagerCustomExtensions </strong>in any place accessible to where you want to be able to use it.</li>
+<li>Add a reference to the Assembly Microsoft.Practices.ServiceLocation(located in the <strong>~DecompressionPath\LIB\Desktop\CommonServiceLocation</strong> folder)</li>
+<li>Add the following using statements to the  <strong>RegionManagerCustomExtensions </strong>class:<br />
+<blockquote>
+<pre><span style="color: blue">using </span>System;
+<span style="color: blue">using </span>System.Collections.Generic;
+<span style="color: blue">using </span>System.Linq;
+<span style="color: blue">using </span>System.Text;
+<span style="color: blue">using </span>Microsoft.Practices.Composite.Regions;
+<span style="color: blue">using </span>Microsoft.Practices.ServiceLocation;</pre>
+<p><a href="http://11011.net/software/vspaste"></a></p></blockquote>
+</li>
+<li>Add a method named <strong>RegisterViewWithRegionInIndex</strong> with that has the following code:</li>
+</ol>
+<blockquote>
+<pre><span style="color: blue">public static </span><span style="color: #2b91af">IRegionManager </span>RegisterViewWithRegionInIndex(<span style="color: blue">this </span><span style="color: #2b91af">IRegionManager </span>regionManager, <span style="color: blue">string </span>regionName, <span style="color: #2b91af">Type </span>viewType, <span style="color: blue">int </span>index)
+       {
+           <span style="color: #2b91af">IRegion </span>mainRegion = regionManager.Regions[regionName];
+           <span style="color: blue">int </span>viewsAmount = mainRegion.Views.Count();
+           <span style="color: blue">if </span>(index &gt; viewsAmount)
+           {
+               <span style="color: blue">throw new </span><span style="color: #2b91af">IndexOutOfRangeException</span>(<span style="color: #a31515">"Tried to add a view to a region that does not have enough views."</span>);
+           }
+
+           <span style="color: blue">if </span>(index &lt; 0)
+           {
+               <span style="color: blue">throw new </span><span style="color: #2b91af">IndexOutOfRangeException</span>(<span style="color: #a31515">"Tried to add a view in a negative index."</span>);
+           }
+
+           <span style="color: blue">object </span>activeView = <span style="color: blue">null</span>;
+
+           <span style="color: blue">if </span>(mainRegion.ActiveViews.Count() == 1)
+           {
+               activeView = mainRegion.ActiveViews.First();
+           }
+
+           <span style="color: blue">var </span>regionViewRegistry = <span style="color: #2b91af">ServiceLocator</span>.Current.GetInstance&lt;<span style="color: #2b91af">IRegionViewRegistry</span>&gt;();
+
+           <span style="color: green">// Save reference to each view existing in the RegionManager after the index to insert.
+           </span><span style="color: #2b91af">List</span>&lt;<span style="color: blue">object</span>&gt; views = mainRegion.Views.SkipWhile((view, removeFrom) =&gt; removeFrom &lt; index).ToList();
+
+           <span style="color: green">//Remove elements from region that are after index to insert.
+           </span><span style="color: blue">for </span>(<span style="color: blue">int </span>i = 0; i &lt; views.Count; i++)
+           {
+               mainRegion.Remove(mainRegion.Views.ElementAt(index));
+           }
+
+           <span style="color: green">//Register view in index to insert.
+           </span>regionViewRegistry.RegisterViewWithRegion(regionName, viewType);
+
+           <span style="color: green">// Adding previously removed views
+           </span>views.ForEach(view =&gt; mainRegion.Add(view));
+
+           <span style="color: blue">if </span>(activeView != <span style="color: blue">null</span>)
+           {
+               mainRegion.Activate(activeView);
+           }
+
+           <span style="color: blue">return </span>regionManager;
+       }</pre>
+<p><a href="http://11011.net/software/vspaste"></a></p>
+<p><a href="http://11011.net/software/vspaste"></a></p></blockquote>
+<blockquote><p><a href="http://11011.net/software/vspaste"></a></p></blockquote>
+<h5>Putting the method to use</h5>
+<p>You should be able to use the method now. To test it, I created a couple of extra views in the HelloWorld Quickstart and wrote the following code in the HelloWorldModule class:</p>
+<pre>manager.RegisterViewWithRegionInIndex(<span style="color: #a31515">"MainRegion"</span>, <span style="color: blue">typeof</span>(Views.<span style="color: #2b91af">HelloWorldView</span>), 0);
+manager.RegisterViewWithRegionInIndex(<span style="color: #a31515">"MainRegion"</span>, <span style="color: blue">typeof</span>(Views.<span style="color: #2b91af">View1</span>), 1);
+manager.RegisterViewWithRegionInIndex(<span style="color: #a31515">"MainRegion"</span>, <span style="color: blue">typeof</span>(Views.<span style="color: #2b91af">View2</span>), 1);</pre>
+<p>The outcome was the following. As you can see, View2 was placed where View1 was located:</p>
+<pre><a href="http://blogs.southworks.net/dschenkelman/files/2009/03/image.png"><span style="font-family: georgia;color: #555555"><img style="float: none;margin-left: auto;margin-right: auto" src="http://blogs.southworks.net/dschenkelman/files/2009/03/image-thumb.png" border="0" alt="image" width="244" height="212" /></span></a></pre>
+<p>The method could also be customized to add views to the latest index possible if the index to insert the view into was higher than the amount of views previously existing in the region.</p>
+<p>Let me know if you find a good use to this method.</p>

@@ -1,0 +1,44 @@
+---
+layout: post
+title: Binding to View Model properties in Data Templates. The RootBinding Markup
+  Extension
+categories:
+- Data Binding
+- Emerging Technology
+- Markup Extensions
+- MVVM
+- Silverlight
+- Silverlight 5
+tags:
+- Data Binding
+- Emerging Technology
+- Markup Extensions
+- MVVM
+- Silverlight
+- Silverlight 5
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+  dsq_thread_id: '1559345850'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>If you work with Silverlight and MVVM, you must have probably been forced to do some weird thing to bind to a property in your view model (say a Command) from a DataTemplate. Some of the common approaches I have seen and used myself are:</p>
+<ul>
+<li>Using some kind of binding helper as a View’s resource.</li>
+<li>Having a View Model wrap the entity of each collection item, and add the command to the View Model.</li>
+</ul>
+<p>Although these are perfectly valid approaches, they require extra work compared to the good old {Binding} syntax we are all used to.</p>
+<p>Now that Silverlight 5 Beta is out, we can take advantage of the <a href="http://msdn.microsoft.com/en-us/library/system.windows.markup.markupextension(VS.96).aspx">XAML Markup Extensions</a> to help is in this kind of tasks, using a simpler and more intuitive approach.</p>
+<p>I have created a <strong>RootBindingExtension</strong>, which can be used as follows:</p>
+<code data-gist-id="714725b67ed06edb2436" data-gist-file="Usage.xaml"></code>
+<p>The <strong>RootBindingExtension </strong>uses the <strong>Path</strong> property to create a Binding that binds to a property of that name in the View’s <strong>DataContext</strong>.</p>
+<code data-gist-id="714725b67ed06edb2436" data-gist-file="RootBindingExtension.cs"></code>
+<p>You can download the RootBindingExtension and a sample that uses it from <a href="https://skydrive.live.com/#!/?cid=09f63fc7ac065e5e&amp;sc=documents&amp;nl=1&amp;uc=2&amp;id=9F63FC7AC065E5E%21215">here</a>.</p>
+<p>Let me know if you have used it.</p>

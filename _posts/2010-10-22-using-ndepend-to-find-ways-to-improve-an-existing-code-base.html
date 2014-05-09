@@ -1,0 +1,49 @@
+---
+layout: post
+title: Using NDepend to find ways to improve an existing code base
+categories:
+- NDepend
+- Visual Studio 2010
+tags:
+- NDepend
+- Visual Studio 2010
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+  _wp_old_slug: ''
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>The last couple of weeks, while working on a couple of personal projects/samples, I have had the chance to start exploring <a href="http://www.ndepend.com">NDepend</a>’s features. In this blog post, I would like to share some of the features that I believe can prove very useful when developing software using Visual Studio. I will provide an overview, using the <a href="http://blogs.southworks.net/dschenkelman/2010/10/08/wpf-guitar-hero-using-mvvm-y-mvp/">WPF Guitar Hero</a> application as the sample solution, of a couple of the features I found most interesting.</p>
+<h2>Dependency Matrix</h2>
+<p><a href="http://www.ndepend.com/Doc_Matrix.aspx">NDepend’s Dependency Matrix</a> is a really useful asset, which can be used to quickly determine the complexity of a particular application/library. Unlike a graph, which simply shows the connections between the different components, the matrix displays how dependent a component is on others in a simple way.</p>
+<p>To view the Dependency Matrix, after enabling NDepend for the solution, one must simply point to the <strong>NDepend</strong> menu and click <strong>Dependency Matrix</strong>.</p>
+<p><a href="http://blogs.southworks.net/dschenkelman/files/2010/10/image1.png"><img style="border-width: 0px" src="http://blogs.southworks.net/dschenkelman/files/2010/10/image_thumb.png" border="0" alt="image" width="401" height="397" /></a></p>
+<p>As the figure above depicts, the matrix shows (in this case) how many dependencies there are between an assembly (column) and each of the other ones (rows). Additionally, it does not only show dependencies to assemblies from within the solution, but to .Net Framework assemblies as well. In this case the unit of measure being displayed is members, but it can also show methods, fields, etc.</p>
+<p>From the matrix, there are different ways to dig deeper into each of the dependencies. One I find particularly useful (for low amounts) is using a graph.</p>
+<p><a href="http://blogs.southworks.net/dschenkelman/files/2010/10/depgraph1.png"><img style="border-width: 0px" src="http://blogs.southworks.net/dschenkelman/files/2010/10/depgraph_thumb1.png" border="0" alt="depgraph" width="696" height="200" /></a></p>
+<p>If the amount is large, you can also zoom in to the particular assembly pair and get a look at the dependencies one by one.</p>
+<p><a href="http://blogs.southworks.net/dschenkelman/files/2010/10/zoomdepmat.png"><img style="border-width: 0px" src="http://blogs.southworks.net/dschenkelman/files/2010/10/zoomdepmat_thumb.png" border="0" alt="zoomdepmat" width="685" height="249" /></a></p>
+<h2>CQL (Code Query Language)</h2>
+<p>Another great NDepend feature (my favorite so far) is its support for the <a href="http://www.ndepend.com/Features.aspx#CQL">Code Query Language</a>. Let’s say that for API clean-up purposes I want to find all methods that can be made private, you might use something like the following:</p>
+<pre><span style="background: white;color: blue">SELECT METHODS WHERE </span><span style="background: white;color: #000064">CouldBePrivate </span></pre>
+<p>Which outputs these results:</p>
+<p><a href="http://blogs.southworks.net/dschenkelman/files/2010/10/image2.png"><img style="border: 0px" src="http://blogs.southworks.net/dschenkelman/files/2010/10/image_thumb1.png" border="0" alt="image" width="306" height="215" /></a></p>
+<p>As you can see there are many methods from assemblies related to Unit Tests. We don’t care about those so we can get rid of them by adding some extra filters to the query:</p>
+<p><span style="background: white;color: blue">SELECT METHODS FROM ASSEMBLIES </span><span style="background: white;color: #a31515">"AlgoHero.Files"</span><span style="background: white;color: black">,</span><span style="background: white;color: #a31515">"AlgoHero.Game"</span><span style="background: white;color: black">,</span><span style="background: white;color: #a31515">"AlgoHero.Interface"</span><span style="background: white;color: black">,</span><span style="background: white;color: #a31515">"AlgoHero.MusicEntities" </span><span style="background: white;color: black">,</span><span style="background: white;color: #a31515">"AlgoHero.Screens"</span><span style="background: white;color: blue">WHERE </span><span style="background: white;color: #000064">CouldBePrivate </span><span style="background: white;color: blue">AND </span><span style="background: white;color: black">! </span><span style="background: white;color: #000064">IsConstructor </span></p>
+<p><a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a></p>
+<p>We get the desired output which does not include any method from test assemblies. The fact that this query returned 12 results means that some methods have a higher level of exposure than required.</p>
+<p><a href="http://blogs.southworks.net/dschenkelman/files/2010/10/image3.png"><img style="border: 0px" src="http://blogs.southworks.net/dschenkelman/files/2010/10/image_thumb2.png" border="0" alt="image" width="336" height="212" /></a></p>
+<p>We can access the method directly from the query’s results and update its accessibility.</p>
+<p><a href="http://blogs.southworks.net/dschenkelman/files/2010/10/image4.png"><img style="border: 0px" src="http://blogs.southworks.net/dschenkelman/files/2010/10/image_thumb3.png" border="0" alt="image" width="323" height="203" /></a></p>
+<p>The best thing about this, is that this query can be added as a CQL rule so every time the solution is built the query will verify this condition:</p>
+<p><a href="http://blogs.southworks.net/dschenkelman/files/2010/10/image5.png"><img style="border: 0px" src="http://blogs.southworks.net/dschenkelman/files/2010/10/image_thumb4.png" border="0" alt="image" width="770" height="326" /></a></p>
+<p><a href="http://11011.net/software/vspaste"></a></p>
+<p>I believe this level of customization, which can be achieved through some really simple syntax can provide great value to maintain large code bases across development teams with many developers compliant with a set of rules.</p>
+<p>You can download the <a href="http://www.ndepend.com/NDependDownload.aspx">NDepend trial</a> (which does <a href="http://www.ndepend.com/Editions.aspx">have less features</a> than the Pro version) to give it a try. I know I'll keep using it.</p>

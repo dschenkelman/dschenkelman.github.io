@@ -1,0 +1,267 @@
+<!doctype html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if (IE 7)&!(IEMobile)]><html class="no-js lt-ie9 lt-ie8" lang="en"><![endif]-->
+<!--[if (IE 8)&!(IEMobile)]><html class="no-js lt-ie9" lang="en"><![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"><!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<title>CAB Quickstarts: Commands &#8211; A sea of code</title>
+<meta name="description" content="Pseudo-random thoughts related to software development...">
+<meta name="keywords" content="C#, CAB, Composite UI Application Block, p&amp;p, Patterns &amp; Practices">
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://localhost:4000/images/site-logo.jpg">
+<meta name="twitter:title" content="CAB Quickstarts: Commands">
+<meta name="twitter:description" content="Pseudo-random thoughts related to software development...">
+<meta name="twitter:creator" content="@dschenkelman">
+
+<!-- Open Graph -->
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CAB Quickstarts: Commands">
+<meta property="og:description" content="Pseudo-random thoughts related to software development...">
+<meta property="og:url" content="http://localhost:4000/2008/05/28/cab-quickstarts-commands/">
+<meta property="og:site_name" content="A sea of code">
+
+
+
+
+
+<link rel="canonical" href="http://localhost:4000/2008/05/28/cab-quickstarts-commands/">
+<link href="http://localhost:4000/feed.xml" type="application/atom+xml" rel="alternate" title="A sea of code Feed">
+
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="http://localhost:4000/assets/css/main.min.css">
+<!-- Webfonts -->
+<script src="//use.edgefonts.net/source-sans-pro:n2,i2,n3,i3,n4,i4,n6,i6,n7,i7,n9,i9;source-code-pro:n4,n7;volkhov.js"></script>
+
+<meta http-equiv="cleartype" content="on">
+
+<!-- Load Modernizr -->
+<script src="http://localhost:4000/assets/js/vendor/modernizr-2.6.2.custom.min.js"></script>
+
+<!-- Icons -->
+<!-- 16x16 -->
+<link rel="shortcut icon" href="http://localhost:4000/favicon.ico">
+<!-- 32x32 -->
+<link rel="shortcut icon" href="http://localhost:4000/favicon.png">
+<!-- 57x57 (precomposed) for iPhone 3GS, pre-2011 iPod Touch and older Android devices -->
+<link rel="apple-touch-icon-precomposed" href="http://localhost:4000/images/apple-touch-icon-precomposed.png">
+<!-- 72x72 (precomposed) for 1st generation iPad, iPad 2 and iPad mini -->
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://localhost:4000/images/apple-touch-icon-72x72-precomposed.png">
+<!-- 114x114 (precomposed) for iPhone 4, 4S, 5 and post-2011 iPod Touch -->
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://localhost:4000/images/apple-touch-icon-114x114-precomposed.png">
+<!-- 144x144 (precomposed) for iPad 3rd and 4th generation -->
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://localhost:4000/images/apple-touch-icon-144x144-precomposed.png">
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/gist-embed/1.7/gist-embed.min.js"></script>
+
+</head>
+
+<body id="post">
+
+<div class="navigation-wrapper">
+	<nav role="navigation" id="site-nav" class="animated drop">
+	    <ul>
+	        
+			<li>
+				
+					<a href="http://localhost:4000/">Home</a>
+				 
+			</li>
+	        
+			<li>
+				
+					<a href="http://localhost:4000/about/">About</a>
+				 
+			</li>
+	        
+			<li>
+				
+					<a href="/articles/">Articles</a>
+				 
+			</li>
+	        
+	        <li><a href="http://localhost:4000/feed.xml" title="Atom/RSS feed"><i class="icon-rss"></i> Feed</a></li>
+	        <li class="dosearch"><i class="icon-search"></i> Search</li>
+	    </ul>
+	</nav>
+</div><!-- /.navigation-wrapper -->
+
+<!--[if lt IE 9]><div class="upgrade"><strong><a href="http://whatbrowser.org/">Your browser is quite old!</strong> Why not upgrade to a different browser to better enjoy this site?</a></div><![endif]-->
+
+<div class="search-wrapper">
+	<div class="search-form">
+		<input type="text" class="search-field" placeholder="Search...">
+		<i class="icon-remove-sign icon-2x"></i>
+		<ul class="search-results post-list"></ul><!-- /.search-results -->
+	</div><!-- /.search-form -->
+</div><!-- ./search-wrapper -->
+
+<header class="masthead">
+	<div class="wrap">
+        
+    		<a href="http://localhost:4000/" class="site-logo" rel="home" title="A sea of code"><img src="http://localhost:4000/images/site-logo.jpg" width="200" height="200" alt="A sea of code logo" class="animated fadeInUp"></a>
+        
+        <h1 class="site-title animated fadeIn"><a href="http://localhost:4000/">A sea of code</a></h1>
+		<h2 class="site-description animated fadeIn" itemprop="description">Pseudo-random thoughts related to software development...</h2>
+	</div>
+</header><!-- /.masthead -->
+
+
+<div id="main" role="main">
+  <article class="hentry">
+    
+    <div class="entry-wrapper">
+      <header class="entry-header">
+        <span class="entry-tags"><a href="http://localhost:4000/tags/#C#" title="Pages tagged C#">C#</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#CAB" title="Pages tagged CAB">CAB</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#Composite UI Application Block" title="Pages tagged Composite UI Application Block">Composite UI Application Block</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#p&amp;p" title="Pages tagged p&amp;p">p&amp;p</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#Patterns &amp; Practices" title="Pages tagged Patterns &amp; Practices">Patterns &amp; Practices</a></span>
+        
+          <h1 class="entry-title">CAB Quickstarts: Commands</h1>
+        
+      </header>
+      <footer class="entry-meta">
+        <img src="http://localhost:4000/images/bio-photo.jpg" alt="Damian Schenkelman photo" class="author-photo">
+        <span class="author vcard">By <span class="fn"><a href="http://localhost:4000/about/" title="About Damian Schenkelman">Damian Schenkelman</a></span></span>
+        <span class="entry-date date published"><time datetime="2008-05-28T00:00:00-04:00"><i class="icon-calendar-empty"></i> May 28, 2008</time></span>
+        
+        
+        <span><a href="http://localhost:4000/2008/05/28/cab-quickstarts-commands/" rel="bookmark" title="CAB Quickstarts: Commands"><i class="icon-link"></i> Permalink</a></span>
+        
+      </footer>
+      <div class="entry-content">
+        <p>This is the forth post of a <a title="http://blogs.southworks.net/dschenkelman/category/cab/" href="http://blogs.southworks.net/dschenkelman/category/cab/" target="_blank">series</a> that covers the basic ground of CAB QuickStarts from a simple point of view.</p>
+<h4>Other posts in this series</h4>
+<ul>
+<li><a title="http://blogs.southworks.net/dschenkelman/2008/05/13/cab-quickstarts-event-broker/" href="http://blogs.southworks.net/dschenkelman/2008/05/13/cab-quickstarts-event-broker/" target="_blank">Event Broker QS</a></li>
+<li><a title="http://blogs.southworks.net/dschenkelman/2008/05/15/cab-quickstarts-module-loader/" href="http://blogs.southworks.net/dschenkelman/2008/05/15/cab-quickstarts-module-loader/" target="_blank">Module Loader QS</a></li>
+<li><a title="http://blogs.southworks.net/dschenkelman/2008/05/21/quickstart-3-smartpart/" href="http://blogs.southworks.net/dschenkelman/2008/05/21/quickstart-3-smartpart/" target="_blank">Smartpart QS</a></li>
+<li><a title="http://blogs.southworks.net/dschenkelman/2008/06/12/quickstart-5-bankteller/" href="http://blogs.southworks.net/dschenkelman/2008/06/12/quickstart-5-bankteller/" target="_blank">BankTeller QS</a></li>
+</ul>
+<p>For more information about CAB see:</p>
+<ul>
+<li><a href="http://msdn.microsoft.com/en-us/library/aa480450.aspx">http://msdn.microsoft.com/en-us/library/aa480450.aspx</a></li>
+<li><a href="/blogs/mconverti/archive/tags/CAB/default.aspx">CAB introduction posts </a>(Spanish) by <a href="/blogs/mconverti/">Mariano</a></li>
+<li><a href="/blogs/jcisneros/archive/2008/02/13/Yet-Another-Post-about-CAB.aspx">Composite UI Application Block</a>(Spanish) by <a href="/blogs/jcisneros/">Jonathan</a></li>
+</ul>
+<h3>Commands QS</h3>
+<p>This is a list of the procedures in this post</p>
+<ul>
+<li><a href="#_Startup">Startup</a></li>
+<li><a href="#_Menu_Item_Clicking"> Menu Item Clicking</a></li>
+</ul>
+<h4><a title="_Startup" name="_Startup"></a>Startup</h4>
+<ol>
+<li>The <strong>shell</strong> defines the <strong>MainWorkItem</strong> as the root <strong>WorkItem</strong> and the <strong>ShellForm</strong> as the first <strong>view</strong>.</li>
+<li> The overridden <strong>AfterShellCreated</strong>() method assigns to <em>fileitem </em>= <strong>ToolStripMenuItem</strong> [“File”].</li>
+<li>An <strong>ExtensionSite</strong> is registered in the <strong>MainWorkItem</strong>, named “File” and is a <strong>DropDownItem</strong>.</li>
+<li> The <strong>MainWorkItem</strong> overridden <strong>OnRunStarted</strong>() creates a <strong>new</strong> instace of the <strong>MainController</strong> and adds it to the <strong>Workitem</strong>’s <strong>Item</strong> Collection.</li>
+<li>The <strong>ProcessCommandMap</strong>() method is called, which:
+<ul>
+<li>Loads Command Configuration File.</li>
+<li>Executes a <strong>foreach</strong> statement in the CommandMap.Mapping [array]
+<ul>
+<li>Creates a <strong>ToolStripMenuItem</strong> (MenuItem.Text = mapping.Label)</li>
+<li> Adds to the [“File”] Extension Site (using mapping.Site as the parameter) the <strong>ToolStripMenuItem</strong>.</li>
+<li>Adds to the <strong>Commands</strong> (Collection) the invoker for the “Click” event using the <strong>AddInvoker()</strong> method.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Activates the <strong>WorkItem</strong>.</li>
+</ol>
+<h4><a title="_Menu_Item_Clicking" name="_Menu_Item_Clicking"></a>Menu Item Clicking</h4>
+<ol>
+<li>The <strong>CommandHandler</strong> related to the click <strong>event</strong> raised by the item is called.</li>
+<li>There are two kind of <strong>CommandHandlers</strong> now.
+<ol>
+<li>The <strong>ShowCustomerHandler</strong> that MessageBox.Show(“”);</li>
+<li>The status kind. These 3 change the <strong>CommandStatus</strong> according to the <strong>ToolStripMenuItem</strong> pressed. (Enabled|Disabled|Unavailable(not visible in this case))</li>
+<li> The <strong>ToolStripItemCommandAdapter</strong> “listens” to the <strong>CommandChanged</strong> <strong>event</strong>, and based on it changes the Enabled/Visible property of the <strong>ShowCustomerHandler ToolStripMenuItem</strong>.</li>
+</ol>
+</li>
+</ol>
+<p>The <a title="http://blogs.southworks.net/dschenkelman/2008/06/12/quickstart-5-bankteller/" href="http://blogs.southworks.net/dschenkelman/2008/06/12/quickstart-5-bankteller/" target="_blank">next and final post</a> in the series will cover the BankTeller QS.</p>
+
+        
+      </div><!-- /.entry-content -->
+    </div><!-- /.entry-wrapper -->
+    <nav class="pagination" role="navigation">
+      
+        <a href="http://localhost:4000/2008/05/21/quickstart-3-smartpart/" class="btn" title="CAB Quickstarts: SmartPart">Previous article</a>
+      
+      
+        <a href="http://localhost:4000/2008/06/12/quickstart-5-bankteller/" class="btn" title="CAB QuickStarts BankTeller">Next article</a>
+      
+    </nav><!-- /.pagination -->
+  </article>
+</div><!-- /#main -->
+
+<div class="footer-wrapper">
+  <footer role="contentinfo">
+    <span>&copy; 2014 Damian Schenkelman. Powered by <a href="http://jekyllrb.com">Jekyll</a> using the <a href="http://mademistakes.com/so-simple/">So Simple Theme</a>.</span>
+<div class="social-icons">
+	<a href="http://twitter.com/dschenkelman" title="Damian Schenkelman on Twitter" target="_blank"><i class="icon-twitter icon-2x"></i></a>
+	
+	
+	<a href="http://linkedin.com/in/damianschenkelman" title="Damian Schenkelman on LinkedIn" target="_blank"><i class="icon-linkedin icon-2x"></i></a>
+	
+	
+	
+	<a href="http://github.com/dschenkelman" title="Damian Schenkelman on Github" target="_blank"><i class="icon-github icon-2x"></i></a>
+	
+</div><!-- /.social-icons -->
+  </footer>
+</div><!-- /.footer-wrapper -->
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="http://localhost:4000/assets/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script src="http://localhost:4000/assets/js/scripts.min.js"></script>
+
+<!-- Jekyll Simple Search option -->
+<script>
+  $(document).ready(function() {
+      $('.search-field').simpleJekyllSearch({
+          jsonFile : 'http://localhost:4000/search.json',
+          searchResults : '.search-results',
+          template : '<li><article><a href="{url}">{title} <span class="entry-date"><time datetime="{date}">{shortdate}</time></span></a></article></li>',
+          noResults: '<p>Nothing found.</p>'
+        });
+  });
+
+  (function( $, window, undefined ) {
+    
+     var bs = {
+          close: $(".icon-remove-sign"),
+          searchform: $(".search-form"),
+          canvas: $("body"),
+          dothis: $('.dosearch')
+      };
+    
+    bs.dothis.on('click', function() {
+      $('.search-wrapper').css({ display: "block" });
+      bs.searchform.toggleClass('active');
+      bs.searchform.find('input').focus();
+      bs.canvas.toggleClass('search-overlay');
+    });
+    
+      bs.close.on('click', function() {
+        $('.search-wrapper').removeAttr( 'style' );
+        bs.searchform.toggleClass('active');
+        bs.canvas.removeClass('search-overlay');
+    });
+  })( jQuery, window );
+</script>
+
+
+	        
+
+</body>
+</html>

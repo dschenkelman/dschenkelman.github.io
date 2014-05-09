@@ -1,0 +1,56 @@
+---
+layout: post
+title: Características del Disconnected Service Agent (DSA) Application Block
+categories:
+- Disconnected Service Agent
+- DSA
+- p&amp;p
+- Patterns &amp; Practices
+- SCSF
+- Smart Client Software Factory
+tags:
+- Disconnected Service Agent
+- DSA
+- p&amp;p
+- Patterns &amp; Practices
+- SCSF
+- Smart Client Software Factory
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>Este post resume las principales características del <strong>Disconnected Service Agent Application Block</strong> de la <strong>Smart Client Software Factory</strong>, para trabajar en escenarios conectados de manera temporal.</p>
+<p>El DSA Application Block permite simplificar la gestión de <strong>Requests </strong>para este tipo de escenarios. Las dos principales características del DSA Application Block que le permiten hacer esto son:</p>
+<h2>Request Manager</h2>
+<p>El <strong>Request Manager</strong> es un "subsistema" de clases que trabajan en conjunto para gestionar el envío de los <strong>Web Service Requests</strong>.</p>
+<p>Los datos de la <strong>Request Queue</strong> pueden ser guardados de diferentes formas (<strong>MemoryRequestQueue/DataBaseRequestQueue</strong>). Cuando el <strong>Connection Monitor Application Block</strong> avisa al <strong>Request Manager </strong>que hay una nueva conexión online, el <strong>Request Manager</strong> recupera los <strong>Request</strong> de la <strong>RequestQueue</strong> y los envía usando el <strong>RequestDispatcher.</strong></p>
+<p>Cada <strong>Request</strong> tiene la siguiente información:</p>
+<ul>
+<li>OfflineBehavior</li>
+<li>Nombre del endpoint donde se encuentra el servicio, el cual es obtenido desde el <strong>Endpoint Catalog Application Block</strong></li>
+<li>RequestID</li>
+<li>WebService arguments (parametros[])</li>
+</ul>
+<h2>Request Dispatcher</h2>
+<p>El<strong> Request Dispatcher</strong> envía los <strong>Requests </strong>cuando el estado de conexión es activo (<a href="http://msdn.microsoft.com/en-us/library/cc540740.aspx">Connection Monitor Application Block</a>) y cuando la dirección del Endpoint esta verificada (<a href="http://msdn.microsoft.com/en-us/library/cc540740.aspx">Endpoint Application Block</a>). Una clase llamada  <strong>ConnectionMonitorAdapter</strong> (basado en el Connection Monitor Application Block) permite verificar fácilmente los atributos de conexión.</p>
+<p>El siguiente diagrama (obtenido de la documentación de SCSF) muestra la relación entre las principales clases del DSA.</p>
+<p><a href="http://blogs.southworks.net/dschenkelman/files/2008/08/dsa.png"><img src="http://blogs.southworks.net/dschenkelman/files/2008/08/dsa-thumb.png" border="0" alt="dsa" width="409" height="335" /></a></p>
+<p>Para mas información sobre el <strong>Disconnected Service Agent Application Block </strong>(en inglés):</p>
+<ul>
+<li><a href="http://msdn.microsoft.com/en-us/library/cc540833.aspx">How to: Create a Disconnected Service Agent</a></li>
+<li><a href="http://msdn.microsoft.com/en-us/library/cc540834.aspx">How to: Consume a Disconnected Service Agent</a></li>
+<li><a href="http://msdn.microsoft.com/en-us/library/cc540835.aspx">How to: Update a Disconnected Service Agent</a></li>
+<li><a href="http://msdn.microsoft.com/en-us/library/cc540753.aspx">Design of the Disconnected Service Agent Application Block</a></li>
+<li><a href="http://msdn.microsoft.com/en-us/library/cc540754.aspx">Working with the Disconnected Service Agent Application Block</a></li>
+<li><a href="http://blogs.southworks.net/siacomuzzi/2007/09/24/enabling-wcf-duplex-channel-in-dsa-solution/">Enabling WCF Duplex Channel in DSA solution</a> by <a href="http://blogs.southworks.net/siacomuzzi/">Sebastian Iacomuzzi</a></li>
+</ul>
+<p>Espero que el resumen sea útil.</p>
+<p>Etiquetas de Technorati: <a href="http://technorati.com/tags/Smart%20Client%20Software%20Factory">Smart Client Software Factory</a>,<a href="http://technorati.com/tags/SCSF">SCSF</a>,<a href="http://technorati.com/tags/Patterns%20&amp;%20Practices">Patterns &amp; Practices</a>,<a href="http://technorati.com/tags/p&amp;p">p&amp;p</a>,<a href="http://technorati.com/tags/DSA">DSA</a>,<a href="http://technorati.com/tags/Disconnected%20Service%20Agent">Disconnected Service Agent</a></p>

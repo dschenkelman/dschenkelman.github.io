@@ -1,0 +1,36 @@
+---
+layout: post
+title: 'fakewin8: Configuring valid parameters for fake methods'
+categories:
+- C#
+- Emerging Technology
+- TDD
+- Test Driven Development
+- Unit Tests
+tags:
+- C#
+- Emerging Technology
+- TDD
+- Unit Tests
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+  dsq_thread_id: '1575135268'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>Yesterday I <a href="http://blogs.southworks.net/dschenkelman/2013/08/04/fakewin8-easy-fakes-for-windows-store-apps-unit-tests/" target="_blank">blogged about fakewin8</a>, a set of components that leverage code generation to create fake classes, which can be used to simplify unit testing in environments where dynamic proxy generation is not a viable option. If you are developing Windows Store or Windows Phone apps you should take it for a spin to see how it feels like.</p>
+<p>Today’s blog post explains how <a href="https://github.com/dschenkelman/fakewin8" target="_blank">fakewin8</a> allows you to define valid parameters for fake methods.</p>
+<h2>A bit of context</h2>
+<p>Commonly, when creating unit tests you need to setup constraints for mock method invocations. This is usually done by providing predicates or specific values for the parameters with which a method must be invoked. If these are not met, your test should fail.</p>
+<h2>Implementation</h2>
+<p>In <a href="https://github.com/dschenkelman/fakewin8" target="_blank">fakewin8</a> you can configure fake methods to only accept invocations that match a certain set of predicates based on its parameters. If an invocation does not match a specified predicate an <code><span style="font-family: Consolas">InvalidInvocationException</span></code> is thrown. To specify constraints for a parameter of type <code><span style="font-family: Consolas">T</span></code>, a predicate of type <code><span style="font-family: Consolas">Func&lt;T, bool&gt;</span></code> must be used. For example:</p>
+<code data-gist-id="04e749d3d85e0f6b2d71" data-gist-file="Accept.cs" data-gist-hide-footer="true" data-gist-highlight-line="3"></code>
+<p>For the common scenario where any possible value is acceptable for a particular parameter, you can use <span style="font-family: Consolas">Any&lt;T&gt;.IsOK() </span>which creates a <span style="font-family: Consolas">Func&lt;T, bool&gt;</span> that always returns true:</p>
+<code data-gist-id="04e749d3d85e0f6b2d71" data-gist-file="Any.cs" data-gist-hide-footer="true"></code>

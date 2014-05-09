@@ -1,0 +1,291 @@
+<!doctype html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if (IE 7)&!(IEMobile)]><html class="no-js lt-ie9 lt-ie8" lang="en"><![endif]-->
+<!--[if (IE 8)&!(IEMobile)]><html class="no-js lt-ie9" lang="en"><![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"><!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<title>Using MVVM to bring IronPython and WPF together &#8211; A sea of code</title>
+<meta name="description" content="Pseudo-random thoughts related to software development...">
+<meta name="keywords" content="IronPython, MVVM, Windows Presentation Foundation, WPF">
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://localhost:4000/images/site-logo.jpg">
+<meta name="twitter:title" content="Using MVVM to bring IronPython and WPF together">
+<meta name="twitter:description" content="Pseudo-random thoughts related to software development...">
+<meta name="twitter:creator" content="@dschenkelman">
+
+<!-- Open Graph -->
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Using MVVM to bring IronPython and WPF together">
+<meta property="og:description" content="Pseudo-random thoughts related to software development...">
+<meta property="og:url" content="http://localhost:4000/2010/09/21/using-mvvm-to-bring-ironpython-and-wpf-together/">
+<meta property="og:site_name" content="A sea of code">
+
+
+
+
+
+<link rel="canonical" href="http://localhost:4000/2010/09/21/using-mvvm-to-bring-ironpython-and-wpf-together/">
+<link href="http://localhost:4000/feed.xml" type="application/atom+xml" rel="alternate" title="A sea of code Feed">
+
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="http://localhost:4000/assets/css/main.min.css">
+<!-- Webfonts -->
+<script src="//use.edgefonts.net/source-sans-pro:n2,i2,n3,i3,n4,i4,n6,i6,n7,i7,n9,i9;source-code-pro:n4,n7;volkhov.js"></script>
+
+<meta http-equiv="cleartype" content="on">
+
+<!-- Load Modernizr -->
+<script src="http://localhost:4000/assets/js/vendor/modernizr-2.6.2.custom.min.js"></script>
+
+<!-- Icons -->
+<!-- 16x16 -->
+<link rel="shortcut icon" href="http://localhost:4000/favicon.ico">
+<!-- 32x32 -->
+<link rel="shortcut icon" href="http://localhost:4000/favicon.png">
+<!-- 57x57 (precomposed) for iPhone 3GS, pre-2011 iPod Touch and older Android devices -->
+<link rel="apple-touch-icon-precomposed" href="http://localhost:4000/images/apple-touch-icon-precomposed.png">
+<!-- 72x72 (precomposed) for 1st generation iPad, iPad 2 and iPad mini -->
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://localhost:4000/images/apple-touch-icon-72x72-precomposed.png">
+<!-- 114x114 (precomposed) for iPhone 4, 4S, 5 and post-2011 iPod Touch -->
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://localhost:4000/images/apple-touch-icon-114x114-precomposed.png">
+<!-- 144x144 (precomposed) for iPad 3rd and 4th generation -->
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://localhost:4000/images/apple-touch-icon-144x144-precomposed.png">
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/gist-embed/1.7/gist-embed.min.js"></script>
+
+</head>
+
+<body id="post">
+
+<div class="navigation-wrapper">
+	<nav role="navigation" id="site-nav" class="animated drop">
+	    <ul>
+	        
+			<li>
+				
+					<a href="http://localhost:4000/">Home</a>
+				 
+			</li>
+	        
+			<li>
+				
+					<a href="http://localhost:4000/about/">About</a>
+				 
+			</li>
+	        
+			<li>
+				
+					<a href="/articles/">Articles</a>
+				 
+			</li>
+	        
+	        <li><a href="http://localhost:4000/feed.xml" title="Atom/RSS feed"><i class="icon-rss"></i> Feed</a></li>
+	        <li class="dosearch"><i class="icon-search"></i> Search</li>
+	    </ul>
+	</nav>
+</div><!-- /.navigation-wrapper -->
+
+<!--[if lt IE 9]><div class="upgrade"><strong><a href="http://whatbrowser.org/">Your browser is quite old!</strong> Why not upgrade to a different browser to better enjoy this site?</a></div><![endif]-->
+
+<div class="search-wrapper">
+	<div class="search-form">
+		<input type="text" class="search-field" placeholder="Search...">
+		<i class="icon-remove-sign icon-2x"></i>
+		<ul class="search-results post-list"></ul><!-- /.search-results -->
+	</div><!-- /.search-form -->
+</div><!-- ./search-wrapper -->
+
+<header class="masthead">
+	<div class="wrap">
+        
+    		<a href="http://localhost:4000/" class="site-logo" rel="home" title="A sea of code"><img src="http://localhost:4000/images/site-logo.jpg" width="200" height="200" alt="A sea of code logo" class="animated fadeInUp"></a>
+        
+        <h1 class="site-title animated fadeIn"><a href="http://localhost:4000/">A sea of code</a></h1>
+		<h2 class="site-description animated fadeIn" itemprop="description">Pseudo-random thoughts related to software development...</h2>
+	</div>
+</header><!-- /.masthead -->
+
+
+<div id="main" role="main">
+  <article class="hentry">
+    
+    <div class="entry-wrapper">
+      <header class="entry-header">
+        <span class="entry-tags"><a href="http://localhost:4000/tags/#IronPython" title="Pages tagged IronPython">IronPython</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#MVVM" title="Pages tagged MVVM">MVVM</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#Windows Presentation Foundation" title="Pages tagged Windows Presentation Foundation">Windows Presentation Foundation</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#WPF" title="Pages tagged WPF">WPF</a></span>
+        
+          <h1 class="entry-title">Using MVVM to bring IronPython and WPF together</h1>
+        
+      </header>
+      <footer class="entry-meta">
+        <img src="http://localhost:4000/images/bio-photo.jpg" alt="Damian Schenkelman photo" class="author-photo">
+        <span class="author vcard">By <span class="fn"><a href="http://localhost:4000/about/" title="About Damian Schenkelman">Damian Schenkelman</a></span></span>
+        <span class="entry-date date published"><time datetime="2010-09-21T00:00:00-04:00"><i class="icon-calendar-empty"></i> September 21, 2010</time></span>
+        
+        
+        <span><a href="http://localhost:4000/2010/09/21/using-mvvm-to-bring-ironpython-and-wpf-together/" rel="bookmark" title="Using MVVM to bring IronPython and WPF together"><i class="icon-link"></i> Permalink</a></span>
+        
+      </footer>
+      <div class="entry-content">
+        <p>A couple of weeks ago I decided to start a code kata using IronPython, with the objective of learning how C# and IronPython code could be integrated and used together. I had previously used Python (my favorite choice for University assignments), but this was my first try with the DLR version.</p>
+<p>(If you just can't wait to get to the code, just scroll to the bottom of this post).</p>
+<p>The first step is to get IronPython. As the project is hosted at codeplex, you can simply access <a href="http://ironpython.codeplex.com/">ironpython.codeplex.com</a> and select the <a href="http://ironpython.codeplex.com/releases/view/36280">Downloads</a> tab. I chose to download the latest stable release (v2.6.1).</p>
+<p>I created some simple classes to wrap around Python's e-mail libraries and begun research on how to use them from C# code in a WPF application. The following were some of the most useful resources I found:</p>
+<ul>
+<li><a href="http://www.microsoftpdc.com/2009/FT30">Using Dynamic Languages to Build Scriptable Applications</a> (<a href="http://blogs.msdn.com/b/dinoviehland/">Dino Viehland's</a> talk at PDC 2009)</li>
+<li><a href="http://blogs.msdn.com/b/charlie/archive/2009/10/25/hosting-ironpython-in-a-c-4-0-program.aspx">Running IronPython Scripts from a C# 4.0 Program</a></li>
+<li><a href="http://ironpython.net/documentation/dotnet/">IronPython’s documentation</a> from <a href="http://ironpython.net/">IronPython.net</a></li>
+</ul>
+<p>After the initial spikes, I created a simple application with a single V-VM pair, which let’s you send e-mails using either a Gmail or Hotmail account (disregard the poor-man’s UI).</p>
+<p><a href="http://blogs.southworks.net/dschenkelman/files/2010/09/image.png"><img src="http://blogs.southworks.net/dschenkelman/files/2010/09/image-thumb.png" border="0" alt="image" width="523" height="350" /></a></p>
+<p>Let's go over the <em>pythonic </em>parts of the ViewModel.</p>
+<p>First I defined the following four attributes:</p>
+<blockquote>
+<pre><span style="color: blue">private </span><span style="color: #2b91af">ScriptEngine </span>engine;
+<span style="color: blue">private </span><span style="color: #2b91af">ScriptRuntime </span>python;
+<span style="color: blue">private dynamic </span>emailWrapper;
+<span style="color: blue">private dynamic </span>emailDispatcher;</pre>
+<p><a href="http://11011.net/software/vspaste"></a></p></blockquote>
+<p>The ScriptEngine is used to customize the paths to search for Python modules. Unless the paths are configured correctly, you will get errors when importing modules that are part of Python’s standard library. As the following code shows, the path for the Python standard library and the relative path for my Python modules are being added to the list of paths:</p>
+<pre><span style="color: blue">private void </span>SetPythonLibraryPath()
+        {
+            <span style="color: #2b91af">ICollection</span>&lt;<span style="color: blue">string</span>&gt; paths = engine.GetSearchPaths();
+            paths.Add(<span style="color: #a31515">@"C:\Program Files (x86)\IronPython 2.6 for .NET 4.0\Lib"</span>);
+            paths.Add(<span style="color: #2b91af">Path</span>.Combine(<span style="color: #2b91af">Directory</span>.GetCurrentDirectory(), <span style="color: #a31515">"Python Code"</span>));
+            engine.SetSearchPaths(paths);
+        }</pre>
+<p><a href="http://11011.net/software/vspaste"></a></p>
+<p>Then, I get the ScriptRuntime from the ScriptEngine using its Runtime property. The ScriptRuntime is used to load the python modules into the dynamic fields mentioned above. The emailWrapper and emailDispatcher fields will store the modules with the same name.</p>
+<pre><span style="color: blue">private void </span>LoadPythonModules()
+       {
+           <span style="color: blue">string </span>wrapperPath = <span style="color: #2b91af">Path</span>.Combine(<span style="color: #a31515">"Python Code"</span>, <span style="color: #a31515">"emailWrapper.py"</span>);
+           <span style="color: blue">string </span>dispatcherPath = <span style="color: #2b91af">Path</span>.Combine(<span style="color: #a31515">"Python Code"</span>, <span style="color: #a31515">"emailDispatcher.py"</span>);
+
+           emailDispatcher = python.UseFile(dispatcherPath);
+           emailWrapper = python.UseFile(wrapperPath);
+       }</pre>
+<p><a href="http://11011.net/software/vspaste"></a></p>
+<p><a href="http://11011.net/software/vspaste"></a></p>
+<p>Now that I have access to the modules, I can simply instance classes or call functions from them. This is because the <a href="http://msdn.microsoft.com/en-us/library/dd264741.aspx">dynamic type</a> resolves the operations at runtime.</p>
+<pre><span style="color: blue">private void </span>SendEmail()
+        {
+            ...
+            <span style="color: blue">string </span>providerAccount = <span style="color: #2b91af">String</span>.Format(<span style="color: #a31515">"{0}@{1}.com"</span>, <span style="color: blue">this</span>.UserAccount, <span style="color: blue">this</span>.Provider);
+            <span style="color: blue">dynamic </span>email = emailWrapper.Email(<span style="color: blue">this</span>.Subject, <span style="color: blue">this</span>.ToAddress, providerAccount);
+            email.appendContent(<span style="color: blue">this</span>.Body);
+            <span style="color: blue">dynamic </span>dispatcher = emailDispatcher.EmailDispatcher(providerAccount, <span style="color: blue">this</span>.Password, <span style="color: blue">this</span>.Provider);
+            dispatcher.send(email);             ...
+        }</pre>
+<p><a href="http://11011.net/software/vspaste"></a></p>
+<pre><span style="color: blue">private void </span>PopulateProviders()
+        {
+            <span style="color: blue">this</span>.Providers = <span style="color: blue">new </span><span style="color: #2b91af">ObservableCollection</span>&lt;<span style="color: blue">string</span>&gt;();
+            <span style="color: blue">foreach </span>(<span style="color: blue">string </span>provider <span style="color: blue">in </span>emailDispatcher.getProviders())
+            {
+                <span style="color: blue">this</span>.Providers.Add(provider);
+            }
+        }</pre>
+<p><a href="http://11011.net/software/vspaste"></a></p>
+<table border="2" cellspacing="0" cellpadding="2" width="678">
+<tbody>
+<tr>
+<td width="676" valign="top"><strong>Note: </strong>A way to use python objects while maintaining compile time checking is having Python objects implement CLR interfaces. There might be scenarios in which type safety brings more benefits, but in this case I thought interface implementation was <em>un-pythonic</em>.</td>
+</tr>
+</tbody>
+</table>
+<p>That's pretty much it. I'll probably continue working on this small application, to show a couple more things that can be achieved with this kind of integration. Things that come to mind are:</p>
+<ul>
+<li>Sharing variables between Python and C# scopes</li>
+<li>Changing the application's behavior by updating Python modules without the need to rebuild the application.</li>
+</ul>
+<h3>Downloading the sample</h3>
+<p>You can download the sample code from <a href="http://cid-09f63fc7ac065e5e.office.live.com/self.aspx/p%5E0p%20Samples/EmailClient.zip">here</a>. The code is provided "AS IS" with no warranties and confers no rights.</p>
+<p>I hope this small introductions is useful for you and I'd love to get your thoughts on this approach.</p>
+<h3>Acknowledgements</h3>
+<p>Thanks to <a href="http://blog.salias.com.ar/">Martin Salias</a>, Iron Python expert (among other technologies), for reviewing the code and contributing with ideas, and to <a href="http://blogs.southworks.net/fantivero/">Fer</a>, <a href="http://blogs.southworks.net/matiasb/">Mati</a> and <a href="http://blogs.southworks.net/dpoza">Diego</a> who witnessed the first demo of the application and also provided useful ideas.</p>
+
+        
+      </div><!-- /.entry-content -->
+    </div><!-- /.entry-wrapper -->
+    <nav class="pagination" role="navigation">
+      
+        <a href="http://localhost:4000/2010/08/24/mvvm-para-wpf-y-silverlight-codecamp-buenos-aires/" class="btn" title="MVVM para WPF y Silverlight @Codecamp Buenos Aires">Previous article</a>
+      
+      
+        <a href="http://localhost:4000/2010/10/08/wpf-guitar-hero-using-mvvm-y-mvp/" class="btn" title="WPF Guitar Hero using MVVM & MVP">Next article</a>
+      
+    </nav><!-- /.pagination -->
+  </article>
+</div><!-- /#main -->
+
+<div class="footer-wrapper">
+  <footer role="contentinfo">
+    <span>&copy; 2014 Damian Schenkelman. Powered by <a href="http://jekyllrb.com">Jekyll</a> using the <a href="http://mademistakes.com/so-simple/">So Simple Theme</a>.</span>
+<div class="social-icons">
+	<a href="http://twitter.com/dschenkelman" title="Damian Schenkelman on Twitter" target="_blank"><i class="icon-twitter icon-2x"></i></a>
+	
+	
+	<a href="http://linkedin.com/in/damianschenkelman" title="Damian Schenkelman on LinkedIn" target="_blank"><i class="icon-linkedin icon-2x"></i></a>
+	
+	
+	
+	<a href="http://github.com/dschenkelman" title="Damian Schenkelman on Github" target="_blank"><i class="icon-github icon-2x"></i></a>
+	
+</div><!-- /.social-icons -->
+  </footer>
+</div><!-- /.footer-wrapper -->
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="http://localhost:4000/assets/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script src="http://localhost:4000/assets/js/scripts.min.js"></script>
+
+<!-- Jekyll Simple Search option -->
+<script>
+  $(document).ready(function() {
+      $('.search-field').simpleJekyllSearch({
+          jsonFile : 'http://localhost:4000/search.json',
+          searchResults : '.search-results',
+          template : '<li><article><a href="{url}">{title} <span class="entry-date"><time datetime="{date}">{shortdate}</time></span></a></article></li>',
+          noResults: '<p>Nothing found.</p>'
+        });
+  });
+
+  (function( $, window, undefined ) {
+    
+     var bs = {
+          close: $(".icon-remove-sign"),
+          searchform: $(".search-form"),
+          canvas: $("body"),
+          dothis: $('.dosearch')
+      };
+    
+    bs.dothis.on('click', function() {
+      $('.search-wrapper').css({ display: "block" });
+      bs.searchform.toggleClass('active');
+      bs.searchform.find('input').focus();
+      bs.canvas.toggleClass('search-overlay');
+    });
+    
+      bs.close.on('click', function() {
+        $('.search-wrapper').removeAttr( 'style' );
+        bs.searchform.toggleClass('active');
+        bs.canvas.removeClass('search-overlay');
+    });
+  })( jQuery, window );
+</script>
+
+
+	        
+
+</body>
+</html>

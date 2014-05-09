@@ -1,0 +1,42 @@
+---
+layout: post
+title: Needle Dependency Injection Container – Alpha 0.1 version released
+categories:
+- Dependency Injection
+- Needle
+tags:
+- Dependency Injection
+- Needle
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+  _wp_old_slug: ''
+  dsq_thread_id: '2235075854'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>A couple of days ago I uploaded to <a href="http://nuget.org/Packages/Packages/Details/NeedleContainer-0-1">NuGet</a> (which was really easy BTW) the <a href="http://needlecontainer.codeplex.com/releases/view/60894">first alpha release</a> of the <a href="http://needlecontainer.codeplex.com/">Needle Container</a>.</p>
+<p><a href="http://blogs.southworks.net/dschenkelman/files/2011/02/image.png"><img style="padding-left: 0px;padding-right: 0px;padding-top: 0px;border: 0px" src="http://blogs.southworks.net/dschenkelman/files/2011/02/image_thumb.png" border="0" alt="image" width="475" height="296" /></a></p>
+<p>Needle is a lightweight dependency injection container. Initially the project came up as something to do on weekends and boring afternoons with practicing goals (TDD, reflection), but after that I started putting more work into it, by adding documentation in code, and basic features that are commonly found in other containers such as Autofac or Unity.</p>
+<p>You can download the <strong>Nuget</strong> package using the following command, which will automatically include a reference to the container’s assembly.</p>
+<p><textarea>PM&gt; Install-Package NeedleContainer</textarea></p>
+<p>Some of the features that are part of this release are:</p>
+<ul>
+<li>Constructor Injection</li>
+<li>Property Injection</li>
+<li>Type mapping using lifetime scopes and Ids</li>
+<li>Storing instances using various Ids</li>
+<li>Asynchronous object resolution</li>
+<li>Fluent API</li>
+<li>Support to inject factories using Func&lt;T&gt;</li>
+<li>Support to inject instances for all stored registrations using IEnumerable&lt;T&gt;</li>
+</ul>
+<p>After I come back from my holidays, I expect to be adding more functionality to it in my free time (collaborators are welcome, <a href="http://www.codeplex.com/site/users/view/dschenkelman">contact me through codeplex</a>), as well as doing a couple of posts on the most relevant features, for instance how the Fluent API works and how to perform asynchronous resolution.</p>
+<p>If you try it out, let me know what you think of it. You can use the <a href="http://needlecontainer.codeplex.com/discussions">discussions boards</a> to do so.</p>
+

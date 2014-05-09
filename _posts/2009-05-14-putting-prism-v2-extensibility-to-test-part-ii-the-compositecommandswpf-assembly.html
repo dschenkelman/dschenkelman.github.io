@@ -1,0 +1,44 @@
+---
+layout: post
+title: Putting Prism-v2 extensibility to test (Part II). The Composite.Commands.Wpf
+  assembly
+categories:
+- Composite Application Guidance for WPF &amp; SL
+- p&amp;p
+- Patterns &amp; Practices
+- Prism-v2
+- Windows Presentation Foundation
+- WPF
+tags:
+- Composite Application Guidance for WPF &amp; SL
+- p&amp;p
+- Patterns &amp; Practices
+- Prism-v2
+- Windows Presentation Foundation
+- WPF
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+  dsq_thread_id: '2278071683'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>In the <a href="http://blogs.southworks.net/dschenkelman/2009/05/08/putting-prism-v2-extensibility-to-test-the-standalone-silverlight-event-aggregator/">first post</a> of this series I blogged about how to extract the event aggregator into a single Silverlight assembly. This was useful because it reduced the size of an application that only used the Event Aggregator from the <a href="http://www.microsoft.com/downloads/details.aspx?FamilyID=fa07e1ce-ca3f-4b9b-a21b-e3fa10d013dd&amp;DisplayLang=en">CAL's latest release</a>.</p>
+<p>Today, with <a href="http://blogs.southworks.net/matiasb/">Matias Bonaventura</a>, we put Prism's extensibility to test again (greatly in part to <a href="http://blogs.southworks.net/ejadib/">Ezequiel Jadib's</a> motivation) by extracting WPF commanding from the Composite Application Library for WPF &amp; Silverlight. I built the assembly and tested it in the WPF commanding quickstart. Prism's extensibility stepped up to the challenge one more time.</p>
+<p>As I did last time I will provide a snapshot using .Net Reflector, so you have a fast way to learn what the assembly contains. (Clicking the picture will provide a better look)</p>
+<p style="text-align: center"><a href="http://blogs.southworks.net/dschenkelman/files/2009/05/commands.png"><img class="alignnone size-medium wp-image-80 aligncenter" src="http://blogs.southworks.net/dschenkelman/files/2009/05/commands.png" alt="Composite.Commands.Wpf Assembly" width="380" height="400" /></a></p>
+<p>You can check out other posts in this series:</p>
+<ul>
+<li><a href="http://blogs.southworks.net/dschenkelman/2009/05/08/putting-prism-v2-extensibility-to-test-the-standalone-silverlight-event-aggregator/">Putting Prism-v2 extensibility to test. The standalone Silverlight Event Aggregator</a></li>
+</ul>
+<h5>Standalone Silverlight Evevnt Aggregator Binaries</h5>
+<h6>Disclaimer</h6>
+<p>This assembly is provided "AS IS" with no warranties, and confers no rights.</p>
+<h6>Download</h6>
+<p>You can get the assembly here:<a href="http://blogs.southworks.net/dschenkelman/files/2009/05/compositecommandswpf.zip">Composite.Commands.Wpf</a>.</p>

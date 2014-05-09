@@ -1,0 +1,77 @@
+---
+layout: post
+title: Efficient Media Services SDK compound queries using dynamic expression tree
+  generation
+categories:
+- C#
+- Media
+tags:
+- C#
+- Media
+status: draft
+type: post
+published: false
+meta:
+  _edit_last: '15'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>At Southworks we do a lot of media related work and one of the components that we commonly use is the <a href="http://msdn.microsoft.com/en-us/library/hh973613.aspx">Windows Azure Media Services SDK for .NET</a>. As with most Azure SDKs it is really useful as it abstracts us from the fact that queries to an OData REST API are actually being performed and you get to work with what seem like plain .NET objects.</p>
+<p>While the above is really useful it is important to always keep in mind that we are not dealing with actual objects and that network I/O is actually taking place. Let’s take a real world example that we had to implement a couple of days ago to see why this is important.</p>
+<h2>The Requirement</h2>
+<p><em>Retrieve all assets from a Media Services account that have at least one <a href="http://msdn.microsoft.com/en-us/library/windowsazure/jj129575.aspx#create_sas_locator">SAS Locator</a>.</em></p>
+<p>At first glance this looks like something that can be achieved in a really simple manner with a query like this one:</p>
+<pre class="brush: csharp;">return mediaContext.Assets.Where(a =&gt; a.Locators.Any(l =&gt; l.Type == LocatorType.Sas));</pre>
+<p>But as you can probably guess that doesn’t work (otherwise this post would be pretty pointless). Do you know the reasons why this fails?</p>
+<p>The fact is that you actually can’t access the locators property from the asset (nor can you execute the <strong>Any </strong>method, but that is not the main point I’m trying to make here), and <a href="http://www.odata.org/documentation/odata-v2-documentation/uri-conventions/#46_Expand_System_Query_Option_expand">$expand</a> is not supported currently by the Media Services API (as explained <a href="http://msdn.microsoft.com/en-us/library/windowsazure/jj129583.aspx">here</a>).</p>
+<h2>Some alternatives</h2>
+<p>A possible alternative could be to do something like:</p>
+<pre class="brush: csharp;">// iterate through locators first as in our scenario there are less locators than assets
+var locators = mediaContext.Locators.Where(l =&gt; l.Type == LocatorType.Sas);
+
+var assets = new List&lt;IAsset&gt;();
+
+foreach (var locator in locators)
+{
+    // asset is lazy loaded, it requires an additional request
+    assets.Add(locator.Asset);
+}
+
+return assets;</pre>
+<p>As the second code comment shows, we would be performing a separate request for each locator and to make things worse they would be sequential, so this method will return once all sequential requests have been completed. Once we reached this point, I reached out to <a href="http://blogs.southworks.net/mconverti">Mariano Converti</a> (one of our Media Services go to guys) and he told me that there is a way to perform these requests asynchronously. We did implement it, but I refuse to post it here due to the fact that it involved dark magic stuff like using reflection to get to the DataServiceQuery of the Assets collection and then <a href="http://msdn.microsoft.com/en-us/library/system.threading.tasks.taskfactory.fromasync.aspx">TaskFactory.FromAsync</a> to wrap the Begin/End methods (if enough people are really curious about this I will definitely include the implementation for that, but I don’t think it will be the case). To avoid reflection we could have used the MediaServices REST API directly, but it would involve a lot of code that is already implemented by the SDK (auth, automatically finding the API's endpoint).</p>
+<h2>Dynamic Expression Tree Generation</h2>
+<p>First of all, I’m not saying that the above approaches shouldn’t be used. One of them might fit your scenario better that the one we are using. In our case, we finally realized that we just needed to express something like this to perform only two requests:</p>
+<pre class="brush: csharp;">// first request
+var locators = mediaContext.Locators.Where(l =&gt; l.Type == LocatorType.Sas);
+// second request
+return mediaContext.Assets.Where(a =&gt; a.Id == locators[0].Id || a.Id == locators[1].Id || ... || a.Id == locators[n].Id);</pre>
+<p>And turned to dynamically generating the expression tree that gets this done (in case you decide to take this approach you have to be careful with not exceeding the maximum URL length, which might require you to batch the requests):</p>
+<pre class="brush: csharp;">public IEnumerable&lt;IAsset&gt; GetAssets()
+{
+    var locators = this.mediaContext.Locators.Where(l =&gt; l.Type == LocatorType.Sas).ToList();
+
+    var predicate = CreateOrExpression(locators);
+
+    return this.mediaContext.Assets.Where(predicate);
+}
+
+private static Expression&lt;Func&lt;IAsset, bool&gt;&gt; CreateOrExpression(IEnumerable&lt;ILocator&gt; locators)
+{
+    ParameterExpression a = Expression.Parameter(typeof(IAsset), "a");
+    Expression exp = Expression.Constant(false);
+
+    foreach (var locator in locators)
+    {
+        exp = Expression.OrElse(
+            exp, Expression.Equal(Expression.Property(a, "Id"), Expression.Constant(locator.AssetId, typeof(string))));
+    }
+
+    var predicate = Expression.Lambda&lt;Func&lt;IAsset, bool&gt;&gt;(exp, a);
+    return predicate;
+}</pre>
+<h2>Feedback from you</h2>
+<p>I’d like to know if you have faced a similar situation when using Media Services and what is the approach that you used to implement it.</p>

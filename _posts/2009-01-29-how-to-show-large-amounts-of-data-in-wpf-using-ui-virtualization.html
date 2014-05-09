@@ -1,0 +1,71 @@
+---
+layout: post
+title: 'How to: Show large amounts of data in WPF using UI Virtualization'
+categories:
+- C#
+- Composite Application Guidance for WPF &amp; SL
+- p&amp;p
+- Patterns &amp; Practices
+- Prism-v2
+- UI Virtualization
+- Windows Presentation Foundation
+- WPF
+tags:
+- C#
+- Composite Application Guidance for WPF &amp; SL
+- p&amp;p
+- Patterns &amp; Practices
+- Prism-v2
+- UI Virtualization
+- Windows Presentation Foundation
+- WPF
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+  dsq_thread_id: '1555308295'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>Today I saw a <a href="http://www.codeplex.com/CompositeWPF/Thread/View.aspx?ThreadId=45581">question</a> in the <a href="http://www.codeplex.com/CompositeWPF/Thread/List.aspx">Composite WPF forum</a> that was asking for a way to show 40000 entries in a WPF ListView, with Databinding, in a fast manner since the user's application was taking to long to load all the employees.</p>
+<p>Therefore, I started doing some digging and found out that <strong>UI Virtualization</strong> could do the trick. This basically means that the process of showing a specific item in an ItemsControl is postponed until the item is within visibility range.</p>
+<p>The ListView and ListBox controls have <strong>UI Virtualization</strong> enabled by default when their items are bound to data. In other ItemsControls, like TreeViews, it can be enabled using the <strong>VirtualizingStackPanel.IsVirtualizing</strong> attached property.</p>
+<p>In the <a href="http://www.microsoft.com/downloads/details.aspx?familyid=ab99342f-5d1a-413d-8319-81da479ab0d7&amp;displaylang=en">.NET Framework 3.5 SP1</a> an addition was made to improve UI Virtualization which is <strong>Container Recycling</strong>. You can read more about UI Virtualization <strong> </strong>and Container Recycling in this article:</p>
+<ul>
+<li><a href="http://msdn.microsoft.com/en-us/library/cc716879.aspx">Optimizing Performance: Controls</a></li>
+</ul>
+<h3>Applying Theory to Practice</h3>
+<p>I opened the ViewDiscoveryComposition Quickstart from the <a href="http://www.codeplex.com/CompositeWPF/Release/ProjectReleases.aspx?ReleaseId=21912">latest Prism-v2 Drop</a> and modified the Employee Service class' (located in the Employees Module) implementation for the following one and ran the application:</p>
+<pre><span style="color: blue">public class </span><span style="color: #2b91af">EmployeeService </span>: <span style="color: #2b91af">IEmployeeService
+    </span>{
+        <span style="color: blue">public </span><span style="color: #2b91af">ObservableCollection</span>&lt;BusinessEntities.<span style="color: #2b91af">Employee</span>&gt; RetrieveEmployees()
+        {
+            <span style="color: #2b91af">ObservableCollection</span>&lt;BusinessEntities.<span style="color: #2b91af">Employee</span>&gt; employees =
+                <span style="color: blue">new </span><span style="color: #2b91af">ObservableCollection</span>&lt;BusinessEntities.<span style="color: #2b91af">Employee</span>&gt;();
+            <span style="color: blue">for </span>(<span style="color: blue">int </span>i = 1; i &lt; 40001; i++)
+            {
+                employees.Add(<span style="color: blue">new </span>BusinessEntities.<span style="color: #2b91af">Employee</span>(i)
+                { FirstName = <span style="color: #a31515">"John" </span>+ i,
+                    LastName = <span style="color: #a31515">"Smith"</span>, Phone = <span style="color: #a31515">"+1 (425) 555-0101"</span>,
+                    Email = <span style="color: #a31515">"john.smith@example.com"</span>, Address = <span style="color: #a31515">"One Microsoft Way"</span>,
+                    City = <span style="color: #a31515">"Redmond"</span>, State = <span style="color: #a31515">"WA" </span>});
+            }
+
+            <span style="color: blue">return </span>employees;
+        }
+    }</pre>
+<p>In fact, the list of employees took ages to load. I got a little deeper and found in the article mentioned above that even if the ListView performs UI Virtualization by default there are some possible reasons why <strong>UI Virtualization</strong><em> </em>could be <em>accidentally</em> disabled. One of them was that the list was unable to scroll through its content.</p>
+<p>Once I checked the EmployeeListView.xaml file,  I realized that it had no specified height nor implicitly showed a vertical scroll bar. The following modification in the ListView declaration was the one that made the trick:</p>
+<pre><span style="color: blue">&lt;</span><span style="color: maroon">ListView </span><span style="color: red">x:Name</span><span style="color: blue">="EmployeesList" </span><span style="color: red">ItemsSource</span><span style="color: blue">="{</span><span style="color: maroon">Binding</span><span style="color: blue">}"
+</span><span style="color: red">SelectionChanged</span><span style="color: blue">="EmployeesListView_SelectionChanged"
+</span><span style="color: red">Height</span><span style="color: blue">="250" </span><span style="color: red">ScrollViewer.VerticalScrollBarVisibility</span><span style="color: blue">="Visible"&gt;
+</span></pre>
+<p><a href="http://11011.net/software/vspaste"></a></p>
+<p><a href="http://11011.net/software/vspaste"></a></p>
+<p>I run the application again and it took no more than one second to load the list view.</p>
+<p>I hope you can find some good use for this. Let me know if you do.</p>

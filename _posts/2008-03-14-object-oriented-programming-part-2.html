@@ -1,0 +1,189 @@
+---
+layout: post
+title: Object Oriented Programming (Part 2)
+categories:
+- Object Oriented Programming
+- OOP
+tags: []
+status: publish
+type: post
+published: true
+meta: {}
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>I read chapters 2, 14 &amp; 15 from <span style="font-size: 11pt;font-family: 'Calibri','sans-serif'">Thinking in C++ second edition Volume 1. </span><span style="font-size: 11pt;font-family: 'Calibri','sans-serif'"> This is a summary of what I read:</span></p>
+<p><span style="font-size: 11pt;font-family: 'Calibri','sans-serif'"> </span><span style="font-size: 11pt;font-family: 'Calibri','sans-serif'"><strong><u><span style="font-size: 18pt">Making and using objects</span></u></strong>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><strong><u><span style="font-size: 18pt"><span style="text-decoration: none"></span></span></u></strong></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><strong><u><span style="font-size: 14pt"></span></u></strong></p>
+<p></span></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><strong><u><span style="font-size: 18pt"><span style="text-decoration: none"></span></span></u></strong></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><strong><u><span style="font-size: 14pt"></span></u></strong></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><strong><u><span style="font-size: 18pt"><span style="text-decoration: none"></span></span></u></strong></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><strong><u><span style="font-size: 14pt"></span></u></strong></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><strong><u><span style="font-size: 18pt"><span style="text-decoration: none"></span></span></u></strong></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><strong><u><span style="font-size: 14pt"></span></u></strong></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><strong><u><span style="font-size: 14pt">Separate Compilation:</span></u></strong></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><strong><u><span style="font-size: 18pt"><span style="text-decoration: none"></span></span></u></strong></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"> </p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt">Separate compilation allows the creation of larger programs, since the compiler doesn&rsquo;t have to build it all at once. Instead, it can separate it in pieces and compile them once at a time (this pieces can be combined, once they are tested and working, into libraries allowing them to be used by other programmers). <span> </span>A linker program combines the pieces into an executable, and helps with the interaction of functions called between two different pieces.</p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"> </p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt">A function is the &ldquo;smallest&rdquo; unit of code you must have together in a file (you can&rsquo;t save the function in separate files). In order for the compiler to be able to use properly functions in other files, you must <strong><em>declare</em></strong><em> </em>them.</p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"> </p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><strong><u><span style="font-size: 12pt">Declaration vs Definition:</span></u></strong></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt">Declaration says to the compiler, this function looks like this. A definition means that the function or variable should be made in a certain place.</p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"> </p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><strong><u><span style="font-size: 14pt">Libraries:</span></u></strong></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><strong><u><span style="font-size: 14pt"><span style="text-decoration: none"></span></span></u></strong></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"> </p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt">Use:</p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.5in"><em><span><span>"1.<span style="font: 7pt 'Times New Roman'">       </span></span></span>Include library&rsquo;s header file.</em></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.5in"><em><span><span>2.<span style="font: 7pt 'Times New Roman'">       </span></span></span>Use functions and variables in it.</em></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.5in"><em><span><span>3.<span style="font: 7pt 'Times New Roman'">       </span></span></span>Link it to the executable program."</em></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.5in">(Thinking in C++ Second Edition Volume I: Introduction to C++, Bruce Eckel)</p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"> </p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><strong><u><span style="font-size: 14pt">Inheritance and composition:</span></u></strong></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><strong><u><span style="font-size: 18pt"><span style="text-decoration: none"></span></span></u></strong></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"> </p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt">How to choose one over the other? Well, you should choose composition when you want the functions and characteristics &ldquo;part-of&rdquo; class inside your class but don&rsquo;t want its interface to be the same. Basically composition means that the class HAS another class, and inheritance means the class IS another class.</p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"> </p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt">Inheritance and composition also reassure, that if you have a bug in your program, and the existing code was proved to work, you know the error is in your code, which makes it easier to find.</p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><strong><u><span style="font-size: 18pt"><span style="text-decoration: none"></span></span></u></strong></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><strong><u><span style="font-size: 14pt"></span></u></strong></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><strong><u><span style="font-size: 14pt"></span></u></strong></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><strong><u><span style="font-size: 14pt">Virtual Functions:</span></u></strong></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><strong><u><span style="font-size: 14pt"><span style="text-decoration: none"></span></span></u></strong></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"> </p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt">The redefinition of a virtual function is called overriding. This is done when the base function&rsquo;s functionality is not specific enough for its children. You write in the child function what you want it to do, disregarding what it states in the base class. This process can be done on more than one level. </p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt">i.e.:</p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"> <br />
+<table align="left" border="1" cellpadding="0" cellspacing="0" class="MsoNormalTable" style="margin: auto 6.75pt;border: medium none">
+<tbody>
+<tr style="height: 15.25pt">
+<td style="padding-right: 5.4pt;padding-left: 5.4pt;padding-bottom: 0in;width: 97.5pt;padding-top: 0in;height: 15.25pt;border: windowtext 1pt solid" valign="top" width="130">
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Animal</font></font></p>
+</td>
+</tr>
+<tr style="height: 15.25pt">
+<td style="padding-right: 5.4pt;padding-left: 5.4pt;padding-bottom: 0in;width: 97.5pt;padding-top: 0in;height: 15.25pt" valign="top" width="130">
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Height</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3">Weight</font></p>
+</td>
+</tr>
+<tr style="height: 15.25pt">
+<td style="padding-right: 5.4pt;padding-left: 5.4pt;padding-bottom: 0in;width: 97.5pt;padding-top: 0in;height: 15.25pt" valign="top" width="130">
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Eat()</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3">Sleep()</font></p>
+</td>
+</tr>
+</tbody>
+</table>
+<table align="left" border="1" cellpadding="0" cellspacing="0" class="MsoNormalTable" style="margin: auto 6.75pt;border: medium none">
+<tbody>
+<tr style="height: 15.25pt">
+<td style="padding-right: 5.4pt;padding-left: 5.4pt;padding-bottom: 0in;width: 97.5pt;padding-top: 0in;height: 15.25pt;border: windowtext 1pt solid" valign="top" width="130">
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Reptile</font></font></p>
+</td>
+</tr>
+<tr style="height: 15.25pt">
+<td style="padding-right: 5.4pt;padding-left: 5.4pt;padding-bottom: 0in;width: 97.5pt;padding-top: 0in;height: 15.25pt" valign="top" width="130">
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Height</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3">Weight</font></p>
+</td>
+</tr>
+<tr style="height: 15.25pt">
+<td style="padding-right: 5.4pt;padding-left: 5.4pt;padding-bottom: 0in;width: 97.5pt;padding-top: 0in;height: 15.25pt" valign="top" width="130">
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Eat()</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3">Sleep()</font></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="MsoNormal" style="margin: 0in 0in 0pt">
+<table align="left" border="1" cellpadding="0" cellspacing="0" class="MsoNormalTable" style="margin: auto 6.75pt;border: medium none">
+<tbody>
+<tr style="height: 15.25pt">
+<td style="padding-right: 5.4pt;padding-left: 5.4pt;padding-bottom: 0in;width: 97.5pt;padding-top: 0in;height: 15.25pt;border: windowtext 1pt solid" valign="top" width="130">
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Mammal</font></font></p>
+</td>
+</tr>
+<tr style="height: 15.25pt">
+<td style="padding-right: 5.4pt;padding-left: 5.4pt;padding-bottom: 0in;width: 97.5pt;padding-top: 0in;height: 15.25pt" valign="top" width="130">
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Height</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3">Weight</font></p>
+</td>
+</tr>
+<tr style="height: 15.25pt">
+<td style="padding-right: 5.4pt;padding-left: 5.4pt;padding-bottom: 0in;width: 97.5pt;padding-top: 0in;height: 15.25pt" valign="top" width="130">
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Eat()</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3">Sleep()</font></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"> </p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"> </p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"> </p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"> </p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"> </p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"> </p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"> </p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"> <br />
+<table align="left" border="1" cellpadding="0" cellspacing="0" class="MsoNormalTable" style="margin: auto 6.75pt;border: medium none">
+<tbody>
+<tr style="height: 15.25pt">
+<td style="padding-right: 5.4pt;padding-left: 5.4pt;padding-bottom: 0in;width: 97.5pt;padding-top: 0in;height: 15.25pt;border: windowtext 1pt solid" valign="top" width="130">
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Cow</font></font></p>
+</td>
+</tr>
+<tr style="height: 15.25pt">
+<td style="padding-right: 5.4pt;padding-left: 5.4pt;padding-bottom: 0in;width: 97.5pt;padding-top: 0in;height: 15.25pt" valign="top" width="130">
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Height</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3">Weight</font></p>
+</td>
+</tr>
+<tr style="height: 15.25pt">
+<td style="padding-right: 5.4pt;padding-left: 5.4pt;padding-bottom: 0in;width: 97.5pt;padding-top: 0in;height: 15.25pt" valign="top" width="130">
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Eat()</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3">Sleep()</font></p>
+</td>
+</tr>
+</tbody>
+</table>
+<table align="left" border="1" cellpadding="0" cellspacing="0" class="MsoNormalTable" style="margin: auto 6.75pt;border: medium none">
+<tbody>
+<tr style="height: 15.25pt">
+<td style="padding-right: 5.4pt;padding-left: 5.4pt;padding-bottom: 0in;width: 97.5pt;padding-top: 0in;height: 15.25pt;border: windowtext 1pt solid" valign="top" width="130">
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Whale</font></font></p>
+</td>
+</tr>
+<tr style="height: 15.25pt">
+<td style="padding-right: 5.4pt;padding-left: 5.4pt;padding-bottom: 0in;width: 97.5pt;padding-top: 0in;height: 15.25pt" valign="top" width="130">
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Height</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3">Weight</font></p>
+</td>
+</tr>
+<tr style="height: 15.25pt">
+<td style="padding-right: 5.4pt;padding-left: 5.4pt;padding-bottom: 0in;width: 97.5pt;padding-top: 0in;height: 15.25pt" valign="top" width="130">
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Eat()</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3">Sleep()</font></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"> </p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"> </p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"> </p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"> </p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"> </p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"> </p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"> </p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"> </p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt">With the following classes you could say that cow and whale are both child classes from mammal, and that mammal and reptile inherit from animal.</p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt">In the example the sleep function can be declared as virtual. Once it is you can override it in both the mammal definition for sleep or in the cow/whale definition, which should be different, but still describe the same action (sleep).</p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt">In this example you could also make the animal class <em>abstract.</em> This means that no one will be able to create an object from the class, it will just be used as an interface for &ldquo;upcasting&rdquo;.</p>
+<p> </p>

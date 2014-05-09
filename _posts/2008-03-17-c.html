@@ -1,0 +1,121 @@
+---
+layout: post
+title: C#
+categories:
+- C#
+tags: []
+status: publish
+type: post
+published: true
+meta:
+  dsq_thread_id: '1624320677'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Read chapters 1 to 4 from Microsoft Visual C# 2005.</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3"></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Here&rsquo;s a summary of what I read:</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3"></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><strong><u><span style="font-size: 14pt"><font face="Calibri">Variables:</font></span></u></strong></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><strong><u><span style="font-size: 14pt"><span style="text-decoration: none"><font face="Calibri"></font></span></span></u></strong></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">A variable is a memory location that holds a value. You name it, so its name makes reference to what it holds.</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Naming conventions:</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3"></font></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.5in"><span style="font-family: Symbol"><span><font size="3">·</font><span style="font: 7pt 'Times New Roman'">         </span></span></span><font size="3"><font face="Calibri">You must not use underscores.</font></font></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.5in"><span style="font-family: Symbol"><span><font size="3">·</font><span style="font: 7pt 'Times New Roman'">         </span></span></span><font size="3"><font face="Calibri">Don&rsquo;t difference them by case only. (Variable, variable).</font></font></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.5in"><span style="font-family: Symbol"><span><font size="3">·</font><span style="font: 7pt 'Times New Roman'">         </span></span></span><font size="3"><font face="Calibri">Use camelCase notation (multiword only, first word start with lower case in the first letter, then for other words use upper case for first letter and continue in lower).</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3"></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Declaration of variables is done by writing the type of it and its name. i.e.: int number;</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3"></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><strong><u><span style="font-size: 14pt"><font face="Calibri">Methods:</font></span></u></strong></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><strong><u><span style="font-size: 14pt"><span style="text-decoration: none"><font face="Calibri"></font></span></span></u></strong></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Methods are "<em>sequences of statements</em>"(Microsoft Visual C# 2005 Step by Step, John Sharp). They have a name (refers to what the method does) and the body (step by step of what the method will do). </font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Declaring a method:</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3"></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">returntype methodName (parameterList)</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">{</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri"><span>                </span>body statements</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">}</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3"></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">The return type represents the type of information the method will return (or void if it returns nothing). The parameter list are the different things the method needs to do what it&rsquo;s supposed to (i.e.: numbers, words, lists, etc.). When you want your method to return information you use the <em>return</em> keyword. The return statement must return the same type specified by the functions return type.</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Method calling is done as following: methodName (parameterList);.</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3"></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri"><strong><span style="font-size: 12pt">Scopes:</span></strong><font size="3"> The scope is the location of the program where a variable can be used. A method&rsquo;s scope is defined by &ldquo;{}&rdquo;. Everything inside them is within the method&rsquo;s scope, meaning that variables in the scope can be used by the method.</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3"></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri"><strong><span style="font-size: 12pt">Overloads:</span></strong><font size="3"> Overloaded methods are those that have the same name inside the same scope. The difference between them is their parameterList.</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">i.e.:<span>        </span>CalculateArea (int base, int height){}</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri"><span>                </span>CalculateArea (int base, int height,<span>  </span>string type){}</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">When the CalculateArea method is called, the compiler will define which one it is depending on its parameterList. The same method can&rsquo;t have an overload with the same types and amounts. i.e.: <span>                </span>WriteText(string title){}</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri"><span>                </span>WriteText(string body){}</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3"></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><strong><u><span style="font-size: 14pt"><font face="Calibri">Decision Statements:</font></span></u></strong></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><strong><u><span style="font-size: 14pt"><span style="text-decoration: none"><font face="Calibri"></font></span></span></u></strong></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Boolean operators are those that return true/false. The most common are:</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3"></font></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.5in"><span style="font-family: Wingdings"><span><font size="3">ü</font><span style="font: 7pt 'Times New Roman'">  </span></span></span><font size="3"><font face="Calibri">== equal to</font></font></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.5in"><span style="font-family: Wingdings"><span><font size="3">ü</font><span style="font: 7pt 'Times New Roman'">  </span></span></span><font size="3"><font face="Calibri">!= not equal to</font></font></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.5in"><span style="font-family: Wingdings"><span><font size="3">ü</font><span style="font: 7pt 'Times New Roman'">  </span></span></span><font size="3"><font face="Calibri">&lt; less than</font></font></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.5in"><span style="font-family: Wingdings"><span><font size="3">ü</font><span style="font: 7pt 'Times New Roman'">  </span></span></span><font size="3"><font face="Calibri">&lt;= less or equal than</font></font></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.5in"><span style="font-family: Wingdings"><span><font size="3">ü</font><span style="font: 7pt 'Times New Roman'">  </span></span></span><font size="3"><font face="Calibri">&gt; more than</font></font></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.5in"><span style="font-family: Wingdings"><span><font size="3">ü</font><span style="font: 7pt 'Times New Roman'">  </span></span></span><font size="3"><font face="Calibri">&gt;= more or equal than</font></font></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.5in"><span style="font-family: Wingdings"><span><font size="3">ü</font><span style="font: 7pt 'Times New Roman'">  </span></span></span><font size="3"><font face="Calibri">&amp;&amp; (AND). The outcome of it is true only if BOTH expressions are true.</font></font></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.5in"><span style="font-family: Wingdings"><span><font size="3">ü</font><span style="font: 7pt 'Times New Roman'">  </span></span></span><font size="3"><font face="Calibri">|| (OR). The outcome of it is true if either one of the expressions is true.</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3"></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri"><strong><em><u><span style="font-size: 14pt">If</span></u></em></strong><strong><u><span style="font-size: 14pt"> Statements:</span></u></strong></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><strong><u><span style="font-size: 14pt"><span style="text-decoration: none"><font face="Calibri"></font></span></span></u></strong></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">If you want to choose between executing different block of codes, depending on the result of a Boolean expression, you can use an if statement.</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Syntax:</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri"><span> </span>if (Boolean expression){</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">block 1</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">}else{</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">block 2</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">}.</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">If statements can also be used in a cascade manner:</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3"></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">if (i==1){</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">block 1</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">}else if (i==2){</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">block 2</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">}</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">else if (i==3){</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">block 3</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">}</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Else{nothing}.</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3"></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">By doing this you say: if the first statement isn&rsquo;t true, then do the second one. If that one isn&rsquo;t true do the third one. The last one is in case none of the statements are true.</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3"></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri"><strong><em><u><span style="font-size: 14pt">Switch</span></u></em></strong><strong><u><span style="font-size: 14pt"> Statements:</span></u></strong></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><strong><u><span style="font-size: 14pt"><span style="text-decoration: none"><font face="Calibri"></font></span></span></u></strong></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">An easier way of cascading if the statements are similar is a switch statement. You&rsquo;re simply telling, if the expression is this one come here, if it&rsquo;s this other one go there. i.e.:</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3"></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Switch (intDay)</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3"></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">{case 1: do this</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri"><span> </span>break;</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">case 2: do this</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri"><span> </span>break;</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">case 3: do this</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri"><span> </span>break;</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">default: do this</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri"><span>                </span>break;</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">}</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri"><span> </span>This way you only go to one of the blocks. If none of them are equal then the default block is executed. The <em>break</em> keyword finishes the switch statement.</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3"></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt 0.25in"><font size="3"><font face="Calibri">Rules for switch: </font></font></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.5in"><span style="font-family: Wingdings"><span><font size="3">Ø</font><span style="font: 7pt 'Times New Roman'">  </span></span></span><font size="3"><font face="Calibri">You can only use them on primitive data types (such as int, string).</font></font></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.5in"><span style="font-family: Wingdings"><span><font size="3">Ø</font><span style="font: 7pt 'Times New Roman'">  </span></span></span><font size="3"><font face="Calibri"><em>"The case labels must be constant expressions"</em>(Microsoft Visual C# 2005 Step by Step, John Sharp) (1, &ldquo;1&rdquo;). If they&rsquo;re not use an IF statement.</font></font></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.5in"><span style="font-family: Wingdings"><span><font size="3">Ø</font><span style="font: 7pt 'Times New Roman'"> <em> </em></span></span></span><font size="3"><font face="Calibri"><em>"Two case labels cannot have the same value."</em>(Microsoft Visual C# 2005 Step by Step, John Sharp)</font></font></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.5in"><span style="font-family: Wingdings"><span><font size="3">Ø</font><span style="font: 7pt 'Times New Roman'">  </span></span></span><font size="3"><font face="Calibri">You can use the same statements for more than one label. But you can&rsquo;t use different statements for the same label. </font></font></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.5in"><font size="3"><font face="Calibri">(i.e.: <span>      </span><span> </span>case Monday:</font></font></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.5in"><font size="3"><font face="Calibri"><span>                </span>case Tuesday: do this (this is correct)</font></font></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.5in"><font size="3"><font face="Calibri">Break;<span>                                   </span></font></font></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.5in"><font face="Calibri" size="3"></font></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.5in"><font size="3"><font face="Calibri">case thursday:</font></font></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.5in"><font size="3"><font face="Calibri">do this</font></font></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.5in"><font size="3"><font face="Calibri"><span>            </span>case friday: do this (this is NOT correct, )</font></font></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.5in"><font size="3"><font face="Calibri">Break;<span>                   </span><span>                                                </span>)</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt 0.25in"><font size="3"><font face="Calibri">You need to stop the cascading, this is generally done by using BREAK.</font></font></p>

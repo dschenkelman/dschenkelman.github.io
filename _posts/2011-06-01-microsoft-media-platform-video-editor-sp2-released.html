@@ -1,0 +1,61 @@
+---
+layout: post
+title: Microsoft Media Platform Video Editor SP2 Released
+categories:
+- Adaptive Streaming
+- Composite Stream Manifest
+- CSM
+- Live Smooth Streaming
+- Media
+- Microsoft Media Platform
+- Prism
+- RCE
+- Rough Cut Editing
+- Silverlight
+- Silverlight 4
+- Smooth Streaming
+- Smooth Streaming Media Element
+- SSME
+tags:
+- Adaptive Streaming
+- Composite Stream Manifest
+- CSM
+- Live Smoooth Streaming
+- Media
+- Microsoft Media Platform
+- Prism
+- RCE
+- Rough Cut Editing
+- Silverlight
+- Silverlight 4
+- Smooth Streaming
+- Smooth Streaming Media Element
+- SSME
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+  dsq_thread_id: '1552822183'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>On Monday, Microsoft released the <a href="http://archive.msdn.microsoft.com/VideoEditor/Release/ProjectReleases.aspx?ReleaseId=5312">Service Pack 2</a> version of the <a href="http://archive.msdn.microsoft.com/VideoEditor">Microsoft Media Platform Video Editor</a> (formerly known as RCE).</p>
+<p><a href="http://blogs.southworks.net/dschenkelman/files/2011/06/image.png"><img style="padding-left: 0px;padding-right: 0px;padding-top: 0px;border: 0px" src="http://blogs.southworks.net/dschenkelman/files/2011/06/image_thumb.png" border="0" alt="image" width="576" height="273" /></a></p>
+<p>This version includes all the <a href="http://blogs.southworks.net/ejadib/2011/01/14/silverlight-rough-cut-editor-sp1-released/">new features and bug fixes that were included in SP1</a>, an important fix for an issue that occurs when playing live smooth streaming videos and a minor fix in the <a href="http://blogs.southworks.net/ejadib/2010/05/27/composite-stream-manifest-csm-generator-rough-cut-editor-rce/">Composite Stream Manifest generator</a>.</p>
+<p>Full descriptions of the issues are provided below in case you have run into them.</p>
+<h2><strong>Issues Description</strong></h2>
+<h5><strong>Live Smooth Streaming Videos without text tracks fails on playback</strong></h5>
+<p>When playing a live smooth streaming video without any text tracks, a message is shown explaining that the video can't be played.<br />
+The log has the following related entry: <em>"Exception: Failed to parse manifest: Index was out of range. Must be non-negative and less than the size of the collection."</em></p>
+<h5><strong>First chunk duration are not generated sometimes</strong></h5>
+<p>In some scenarios, the duration of the first chunk of the video and audio streams is not generated.</p>
+<p>The error message when playing the generated CSM is the following: <em>"</em><em>Caught exception trying to parse main manifest: First audio chunk in clip 1 [start time = <strong>X</strong>, duration = <strong>Y</strong>] does not contain clip start position <strong>Z</strong>]<em>", </em></em>where X, Y and Z are values that depend on your clips. For more information on common issues when generating and using CSMs, please check this<a href="http://blogs.southworks.net/ejadib/2010/02/05/common-mistakes-issues-when-creating-and-using-composite-stream-manifests-csm/"> blog post</a>.</p>
+<p><em> </em></p>
+<p>Hopefully, you will find this new release useful.</p>
+<p>If you have comments, questions, suggestions or any issue, please visit the <a href="http://archive.msdn.microsoft.com/VideoEditor">MMP Video Editor community site</a>.</p>
+

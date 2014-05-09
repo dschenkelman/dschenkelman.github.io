@@ -1,0 +1,106 @@
+---
+layout: post
+title: 'CAB QuickStarts: Event Broker'
+categories:
+- C#
+- CAB
+- Composite UI Application Block
+- p&amp;p
+- Patterns &amp; Practices
+tags:
+- C#
+- CAB
+- Composite UI Application Block
+- p&amp;p
+- Patterns &amp; Practices
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>This is the first post of a <a title="http://blogs.southworks.net/dschenkelman/category/cab/" href="http://blogs.southworks.net/dschenkelman/category/cab/" target="_blank">series</a> that will cover the basic ground of <strong>CAB QuickStarts</strong> from a simple point of view.</p>
+<h3>Other posts in this series</h3>
+<ul>
+<li><a title="http://blogs.southworks.net/dschenkelman/2008/05/15/cab-quickstarts-module-loader/" href="http://blogs.southworks.net/dschenkelman/2008/05/15/cab-quickstarts-module-loader/" target="_blank">Module Loader QS</a></li>
+<li><a title="http://blogs.southworks.net/dschenkelman/2008/05/21/quickstart-3-smartpart/" href="http://blogs.southworks.net/dschenkelman/2008/05/21/quickstart-3-smartpart/" target="_blank">SmartPart QS</a></li>
+<li><a title="http://blogs.southworks.net/dschenkelman/2008/05/28/cab-quickstarts-commands/" href="http://blogs.southworks.net/dschenkelman/2008/05/28/cab-quickstarts-commands/" target="_blank">Commands QS</a></li>
+<li><a title="http://blogs.southworks.net/dschenkelman/2008/06/12/quickstart-5-bankteller/" href="http://blogs.southworks.net/dschenkelman/2008/06/12/quickstart-5-bankteller/" target="_blank">BankTeller QS</a></li>
+</ul>
+<p>For more information about CAB see:</p>
+<ul>
+<li> <a title="http://msdn.microsoft.com/en-us/library/aa480450.aspx" href="http://msdn.microsoft.com/en-us/library/aa480450.aspx" target="_blank">http://msdn.microsoft.com/en-us/library/aa480450.aspx</a></li>
+<li><a title="http://staff.southworks.net/blogs/mconverti/archive/tags/CAB/default.aspx" href="/blogs/mconverti/archive/tags/CAB/default.aspx" target="_blank">CAB introduction posts </a>(Spanish) by <a title="http://staff.southworks.net/blogs/mconverti/" href="/blogs/mconverti/" target="_blank">Mariano</a></li>
+<li><a title="http://staff.southworks.net/blogs/jcisneros/archive/2008/02/13/Yet-Another-Post-about-CAB.aspx" href="/blogs/jcisneros/archive/2008/02/13/Yet-Another-Post-about-CAB.aspx" target="_blank"> Composite UI Application Block</a>(Spanish) by <a title="http://staff.southworks.net/blogs/jcisneros/" href="/blogs/jcisneros/" target="_blank">Jonathan</a></li>
+</ul>
+<h3>Event Broker QS</h3>
+<p><span style="text-decoration: underline">This is a list of the procedures in this post:</p>
+<ul>
+<li><a href="#_Add_Customer_Button">Add Customer Button</a></li>
+<li><a href="/#_Show_List_Button">Show List Button</a></li>
+<li><a href="#_Add_Local_Button">Add Local Button</a></li>
+<li><a href="#_Add_Local_Button">Add Local Button</a></li>
+<li><a href="#_Add_Global_Button">Add Global Button</a></li>
+<li><a href="#_Proccess_Local_Button">Process Local Button (Makes Local be Global)</a></li>
+</ul>
+<h3>Add Customer Button</h3>
+<ol>
+<li><strong>View</strong> uses button <strong>event</strong> to communicate with <strong>controller</strong>.</li>
+<li>Controller adds customer in controller logic, and raises State Changed <strong>Event</strong>.</li>
+<li>The <strong>view</strong> which is suscribed to this <strong>event</strong> updates the list data source.</li>
+</ol>
+<h3>Show List Button</h3>
+<ol>
+<li><strong>View </strong>uses button <strong>Event</strong> to call method.</li>
+<li>Calls <strong>Controller</strong> method: ShowCustomerList.</li>
+<li>Creates a new <strong>workitem</strong> and adds it as a <strong>child</strong> for the one being used.</li>
+<li>Passes the current <strong>workitem’s State </strong>to the child workitem (Using a List, Empty)</li>
+<li>Adds a form as a <strong>View </strong>(to the Item Collection) to the child <strong>workitem.</strong></li>
+<li>The <strong>view’s </strong>constructor creates a new list <strong>[Create New] </strong>&amp; gets the <strong>state</strong> using the <strong>State </strong>attribute.</li>
+<li>The OnLoad <strong>Event Handler</strong> suscribes to both the <strong>State</strong> change <strong>event</strong> in the <strong>workitem</strong>, as well as a <strong>event</strong> raised by a change of <strong>State</strong> in the parent <strong>workitem</strong>.</li>
+<li>Displays the new <strong>View.</strong></li>
+</ol>
+<h3>Add Local Button</h3>
+<ol>
+<li>Calls <strong>Event</strong> for the button.</li>
+<li>If there’s something in the text box it calls the <strong>controller’s</strong> add local customer method passing id.</li>
+<li>Adds customer to list</li>
+<li>Raises <strong>event StateChanged.</strong></li>
+<li>The event handler referred to the State Changed in the view is executed.</li>
+<li>The data source for the list is re-assigned.</li>
+</ol>
+<h3>Add Global Button</h3>
+<ol>
+<li>Calls <strong>event</strong> for the button.</li>
+<li>If there is text calls <strong>Controller’s</strong> addGlobal Method passing id.</li>
+<li>Raises the GlobalCustomerAdded <strong>Event, </strong>passing customer ID as event args.</li>
+<li>The [<strong>EventPublication</strong>("<strong>topic</strong>://EventBrokerQuickStart/CustomerAdded")] in the <strong>controller “publicates” </strong>the<strong> event</strong></li>
+<li>This calls the method OnCustomerAdded in the LaunchPad<strong>Controller</strong>, because it is <strong>suscribed </strong>to the <strong>topic</strong>.</li>
+<li>The OnCustomerAdded calls the AddCustomer Method from the LaunchPad<strong>Controller</strong>.</li>
+<li>The method adds the customer to the customer List</li>
+<li>The <strong>State</strong> <strong>Changed</strong> <strong>Event</strong> is raised.</li>
+<li>Both <strong>Views</strong> (CustomerListView &amp; LaunchPadForm) update their list’s datasources because they are <strong>suscribed</strong> to the <strong>event</strong>.</li>
+</ol>
+<h3>Proccess Local Button  (Makes Local customers be Global)</h3>
+<ol>
+<li>Calls the <strong>event</strong> for the button.</li>
+<li>Calls <strong>CustomerListController</strong> ProcessLocalCustomer Method.</li>
+<li>If nothing is being processed assign the local customer list to <strong>DictionaryEventArgs.</strong></li>
+<li>Fire the "topic://EventBrokerQuickStart/StartProcess" topic.</li>
+<li><strong>CustomerListController </strong>has an EventSubscription to that topic, calling the <strong>StartProcessHandler </strong>(<span style="text-decoration: underline">Thread = Background, runs on a separate thread).</li>
+<li>Gets the list of customers to process from the dictionary.</li>
+<li>Calls the OnProgressChanged Method that raises the <strong>ProgressChanged</strong> <strong>event</strong>.</li>
+<li>The "topic://EventBrokerQuickStart/ProgressChanged" <strong>topic</strong> is suscribed to by the <strong>ProgressChangeHandler</strong>. The ProgressView updates its value by suscribing to this event.</li>
+<li>Calls the AddGlobalCustomer Method that fires the GlobalCustomerAdded <strong>event</strong>.</li>
+<li>The <strong>LaunchPadController</strong> suscribes to the GlobalCustomerAdded <strong>event</strong>, calling the add customer method, thus adding a customer to the customer list.</li>
+<li>Raising the StateChangedEvent so the list updates its data source (The CustomerListController Clears the customers list, then raises the State Changed and Creates a progress view ).</li>
+<li>The on process completed method is called in the <strong>StartProcessHandler</strong>, firing the <strong>ProcessCompleted</strong> <strong>event</strong>.</li>
+<li>The <strong>ProcessCompleted</strong> <strong>eventhandler</strong> updates the processing status to false.</li>
+</ol>
+<p>The <a title="http://blogs.southworks.net/dschenkelman/2008/05/15/cab-quickstarts-module-loader/" href="http://blogs.southworks.net/dschenkelman/2008/05/15/cab-quickstarts-module-loader/" target="_blank">next post</a> will be about the Module Loader Quickstart, stay tuned.</p>

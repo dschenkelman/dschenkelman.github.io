@@ -1,0 +1,29 @@
+---
+layout: post
+title: 'scriptcs: Reducing startup time by caching compiled .dlls'
+categories:
+- scriptcs
+tags:
+- scriptcs
+status: publish
+type: post
+published: true
+meta:
+  dsq_thread_id: '2025444414'
+  _edit_last: '15'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>A <a href="https://github.com/scriptcs/scriptcs/pull/485#issuecomment-27433217">couple of weeks ago</a> we introduced a new <a href="https://github.com/scriptcs/scriptcs">scriptcs</a> feature (available through the nightly builds) that allows you to execute your scripts, compile them to a .dll, and store it in a hidden folder for caching purposes. This greatly reduces start-up time (although there is still room for improvement) as we execute the .dll if it is available, thus avoiding some steps that we would need to perform otherwise.</p>
+<p>We have created an <a href="https://github.com/scriptcs/scriptcs/wiki/Compiling-%28and-caching%29-to-a-.dll" target="_blank">article in the wiki</a> that explains how the feature works and goes over some ideas for future improvements.</p>
+<p>If you get the chance, please try the feature out as we would like to:</p>
+<ul>
+<li>Get your feedback as to how you are using it to keep improving the experience</li>
+<li>Know if there are any bugs/issues that you encounter</li>
+</ul>
+<p>If you have any ideas go ahead and create a <a href="https://github.com/scriptcs/scriptcs/issues/new" target="_blank">new issue</a>.</p>
+<p>Have fun scripting!!</p>

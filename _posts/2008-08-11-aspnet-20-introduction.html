@@ -1,0 +1,55 @@
+---
+layout: post
+title: ASP.NET 2.0 Introduction
+categories:
+- ASP.NET
+- Object Oriented Programming
+- OOP
+tags:
+- ASP.NET
+- Object Oriented Programming
+- OOP
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>The following post will give an introduction to some of the main characteristics provided by ASP.NET 2.0 when developing WebApplications.</p>
+<h2>Component Model</h2>
+<p>It is important to remark that ASP.NET 2.0 uses a component model that maps all elements required by the WebSite into server side classes.</p>
+<p>That is why pages are transformed by the ASP.NET runtime into classes that inherit from page. To transform page elements into their server side "pairs" the <em>runat </em>attribute must be added to the element description.</p>
+<p>The great advantage that comes with this is that by "transforming" each page element  page into an object, you can use the entire .NET Framework class libraries, and usual object oriented programming syntax can be used to modify it.</p>
+<p>For example:</p>
+<pre><span style="color: green">&lt;!-- Page Layout --&gt;
+</span><span style="color: blue">&lt;</span><span style="color: #a31515">body </span><span style="color: red">runat</span><span style="color: blue">="server" </span><span style="color: red">id</span><span style="color: blue">="TheBody"&gt;</span></pre>
+<p>So in your code you could write the following to set the Background color in runtime:</p>
+<pre><span style="color: blue">public partial class </span><span style="color: #2b91af">_Default </span>: System.Web.UI.<span style="color: #2b91af">Page
+</span>{
+    <span style="color: blue">protected void </span>Page_Load(<span style="color: blue">object </span>sender, <span style="color: #2b91af">EventArgs </span>e)
+    {
+        TheBody.Style[<span style="color: #2b91af">HtmlTextWriterStyle</span>.BackgroundColor] = <span style="color: #a31515">"#006600"</span>;
+    }
+}</pre>
+<h2><span style="font-family: Trebuchet MS">Provider Model</span></h2>
+<p>The <a href="http://msdn.microsoft.com/en-us/library/aa479030.aspx" target="_blank">provider model</a> is based on the <a href="http://en.wikipedia.org/wiki/Strategy_pattern" target="_blank">Strategy Pattern</a>, which allows the application to select the best suitable algorithm for a specific behavior. This model enables some base functionality to be easily changed by repeating a similar approach each time this is done.</p>
+<p>The model is composed by base classes which define the methods that the customizable implementations ought to implement, thus serving as a guidance for developers. Parameters for initialization and storage for each of the providers are defined in the Configuration file.</p>
+<h2>HTTP Runtime Environment</h2>
+<p>The following diagram shows the overview of the HTTP Runtime Environment:</p>
+<p><a href="http://blogs.southworks.net/dschenkelman/files/2008/08/image1.png"><img src="http://blogs.southworks.net/dschenkelman/files/2008/08/image-thumb1.png" border="0" alt="image" width="479" height="312" /></a></p>
+<p>Basically when an ASP.NET request is "listened" it is directed to an application pool within which a Worker Process is executed (w3wp.EXE in ASP.NET 2.0 with IIS 6.0). For each request a different worker thread is executed. The threads start the HTTP Runtime Pipeline which allows the modifications of requests (either by HTTP Applications/Modules) before the HTTP handler is executed on the request. Once it is updated it goes back to the worker thread.</p>
+<p>The HTTP Context is obtained before any changes are done to the request. Since it is "raw" you can run any code by the request prior its modification:</p>
+<pre><span style="color: blue">void </span>ShowName()
+{
+    <span style="color: #2b91af">HttpContext </span>currentcontext = <span style="color: #2b91af">HttpContext</span>.Current;
+    <span style="color: blue">string </span>user = currentcontext.User.Identity.Name;
+    currentcontext.Response.Write(<span style="color: #a31515">"Hi" </span>+ user);
+}</pre>
+<div id="9bf9edb9-9f1e-4d5f-b287-f706a71e716b" class="wlWriterSmartContent" style="padding-right: 0px;padding-left: 0px;padding-bottom: 0px;margin: 0px;padding-top: 0px">Technorati Tags: <a rel="tag" href="http://technorati.com/tags/Object%20Oriented%20Programming">Object Oriented Programming</a>,<a rel="tag" href="http://technorati.com/tags/OOP">OOP</a>,<a rel="tag" href="http://technorati.com/tags/ASP.NET">ASP.NET</a></div>
+<p><a href="http://11011.net/software/vspaste"></a></p>

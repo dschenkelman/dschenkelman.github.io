@@ -1,0 +1,65 @@
+---
+layout: post
+title: Prism 2 (Composite Application Guidance for WPF & Silverlight) migrated to
+  Visual Studio 2010 Beta 2
+categories:
+- Composite Application Guidance for WPF &amp; SL
+- p&amp;p
+- Patterns &amp; Practices
+- Prism-v2
+- Prism-v2.1
+- Silverlight
+- Silverlight 3
+- Visual Studio 2010
+- Visual Studio 2010 Beta 2
+- Windows Presentation Foundation
+- WPF
+tags:
+- Composite Application Guidance for WPF &amp; SL
+- p&amp;p
+- Patterns &amp; Practices
+- Prism-v2
+- Prism-v2.1
+- Silverlight
+- Silverlight 3
+- Visual Studio 2010
+- Visual Studio 2010 Beta 2
+- Windows Presentation Foundation
+- WPF
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+  dsq_thread_id: '1934461435'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>As most of you might know, <a href="http://msdn.microsoft.com/en-us/vstudio/dd582936.aspx" target="_blank">Visual Studio 2010 Beta 2</a> was released some days ago. Ever since, many people have asked at the <a href="http://compositewpf.codeplex.com/Thread/List.aspx" target="_blank">Prism codeplex forums</a> if Prism works with this latest version. That's why with <a href="http://blogs.southworks.net/fantivero/" target="_blank">Fer</a> we decided to migrate <a href="http://blogs.southworks.net/dschenkelman/2009/11/02/prism-v21-composite-application-guidance-just-released-updated-version-for-silverlight-3/" target="_blank">Prism latest release for Silverlight 3</a> to VS 2010 Beta 2. Our conclusion after our smoke tests is that it does work :) .</p>
+<h2>Migration Steps</h2>
+<ol>
+<li>Migrated every solution.<a href="http://blogs.southworks.net/dschenkelman/files/2009/11/image1.png"><img style="margin-left: 0px;margin-right: 0px" src="http://blogs.southworks.net/dschenkelman/files/2009/11/image-thumb1.png" border="0" alt="image" width="244" height="78" align="right" /></a></li>
+<li>Ran the tests and smoke tested each application.</li>
+<li>Fixed any issues that appeared (mostly related to missing assembly references).</li>
+<li>As a little extra, we added the White assembly references required to run the acceptance tests.</li>
+</ol>
+<h2>Changes Required</h2>
+<p>Below you can find a small explanation of the changes required for the migration:</p>
+<ol>
+<li>The <a href="http://msdn.microsoft.com/en-us/library/dd458919.aspx" target="_blank">Reference Implementation</a> Tests fail (4 tests) when you run them. The fix is explained in <a href="http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=71635" target="_blank">this thread</a>.</li>
+<li>Many projects will throw a missing assembly reference exception related to "System.Xaml.dll". You need to add this assembly as a reference in most test projects.</li>
+<li>The <a href="http://msdn.microsoft.com/en-us/library/dd490832.aspx" target="_blank">Multitargeting Quickstart</a> throws an error when running it. To fix it, change the Resources constructor modifier from <em>internal</em> to <em>public</em>.</li>
+<li>Some build errors might be thrown because of code analysis issues in Silverlight projects (CA:0055 Analysis of Silverlight assemblies is not supported):
+<ul>
+<li>Uncheck the "Enable Code Analysis on build" check box in the Code Analysis tab.</li>
+<li>Make sure code analysis is not one of the compilation symbols in the Build tab.</li>
+</ul>
+</li>
+</ol>
+<h2>Download</h2>
+<p>The code provides all the fixes performed, and is provided "AS IS" with no warranties and confers no rights. It is shipped under the "works on my machine" license. You can download it from <a href="http://cid-09f63fc7ac065e5e.skydrive.live.com/self.aspx/p%5E0p%20Samples/Prism%20VS2010%20Beta%202.zip">here</a>.</p>
+<p>I hope this saves you the trouble of migrating Prism to VS 2010.</p>

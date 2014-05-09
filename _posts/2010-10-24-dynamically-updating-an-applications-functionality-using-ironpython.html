@@ -1,0 +1,53 @@
+---
+layout: post
+title: Dynamically updating an application’s functionality using IronPython
+categories:
+- Guidance
+- IronPython
+- MVVM
+- WPF
+tags:
+- IronPython
+- MVVM
+- WPF
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+  dsq_thread_id: '1559349657'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>About a month ago I <a href="http://blogs.southworks.net/dschenkelman/2010/09/21/using-mvvm-to-bring-ironpython-and-wpf-together/">blogged about an e-mail sender program</a> that used the MVVM pattern to integrate business logic written in Iron Python with presentation logic written in C#. In this post I will show another great benefit of using this approach. The source code related to this post can be downloaded from <a href="http://cid-09f63fc7ac065e5e.office.live.com/self.aspx/p%5E0p%20Samples/FSWatcherEmailClient.zip">here</a>.</p>
+<p>The old e-mail client only allowed users to send e-mails using a Hotmail or a Gmail account. Let’s say we our application to support new e-mail providers without having to restart it. When discussing this with <a href="http://blogs.southworks.net/msalias/">Martin Salias</a>, he suggested me to use a <a href="http://msdn.microsoft.com/en-us/library/system.io.filesystemwatcher.aspx">FileSystemWatcher</a>, which is the approach I decided to take.</p>
+<p>The first thing we need to do is create a FileSystemWatcher instance in the ViewModel’s constructor and have it listen to changes in the directory where the Python modules are obtained from. As we only want to get updates when a python module is updated, we specify that filter as well: <span style="font-family: Trebuchet MS"> </span></p>
+<pre><span style="color: blue">private void </span>InitializeFileSystemWatcher()
+{
+    <span style="color: blue">this</span>.fsWatcher = <span style="color: blue">new </span><span style="color: #2b91af">FileSystemWatcher</span>(PythonModulesPath, <span style="color: #a31515">"*.py"</span>);
+    <span style="color: blue">this</span>.fsWatcher.EnableRaisingEvents = <span style="color: blue">true</span>;
+    <span style="color: blue">this</span>.fsWatcher.Changed += FileSystemChanged;
+}</pre>
+<p><a href="http://11011.net/software/vspaste"></a></p>
+<p><span style="font-family: Trebuchet MS">Now we need to re-load the modules being used by our application once a change in the path specified occurs and update the UI accordingly:</span></p>
+<p><a href="http://11011.net/software/vspaste"></a></p>
+<pre><span style="color: blue">private void </span>FileSystemChanged(<span style="color: blue">object </span>sender, <span style="color: #2b91af">FileSystemEventArgs </span>e)
+{
+    <span style="color: blue">this</span>.LoadPythonModules();
+
+    <span style="color: green">//update all bound properties
+    </span><span style="color: blue">this</span>.RaisePropertyChanged(<span style="color: blue">string</span>.Empty);
+}</pre>
+<p>To check how this is working follow these steps:</p>
+<ol>
+<li>Open the solution provided in the .zip file and run it.</li>
+<li>Expand the Combobox control to verify that only Gmail and Hotmail are supported.<a href="http://blogs.southworks.net/dschenkelman/files/2010/10/image6.png"><img style="border: 0px" src="http://blogs.southworks.net/dschenkelman/files/2010/10/image_thumb5.png" border="0" alt="image" width="339" height="227" /></a></li>
+<li>Find the <strong>New</strong> <strong>Modules </strong>folder inside the .zip file and copy the <strong>emailDispatcher.py</strong> module to the <strong>WPFClient\bin\Debug\Python Code </strong>directory. Replace the existing file.<a href="http://blogs.southworks.net/dschenkelman/files/2010/10/image7.png"><img style="border: 0px" src="http://blogs.southworks.net/dschenkelman/files/2010/10/image_thumb6.png" border="0" alt="image" width="331" height="373" /></a></li>
+<li>Expand the Combobox control to verify that Yahoo has been added as a provider.<a href="http://blogs.southworks.net/dschenkelman/files/2010/10/image8.png"><img style="border: 0px" src="http://blogs.southworks.net/dschenkelman/files/2010/10/image_thumb7.png" border="0" alt="image" width="334" height="226" /></a></li>
+<li>(Optional) If you have a yahoo account send an e-mail to test that it works correctly.</li>
+</ol>
+<p>Although this sample is quiet simple, I think it is a great way to illustrate the flexibility of having this kind of application.</p>

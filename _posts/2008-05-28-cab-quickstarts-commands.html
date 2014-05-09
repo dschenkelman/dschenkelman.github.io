@@ -1,0 +1,79 @@
+---
+layout: post
+title: 'CAB Quickstarts: Commands'
+categories:
+- C#
+- CAB
+- Composite UI Application Block
+- p&amp;p
+- Patterns &amp; Practices
+tags:
+- C#
+- CAB
+- Composite UI Application Block
+- p&amp;p
+- Patterns &amp; Practices
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>This is the forth post of a <a title="http://blogs.southworks.net/dschenkelman/category/cab/" href="http://blogs.southworks.net/dschenkelman/category/cab/" target="_blank">series</a> that covers the basic ground of CAB QuickStarts from a simple point of view.</p>
+<h4>Other posts in this series</h4>
+<ul>
+<li><a title="http://blogs.southworks.net/dschenkelman/2008/05/13/cab-quickstarts-event-broker/" href="http://blogs.southworks.net/dschenkelman/2008/05/13/cab-quickstarts-event-broker/" target="_blank">Event Broker QS</a></li>
+<li><a title="http://blogs.southworks.net/dschenkelman/2008/05/15/cab-quickstarts-module-loader/" href="http://blogs.southworks.net/dschenkelman/2008/05/15/cab-quickstarts-module-loader/" target="_blank">Module Loader QS</a></li>
+<li><a title="http://blogs.southworks.net/dschenkelman/2008/05/21/quickstart-3-smartpart/" href="http://blogs.southworks.net/dschenkelman/2008/05/21/quickstart-3-smartpart/" target="_blank">Smartpart QS</a></li>
+<li><a title="http://blogs.southworks.net/dschenkelman/2008/06/12/quickstart-5-bankteller/" href="http://blogs.southworks.net/dschenkelman/2008/06/12/quickstart-5-bankteller/" target="_blank">BankTeller QS</a></li>
+</ul>
+<p>For more information about CAB see:</p>
+<ul>
+<li><a href="http://msdn.microsoft.com/en-us/library/aa480450.aspx">http://msdn.microsoft.com/en-us/library/aa480450.aspx</a></li>
+<li><a href="/blogs/mconverti/archive/tags/CAB/default.aspx">CAB introduction posts </a>(Spanish) by <a href="/blogs/mconverti/">Mariano</a></li>
+<li><a href="/blogs/jcisneros/archive/2008/02/13/Yet-Another-Post-about-CAB.aspx">Composite UI Application Block</a>(Spanish) by <a href="/blogs/jcisneros/">Jonathan</a></li>
+</ul>
+<h3>Commands QS</h3>
+<p>This is a list of the procedures in this post</p>
+<ul>
+<li><a href="#_Startup">Startup</a></li>
+<li><a href="#_Menu_Item_Clicking"> Menu Item Clicking</a></li>
+</ul>
+<h4><a title="_Startup" name="_Startup"></a>Startup</h4>
+<ol>
+<li>The <strong>shell</strong> defines the <strong>MainWorkItem</strong> as the root <strong>WorkItem</strong> and the <strong>ShellForm</strong> as the first <strong>view</strong>.</li>
+<li> The overridden <strong>AfterShellCreated</strong>() method assigns to <em>fileitem </em>= <strong>ToolStripMenuItem</strong> [“File”].</li>
+<li>An <strong>ExtensionSite</strong> is registered in the <strong>MainWorkItem</strong>, named “File” and is a <strong>DropDownItem</strong>.</li>
+<li> The <strong>MainWorkItem</strong> overridden <strong>OnRunStarted</strong>() creates a <strong>new</strong> instace of the <strong>MainController</strong> and adds it to the <strong>Workitem</strong>’s <strong>Item</strong> Collection.</li>
+<li>The <strong>ProcessCommandMap</strong>() method is called, which:
+<ul>
+<li>Loads Command Configuration File.</li>
+<li>Executes a <strong>foreach</strong> statement in the CommandMap.Mapping [array]
+<ul>
+<li>Creates a <strong>ToolStripMenuItem</strong> (MenuItem.Text = mapping.Label)</li>
+<li> Adds to the [“File”] Extension Site (using mapping.Site as the parameter) the <strong>ToolStripMenuItem</strong>.</li>
+<li>Adds to the <strong>Commands</strong> (Collection) the invoker for the “Click” event using the <strong>AddInvoker()</strong> method.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Activates the <strong>WorkItem</strong>.</li>
+</ol>
+<h4><a title="_Menu_Item_Clicking" name="_Menu_Item_Clicking"></a>Menu Item Clicking</h4>
+<ol>
+<li>The <strong>CommandHandler</strong> related to the click <strong>event</strong> raised by the item is called.</li>
+<li>There are two kind of <strong>CommandHandlers</strong> now.
+<ol>
+<li>The <strong>ShowCustomerHandler</strong> that MessageBox.Show(“”);</li>
+<li>The status kind. These 3 change the <strong>CommandStatus</strong> according to the <strong>ToolStripMenuItem</strong> pressed. (Enabled|Disabled|Unavailable(not visible in this case))</li>
+<li> The <strong>ToolStripItemCommandAdapter</strong> “listens” to the <strong>CommandChanged</strong> <strong>event</strong>, and based on it changes the Enabled/Visible property of the <strong>ShowCustomerHandler ToolStripMenuItem</strong>.</li>
+</ol>
+</li>
+</ol>
+<p>The <a title="http://blogs.southworks.net/dschenkelman/2008/06/12/quickstart-5-bankteller/" href="http://blogs.southworks.net/dschenkelman/2008/06/12/quickstart-5-bankteller/" target="_blank">next and final post</a> in the series will cover the BankTeller QS.</p>

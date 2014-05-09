@@ -1,0 +1,94 @@
+---
+layout: post
+title: 'How to: Drag and Drop WPF Views between Regions in Prism-v2'
+categories:
+- Composite Application Guidance for WPF &amp; SL
+- p&amp;p
+- Patterns &amp; Practices
+- Prism-v2
+- Windows Presentation Foundation
+- WPF
+tags:
+- Composite Application Guidance for WPF &amp; SL
+- p&amp;p
+- Patterns &amp; Practices
+- Prism-v2
+- Windows Presentation Foundation
+- WPF
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+  dsq_thread_id: '1552821360'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>Yesterday, this <a href="http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=58441">question</a> in the <a href="http://www.codeplex.com/CompositeWPF/Thread/List.aspx">Prism forums at codeplex</a>, had us (p&amp;p Sustained Engineering Team) thinking about a possible way to implement drag and drop of views from one region to another. Since we had not seen any samples on how that could be done, I decided to implement one. Thanks to <a href="http://blogs.southworks.net/ejadib/">Ezequiel Jadib</a>, who helped me with his experience using WPF and Silverlight drag and drop.</p>
+<table border="1">
+<tbody>
+<tr>
+<td><strong>Update 2009/06/26</strong>: I created a <a href="http://blogs.southworks.net/dschenkelman/2009/06/27/how-to-drag-and-drop-silverlight-views-between-regions-in-prism-v2/" target="_blank">post that provides Drag and Drop functionality for Prism and Silverlight</a>.</td>
+</tr>
+</tbody>
+</table>
+<p>This blog post will explain the process to enable Drag and Drop for your views (assuming they are not in scoped regions), and provide a sample based on the Hello World Quickstart from <a href="http://msdn.microsoft.com/en-us/library/dd458809.aspx">Prism-v2</a>.</p>
+<p>Some more information about <a href="http://msdn.microsoft.com/en-us/library/ms742859.aspx">WPF Drag and Drop</a> can be found here:</p>
+<ul>
+<li><a href="http://msdn.microsoft.com/en-us/library/ms749252.aspx">How to: Use a Thumb to Enable Dragging</a></li>
+</ul>
+<h4>Creating the ViewDragManager</h4>
+<p>After a couple of quick spikes, with <a href="http://blogs.southworks.net/jdominguez/">Julian "Attached Behavior" Dominguez</a> and <a href="http://blogs.southworks.net/matiasb/">Matias Bonaventura</a>, we arrived to the conclusion that having a single component to manage the drag and drop of views would be the best option. This component was called <strong>ViewDragManager</strong>.</p>
+<p>To use the <strong>ViewDragManager</strong> in your solution you will need to follow these steps:</p>
+<ol>
+<li>Register the <strong>ViewDragManager</strong> in your application's container. You can override the <strong>ConfigureContainer </strong>method of the UnityBootstrapper to do this. It should be registered as a Singleton since it will act as a service:
+<pre><span style="color: blue">protected override void </span>ConfigureContainer()
+       {
+           <span style="color: blue">base</span>.ConfigureContainer();
+           RegisterTypeIfMissing(<span style="color: blue">typeof</span>(<span style="color: #2b91af">IViewDragManager</span>), <span style="color: blue">typeof</span>(<span style="color: #2b91af">ViewDragManager</span>), <span style="color: blue">true</span>);
+       }</pre>
+<p><a href="http://11011.net/software/vspaste"></a></li>
+<li>Add a reference to the DragDropManager assembly in your Shell project, and to the modules that will enable draggable views. <a href="http://11011.net/software/vspaste"></a></li>
+<li>Add a namespace reference in your Shell to be able to access the ViewDragManager:
+<pre><span style="color: red">xmlns</span><span style="color: blue">:</span><span style="color: red">DragDrop</span><span style="color: blue">="clr-namespace:DragDropManager;assembly=DragDropManager"</span></pre>
+<p><a href="http://11011.net/software/vspaste"></a></li>
+<li>Set the ViewDragManager.AllowDrop dependency property in each of the regions that will enable views to be dragged into them to <strong>True</strong>.
+<pre><span style="color: blue">&lt;</span><span style="color: #a31515">ContentControl </span><span style="color: red">DragDrop</span><span style="color: blue">:</span><span style="color: red">ViewDragManager.AllowDrop</span><span style="color: blue">="True"
+                    </span><span style="color: red">Height</span><span style="color: blue">="200" </span><span style="color: red">Name</span><span style="color: blue">="DropRegion" </span><span style="color: red">cal</span><span style="color: blue">:</span><span style="color: red">RegionManager.RegionName</span><span style="color: blue">="DropRegion" /&gt;</span></pre>
+<p><a href="http://11011.net/software/vspaste"></a></li>
+<li>Create a <a href="http://msdn.microsoft.com/en-us/library/system.windows.controls.primitives.thumb.aspx">Thumb</a> in each of the views you want to be able to Drag and Drop.
+<pre><span style="color: blue">&lt;</span><span style="color: #a31515">Thumb </span><span style="color: red">Background</span><span style="color: blue">="DarkSlateGray" </span><span style="color: red">Width</span><span style="color: blue">="10" </span><span style="color: red">Height</span><span style="color: blue">="60" </span><span style="color: red">x</span><span style="color: blue">:</span><span style="color: red">Name</span><span style="color: blue">="dragger"/&gt;</span></pre>
+<p><a href="http://11011.net/software/vspaste"></a></li>
+<li>Call the <strong>AddDraggableView</strong> method of the ViewDragManager passing the view and its thumb as parameters. A possible place to do this could be the View's Presenter constructor:
+<pre><span style="color: blue">public </span>DraggableViewPresenter(<span style="color: #2b91af">DraggableView </span>view,
+           IRegionManager manager, <span style="color: #2b91af">IViewDragManager </span>dragManager)
+       {
+           <span style="color: blue">this</span>.viewDragManager = dragManager;
+           <span style="color: blue">this</span>.regionManager = manager;
+           <span style="color: blue">this</span>.View = view;
+           viewDragManager.AddDraggableView(<span style="color: blue">this</span>.View, <span style="color: blue">this</span>.View.dragger);
+       }</pre>
+</li>
+</ol>
+<p>That's all, you should now be able to drag your views between the regions you enabled :)</p>
+<h4>Outcome</h4>
+<p>The outcome is the following (clicking the image will probably provide a better view).<br />
+<a href="http://blogs.southworks.net/dschenkelman/files/2009/06/dragging1.png"></a><a href="http://blogs.southworks.net/dschenkelman/files/2009/06/dragging1.png"></a><a href="http://blogs.southworks.net/dschenkelman/files/2009/06/dragging1.png"><img class="alignnone size-full wp-image-102" src="http://blogs.southworks.net/dschenkelman/files/2009/06/dragging1.png" alt="" width="500" height="187" /></a></p>
+<h4>Drag and Drop Sample</h4>
+<h6>Disclaimer</h6>
+<p>This code is provided “AS IS” with no warranties, and confers no rights.</p>
+<h5>Download</h5>
+<p>You can get the sample from here: <a href="http://cid-09f63fc7ac065e5e.skydrive.live.com/self.aspx/p%7C0p%20Samples/DragDropSample.zip">DragDropSample.zip</a>.</p>
+<table border="1">
+<tbody>
+<tr>
+<td><strong>Note:</strong> The code to create the <strong>ViewAdorner </strong>was taken from <a href="http://msdn.microsoft.com/en-us/library/bb295243.aspx">this sample</a>.</td>
+</tr>
+</tbody>
+</table>
+<p>I hope this is useful, and greatly appreciate your feedback to continue improving.</p>
+<p>Have fun dragging :) !!!</p>

@@ -1,0 +1,254 @@
+<!doctype html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if (IE 7)&!(IEMobile)]><html class="no-js lt-ie9 lt-ie8" lang="en"><![endif]-->
+<!--[if (IE 8)&!(IEMobile)]><html class="no-js lt-ie9" lang="en"><![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"><!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<title>C# Code Snippet to Create Commands with Attached Behaviors using Prism &#8211; A sea of code</title>
+<meta name="description" content="Pseudo-random thoughts related to software development...">
+<meta name="keywords" content="Attached Behaviors, Composite Application Guidance for WPF &amp; SL, p&amp;p, Patterns &amp; Practices, Prism-v2, Silverlight, Windows Presentation Foundation, WPF">
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://localhost:4000/images/site-logo.jpg">
+<meta name="twitter:title" content="C# Code Snippet to Create Commands with Attached Behaviors using Prism">
+<meta name="twitter:description" content="Pseudo-random thoughts related to software development...">
+<meta name="twitter:creator" content="@dschenkelman">
+
+<!-- Open Graph -->
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C# Code Snippet to Create Commands with Attached Behaviors using Prism">
+<meta property="og:description" content="Pseudo-random thoughts related to software development...">
+<meta property="og:url" content="http://localhost:4000/2009/08/13/c-code-snippet-to-create-commands-with-attached-behaviors-using-prism/">
+<meta property="og:site_name" content="A sea of code">
+
+
+
+
+
+<link rel="canonical" href="http://localhost:4000/2009/08/13/c-code-snippet-to-create-commands-with-attached-behaviors-using-prism/">
+<link href="http://localhost:4000/feed.xml" type="application/atom+xml" rel="alternate" title="A sea of code Feed">
+
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="http://localhost:4000/assets/css/main.min.css">
+<!-- Webfonts -->
+<script src="//use.edgefonts.net/source-sans-pro:n2,i2,n3,i3,n4,i4,n6,i6,n7,i7,n9,i9;source-code-pro:n4,n7;volkhov.js"></script>
+
+<meta http-equiv="cleartype" content="on">
+
+<!-- Load Modernizr -->
+<script src="http://localhost:4000/assets/js/vendor/modernizr-2.6.2.custom.min.js"></script>
+
+<!-- Icons -->
+<!-- 16x16 -->
+<link rel="shortcut icon" href="http://localhost:4000/favicon.ico">
+<!-- 32x32 -->
+<link rel="shortcut icon" href="http://localhost:4000/favicon.png">
+<!-- 57x57 (precomposed) for iPhone 3GS, pre-2011 iPod Touch and older Android devices -->
+<link rel="apple-touch-icon-precomposed" href="http://localhost:4000/images/apple-touch-icon-precomposed.png">
+<!-- 72x72 (precomposed) for 1st generation iPad, iPad 2 and iPad mini -->
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://localhost:4000/images/apple-touch-icon-72x72-precomposed.png">
+<!-- 114x114 (precomposed) for iPhone 4, 4S, 5 and post-2011 iPod Touch -->
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://localhost:4000/images/apple-touch-icon-114x114-precomposed.png">
+<!-- 144x144 (precomposed) for iPad 3rd and 4th generation -->
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://localhost:4000/images/apple-touch-icon-144x144-precomposed.png">
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/gist-embed/1.7/gist-embed.min.js"></script>
+
+</head>
+
+<body id="post">
+
+<div class="navigation-wrapper">
+	<nav role="navigation" id="site-nav" class="animated drop">
+	    <ul>
+	        
+			<li>
+				
+					<a href="http://localhost:4000/">Home</a>
+				 
+			</li>
+	        
+			<li>
+				
+					<a href="http://localhost:4000/about/">About</a>
+				 
+			</li>
+	        
+			<li>
+				
+					<a href="/articles/">Articles</a>
+				 
+			</li>
+	        
+	        <li><a href="http://localhost:4000/feed.xml" title="Atom/RSS feed"><i class="icon-rss"></i> Feed</a></li>
+	        <li class="dosearch"><i class="icon-search"></i> Search</li>
+	    </ul>
+	</nav>
+</div><!-- /.navigation-wrapper -->
+
+<!--[if lt IE 9]><div class="upgrade"><strong><a href="http://whatbrowser.org/">Your browser is quite old!</strong> Why not upgrade to a different browser to better enjoy this site?</a></div><![endif]-->
+
+<div class="search-wrapper">
+	<div class="search-form">
+		<input type="text" class="search-field" placeholder="Search...">
+		<i class="icon-remove-sign icon-2x"></i>
+		<ul class="search-results post-list"></ul><!-- /.search-results -->
+	</div><!-- /.search-form -->
+</div><!-- ./search-wrapper -->
+
+<header class="masthead">
+	<div class="wrap">
+        
+    		<a href="http://localhost:4000/" class="site-logo" rel="home" title="A sea of code"><img src="http://localhost:4000/images/site-logo.jpg" width="200" height="200" alt="A sea of code logo" class="animated fadeInUp"></a>
+        
+        <h1 class="site-title animated fadeIn"><a href="http://localhost:4000/">A sea of code</a></h1>
+		<h2 class="site-description animated fadeIn" itemprop="description">Pseudo-random thoughts related to software development...</h2>
+	</div>
+</header><!-- /.masthead -->
+
+
+<div id="main" role="main">
+  <article class="hentry">
+    
+    <div class="entry-wrapper">
+      <header class="entry-header">
+        <span class="entry-tags"><a href="http://localhost:4000/tags/#Attached Behaviors" title="Pages tagged Attached Behaviors">Attached Behaviors</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#Composite Application Guidance for WPF &amp; SL" title="Pages tagged Composite Application Guidance for WPF &amp; SL">Composite Application Guidance for WPF &amp; SL</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#p&amp;p" title="Pages tagged p&amp;p">p&amp;p</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#Patterns &amp; Practices" title="Pages tagged Patterns &amp; Practices">Patterns &amp; Practices</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#Prism-v2" title="Pages tagged Prism-v2">Prism-v2</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#Silverlight" title="Pages tagged Silverlight">Silverlight</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#Windows Presentation Foundation" title="Pages tagged Windows Presentation Foundation">Windows Presentation Foundation</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#WPF" title="Pages tagged WPF">WPF</a></span>
+        
+          <h1 class="entry-title">C# Code Snippet to Create Commands with Attached Behaviors using Prism</h1>
+        
+      </header>
+      <footer class="entry-meta">
+        <img src="http://localhost:4000/images/bio-photo.jpg" alt="Damian Schenkelman photo" class="author-photo">
+        <span class="author vcard">By <span class="fn"><a href="http://localhost:4000/about/" title="About Damian Schenkelman">Damian Schenkelman</a></span></span>
+        <span class="entry-date date published"><time datetime="2009-08-13T00:00:00-04:00"><i class="icon-calendar-empty"></i> August 13, 2009</time></span>
+        
+        
+        <span><a href="http://localhost:4000/2009/08/13/c-code-snippet-to-create-commands-with-attached-behaviors-using-prism/" rel="bookmark" title="C# Code Snippet to Create Commands with Attached Behaviors using Prism"><i class="icon-link"></i> Permalink</a></span>
+        
+      </footer>
+      <div class="entry-content">
+        <p>One of the most common questions we get at the <a href="http://www.codeplex.com/CompositeWPF/Thread/List.aspx">Prism forums</a> is of the type: "How do I execute my command when X happens?" (X not being a button being clicked :) ).  A sample of this type of question can be seen <a href="http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=64106">here</a>, where a particular command needs to be executed whenever a textbox's text changes. Our answer usually is that the user can create a command with an attached behavior. However, users are not always happy with this answer because of the complexity of having to create an attached behavior to hook up the command</p>
+<p>For this reason, with the help of <a href="http://blogs.southworks.net/matiasb/">Matias Bonaventura</a>, and <a href="http://blogs.southworks.net/dpoza/2008/08/06/snippet-creator-10-released/">Diego Poza's Snippet Creator tool</a> and this <a href="http://msdn.microsoft.com/en-us/library/ms165392.aspx">group of MSDN sites</a> we created a code snippet that will enable developers to easily create this commands with attached behaviors.<br />
+<a href="http://blogs.southworks.net/dschenkelman/files/2009/08/snippet.png"><img class="aligncenter size-medium wp-image-128" style="float: none;margin-left: auto;margin-right: auto" src="http://blogs.southworks.net/dschenkelman/files/2009/08/snippet.png" alt="Command Attached Behavior snippet" width="300" height="188" /></a></p>
+<h2>Pre-Requirements</h2>
+<ol>
+<li><a href="http://cid-09f63fc7ac065e5e.skydrive.live.com/self.aspx/p%7C0p%20Samples/CommandBehaviorSnippet.vsi">Download the Snippet Visual Studio installer</a> and run the installer (the snippet is provided "AS IS" with no warranties and confers no rights).</li>
+<li>The class where you run the snippet must have the following using statements:
+<ul>
+<li>The namespace of the Control that has the event your command will attach to.</li>
+<li><strong>Microsoft.Practices.Composite.Presentation.Commands. </strong>The snippet uses the CommandBehaviorBase&lt;T&gt; class of Prism-v2. MSDN site <a href="http://msdn.microsoft.com/en-us/library/cc707819.aspx">here</a>.</li>
+<li><strong>System.Windows: </strong>For DependencyProperty class for example.</li>
+<li><strong>System.Windows.Input: </strong>Has the ICommand interface.</li>
+</ul>
+</li>
+</ol>
+<h2>Using the snippet</h2>
+<p>Once you have performed the previous steps, you must take into account the following considerations:</p>
+<ul>
+<li>The snippet will create two classes. You will probably want to put the code it generates in a separate class file, dedicated to that particular command.</li>
+<li>The shortcut to insert the code snippet is: <strong>cmdbehavior</strong>. You must press TAB as any other code snippet requires to be inserted in your code.</li>
+<li>You must fill four replacements (the rectangles in green):
+<ol>
+<li><strong>CommandAction:</strong> A description of what the behavior handles. Example: TextChanged.</li>
+<li><strong>BehaviorNameCommandBehavior</strong>: Replace with the name of the command behavior. Example: TextBoxTextChangedCommandBehavior.</li>
+<li><strong>ControlType</strong>: The type of the control that has the events your command will attach to. Example: TextBox.</li>
+<li><strong>EventName: </strong>The event of your control you will attach to.</li>
+</ol>
+</li>
+<li>To bind the command in XAML, you simply need to add a definition to the namespace and then bind the command property of the $CommandAction$ class to the command in your ViewModel. Example:
+<pre><span style="color: blue">&lt;</span><span style="color: #a31515">Window </span><span style="color: red">x</span><span style="color: blue">:</span><span style="color: red">Class</span><span style="color: blue">="WpfApplication1.Window1"
+    ...
+    </span><span style="color: red">xmlns</span><span style="color: blue">:</span><span style="color: red">cmd</span><span style="color: blue">="clr-namespace:Commanding.Modules.Order.Views"&gt;
+    &lt;</span><span style="color: #a31515">Grid</span><span style="color: blue">&gt;
+        &lt;</span><span style="color: #a31515">TextBox </span><span style="color: red">cmd</span><span style="color: blue">:</span><span style="color: red">TextChanged.Command</span><span style="color: blue">="{</span><span style="color: #a31515">Binding </span><span style="color: red">Path</span><span style="color: blue">=TextChangedCommand}"&gt;&lt;/</span><span style="color: #a31515">TextBox</span><span style="color: blue">&gt;
+    &lt;/</span><span style="color: #a31515">Grid</span><span style="color: blue">&gt;
+&lt;/</span><span style="color: #a31515">Window</span><span style="color: blue">&gt;</span></pre>
+<p><a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a><a href="http://11011.net/software/vspaste"></a></li>
+</ul>
+<p>I hope this snippet is useful for you, and that you are able to save time and problems using it. I know I am :) .</p>
+
+        
+      </div><!-- /.entry-content -->
+    </div><!-- /.entry-wrapper -->
+    <nav class="pagination" role="navigation">
+      
+        <a href="http://localhost:4000/2009/08/11/developing-applications-with-wpf-and-windows-7-part-i/" class="btn" title="Developing applications with WPF and Windows 7 (Part I)">Previous article</a>
+      
+      
+        <a href="http://localhost:4000/2009/08/31/developing-application-with-wpf-and-windows-7-part-ii/" class="btn" title="Developing application with WPF and Windows 7 (Part II)">Next article</a>
+      
+    </nav><!-- /.pagination -->
+  </article>
+</div><!-- /#main -->
+
+<div class="footer-wrapper">
+  <footer role="contentinfo">
+    <span>&copy; 2014 Damian Schenkelman. Powered by <a href="http://jekyllrb.com">Jekyll</a> using the <a href="http://mademistakes.com/so-simple/">So Simple Theme</a>.</span>
+<div class="social-icons">
+	<a href="http://twitter.com/dschenkelman" title="Damian Schenkelman on Twitter" target="_blank"><i class="icon-twitter icon-2x"></i></a>
+	
+	
+	<a href="http://linkedin.com/in/damianschenkelman" title="Damian Schenkelman on LinkedIn" target="_blank"><i class="icon-linkedin icon-2x"></i></a>
+	
+	
+	
+	<a href="http://github.com/dschenkelman" title="Damian Schenkelman on Github" target="_blank"><i class="icon-github icon-2x"></i></a>
+	
+</div><!-- /.social-icons -->
+  </footer>
+</div><!-- /.footer-wrapper -->
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="http://localhost:4000/assets/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script src="http://localhost:4000/assets/js/scripts.min.js"></script>
+
+<!-- Jekyll Simple Search option -->
+<script>
+  $(document).ready(function() {
+      $('.search-field').simpleJekyllSearch({
+          jsonFile : 'http://localhost:4000/search.json',
+          searchResults : '.search-results',
+          template : '<li><article><a href="{url}">{title} <span class="entry-date"><time datetime="{date}">{shortdate}</time></span></a></article></li>',
+          noResults: '<p>Nothing found.</p>'
+        });
+  });
+
+  (function( $, window, undefined ) {
+    
+     var bs = {
+          close: $(".icon-remove-sign"),
+          searchform: $(".search-form"),
+          canvas: $("body"),
+          dothis: $('.dosearch')
+      };
+    
+    bs.dothis.on('click', function() {
+      $('.search-wrapper').css({ display: "block" });
+      bs.searchform.toggleClass('active');
+      bs.searchform.find('input').focus();
+      bs.canvas.toggleClass('search-overlay');
+    });
+    
+      bs.close.on('click', function() {
+        $('.search-wrapper').removeAttr( 'style' );
+        bs.searchform.toggleClass('active');
+        bs.canvas.removeClass('search-overlay');
+    });
+  })( jQuery, window );
+</script>
+
+
+	        
+
+</body>
+</html>

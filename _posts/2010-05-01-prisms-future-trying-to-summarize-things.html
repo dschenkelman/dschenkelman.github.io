@@ -1,0 +1,72 @@
+---
+layout: post
+title: 'Prism''s future: Trying to summarize things'
+categories:
+- Composite Application Guidance for WPF &amp; SL
+- p&amp;p
+- Patterns &amp; Practices
+- Prism-v4
+- Silverlight 4
+- Visual Studio 2010
+- Windows Presentation Foundation
+- WPF
+tags:
+- Composite Application Guidance for WPF &amp; SL
+- p&amp;p
+- Patterns &amp; Practices
+- Prism-v4
+- Silverlight 4
+- Visual Studio 2010
+- Windows Presentation Foundation
+- WPF
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+  dsq_thread_id: '1697182641'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<table border="1" cellspacing="0" cellpadding="2" width="682">
+<tbody>
+<tr>
+<td width="680" valign="top"><strong>Disclaimer:</strong> This blog post will not provide any new information on Prism's future, as it simply is a merger of blog posts, forum threads and similar. If you follow the team blogs actively, you will probably already be aware about this information.</td>
+</tr>
+</tbody>
+</table>
+<p>There have been lots of threads in the Prism forum with questions like "<em>is there going to be a Prism update before 4.0?", "is there going to be support for Windows Phone 7?" </em>or "<em>what are the new features in the latest Prism source update?".</em></p>
+<p>So, to keep things in a single place and avoid duplication (we all know how bad it can get), I decided to merge as much as I can here.</p>
+<h2>About Prism v4</h2>
+<p>The Prism team is starting to gather feedback about the new version, so as always your input is really valuable and you can make a difference in the features that the guidance will target. You can complete the survey <a href="http://www.zoomerang.com/Survey/WEB22AK39NFHMT">here</a>.</p>
+<p>The following blog posts talk about Prism 4.0, possible features and other stuff:</p>
+<ul>
+<li><a href="http://blogs.msdn.com/blaine/archive/2010/03/17/prism-4-0-plans.aspx">Prism 4.0 Plans</a> by <a href="http://blogs.msdn.com/blaine/">Blaine Wastell</a></li>
+<li><a href="http://blogs.msdn.com/blaine/archive/2010/03/22/prism-will-support-unity-2-0.aspx">Prism will support Unity 2.0</a> by <a href="http://blogs.msdn.com/blaine/">Blaine Wastell</a></li>
+<li><a href="http://blogs.msdn.com/dphill/archive/2010/04/28/prism-4-0-have-your-say.aspx">Prism 4.0 Have Your Say!</a> by <a href="http://blogs.msdn.com/dphill/">David Hil</a>l</li>
+<li><a href="http://blogs.msdn.com/dphill/archive/2010/03/15/prism-a-look-ahead.aspx">Prism A Look Ahead</a> by <a href="http://blogs.msdn.com/dphill/">David Hill</a></li>
+<li><a href="http://blogs.msdn.com/simplifying_patterns_and_practices/archive/2010/03/15/prism-a-look-ahead.aspx">Prism, A Look Ahead</a> in the <a href="http://blogs.msdn.com/simplifying_patterns_and_practices/default.aspx">Simplifying p&amp;p blog</a></li>
+</ul>
+<h2>About Prism v2.2 (the "in the meantime" version)</h2>
+<p>Another question might be "<em>what do we do while we wait for Prism 4.0?"</em>. Well, as <a href="http://blogs.msdn.com/dphill/">David Hill</a> explains in <a href="http://blogs.msdn.com/dphill/archive/2010/03/15/prism-a-look-ahead.aspx">this post</a> <em>"once .NET 4.0 and Silverlight 4.0 are released, we'll complete our testing and release an updated version of Prism (which we'll probably call Prism 2.2)."</em></p>
+<h2>About the latest source update</h2>
+<p>There is no <em>"change log"</em> for the <a href="http://compositewpf.codeplex.com/SourceControl/changeset/changes/42969">latest source update</a>, as there are actually no changes in Prism. You can read about the specific updates for Silverlight, Unity and .Net in <a href="http://blogs.msdn.com/bobbrum/archive/2010/04/23/prism-source-updated-for-unity-2-0-and-silverlight-4.aspx">this post</a> from <a href="http://blogs.msdn.com/bobbrum/">Bob Brumfield</a>. When you download the source drop you might notice the following folder structure:</p>
+<p><a href="http://blogs.southworks.net/dschenkelman/files/2010/05/image.png"><img src="http://blogs.southworks.net/dschenkelman/files/2010/05/image-thumb.png" border="0" alt="image" width="244" height="221" /></a></p>
+<p>What's in each folder? Let's go over them:</p>
+<ul>
+<li>V1 has Prism 1.0 (<a href="http://msdn.microsoft.com/en-us/library/ff648612.aspx">Composite Application Guidance for WPF June 2008</a>) which targets WPF.</li>
+<li>V2 has Prism 2.0  (<a href="http://compositewpf.codeplex.com/releases/view/23450">Composite Application Guidance for WPF &amp; Silverlight February 2009</a>), which targets WPF &amp; Silverlight 2.</li>
+<li>V3 has Prism 2.1 (<a href="http://msdn.microsoft.com/en-us/library/ff648611.aspx">Composite Application Guidance for WPF &amp; Silverlight October 2009</a>), which <a href="http://blogs.southworks.net/dschenkelman/2009/11/02/prism-v21-composite-application-guidance-just-released-updated-version-for-silverlight-3/">fixed a couple of bugs in Prism and targets Silverlight 3</a>.</li>
+<li>V4 has the source update Bob mentioned in his post.</li>
+</ul>
+<p>Something else that you might note with the new drop is that some of the Unity generic methods are gone from the interface. That's because the Unity team decided to clean-up the interface and provides those as extensions methods. You can read about that <a href="http://unity.codeplex.com/Thread/View.aspx?ThreadId=199361">here</a>.</p>
+<h2>About Windows Phone Support</h2>
+<p><a href="http://blogs.msdn.com/simplifying_patterns_and_practices/archive/2010/03/15/prism-a-look-ahead.aspx">This blog post</a> explains that <em>"given the excitement at the release of the Windows Phone Developer Tools CTP at Mix 10 this week, some of you may be wondering about using Prism on Windows Phone 7 Series. We intend to support Windows Phone development in a future release of Prism. In the meantime we'll be tracking the Windows Phone 7 Series development platform closely."</em></p>
+<p>So, if you definitely want support for WP7 have your say at the <a href="http://www.zoomerang.com/Survey/WEB22AK39NFHMT">survey</a>. The bigger the amount of people that ask for it, the higher the chance it gets done.</p>
+<h3>Any other questions...</h3>
+<p>I hope the summary has been useful, and if you have questions that I did not answer above, please drop by the Prism forums (or leave a comment in this post).</p>
+

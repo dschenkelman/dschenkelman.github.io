@@ -1,0 +1,227 @@
+<!doctype html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if (IE 7)&!(IEMobile)]><html class="no-js lt-ie9 lt-ie8" lang="en"><![endif]-->
+<!--[if (IE 8)&!(IEMobile)]><html class="no-js lt-ie9" lang="en"><![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"><!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<title>Prism Training Kit 4.0 Released &#8211; A sea of code</title>
+<meta name="description" content="Pseudo-random thoughts related to software development...">
+<meta name="keywords" content="Composite Application Guidance for WPF &amp; SL, MEF, p&amp;p, Patterns &amp; Practices, Prism, Prism-v4, Silverlight, Silverlight 4, WPF">
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://localhost:4000/images/site-logo.jpg">
+<meta name="twitter:title" content="Prism Training Kit 4.0 Released">
+<meta name="twitter:description" content="Pseudo-random thoughts related to software development...">
+<meta name="twitter:creator" content="@dschenkelman">
+
+<!-- Open Graph -->
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Prism Training Kit 4.0 Released">
+<meta property="og:description" content="Pseudo-random thoughts related to software development...">
+<meta property="og:url" content="http://localhost:4000/2010/11/20/prism-training-kit-4-0-released/">
+<meta property="og:site_name" content="A sea of code">
+
+
+
+
+
+<link rel="canonical" href="http://localhost:4000/2010/11/20/prism-training-kit-4-0-released/">
+<link href="http://localhost:4000/feed.xml" type="application/atom+xml" rel="alternate" title="A sea of code Feed">
+
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="http://localhost:4000/assets/css/main.min.css">
+<!-- Webfonts -->
+<script src="//use.edgefonts.net/source-sans-pro:n2,i2,n3,i3,n4,i4,n6,i6,n7,i7,n9,i9;source-code-pro:n4,n7;volkhov.js"></script>
+
+<meta http-equiv="cleartype" content="on">
+
+<!-- Load Modernizr -->
+<script src="http://localhost:4000/assets/js/vendor/modernizr-2.6.2.custom.min.js"></script>
+
+<!-- Icons -->
+<!-- 16x16 -->
+<link rel="shortcut icon" href="http://localhost:4000/favicon.ico">
+<!-- 32x32 -->
+<link rel="shortcut icon" href="http://localhost:4000/favicon.png">
+<!-- 57x57 (precomposed) for iPhone 3GS, pre-2011 iPod Touch and older Android devices -->
+<link rel="apple-touch-icon-precomposed" href="http://localhost:4000/images/apple-touch-icon-precomposed.png">
+<!-- 72x72 (precomposed) for 1st generation iPad, iPad 2 and iPad mini -->
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://localhost:4000/images/apple-touch-icon-72x72-precomposed.png">
+<!-- 114x114 (precomposed) for iPhone 4, 4S, 5 and post-2011 iPod Touch -->
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://localhost:4000/images/apple-touch-icon-114x114-precomposed.png">
+<!-- 144x144 (precomposed) for iPad 3rd and 4th generation -->
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://localhost:4000/images/apple-touch-icon-144x144-precomposed.png">
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/gist-embed/1.7/gist-embed.min.js"></script>
+
+</head>
+
+<body id="post">
+
+<div class="navigation-wrapper">
+	<nav role="navigation" id="site-nav" class="animated drop">
+	    <ul>
+	        
+			<li>
+				
+					<a href="http://localhost:4000/">Home</a>
+				 
+			</li>
+	        
+			<li>
+				
+					<a href="http://localhost:4000/about/">About</a>
+				 
+			</li>
+	        
+			<li>
+				
+					<a href="/articles/">Articles</a>
+				 
+			</li>
+	        
+	        <li><a href="http://localhost:4000/feed.xml" title="Atom/RSS feed"><i class="icon-rss"></i> Feed</a></li>
+	        <li class="dosearch"><i class="icon-search"></i> Search</li>
+	    </ul>
+	</nav>
+</div><!-- /.navigation-wrapper -->
+
+<!--[if lt IE 9]><div class="upgrade"><strong><a href="http://whatbrowser.org/">Your browser is quite old!</strong> Why not upgrade to a different browser to better enjoy this site?</a></div><![endif]-->
+
+<div class="search-wrapper">
+	<div class="search-form">
+		<input type="text" class="search-field" placeholder="Search...">
+		<i class="icon-remove-sign icon-2x"></i>
+		<ul class="search-results post-list"></ul><!-- /.search-results -->
+	</div><!-- /.search-form -->
+</div><!-- ./search-wrapper -->
+
+<header class="masthead">
+	<div class="wrap">
+        
+    		<a href="http://localhost:4000/" class="site-logo" rel="home" title="A sea of code"><img src="http://localhost:4000/images/site-logo.jpg" width="200" height="200" alt="A sea of code logo" class="animated fadeInUp"></a>
+        
+        <h1 class="site-title animated fadeIn"><a href="http://localhost:4000/">A sea of code</a></h1>
+		<h2 class="site-description animated fadeIn" itemprop="description">Pseudo-random thoughts related to software development...</h2>
+	</div>
+</header><!-- /.masthead -->
+
+
+<div id="main" role="main">
+  <article class="hentry">
+    
+    <div class="entry-wrapper">
+      <header class="entry-header">
+        <span class="entry-tags"><a href="http://localhost:4000/tags/#Composite Application Guidance for WPF &amp; SL" title="Pages tagged Composite Application Guidance for WPF &amp; SL">Composite Application Guidance for WPF &amp; SL</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#MEF" title="Pages tagged MEF">MEF</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#p&amp;p" title="Pages tagged p&amp;p">p&amp;p</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#Patterns &amp; Practices" title="Pages tagged Patterns &amp; Practices">Patterns &amp; Practices</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#Prism" title="Pages tagged Prism">Prism</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#Prism-v4" title="Pages tagged Prism-v4">Prism-v4</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#Silverlight" title="Pages tagged Silverlight">Silverlight</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#Silverlight 4" title="Pages tagged Silverlight 4">Silverlight 4</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#WPF" title="Pages tagged WPF">WPF</a></span>
+        
+          <h1 class="entry-title">Prism Training Kit 4.0 Released</h1>
+        
+      </header>
+      <footer class="entry-meta">
+        <img src="http://localhost:4000/images/bio-photo.jpg" alt="Damian Schenkelman photo" class="author-photo">
+        <span class="author vcard">By <span class="fn"><a href="http://localhost:4000/about/" title="About Damian Schenkelman">Damian Schenkelman</a></span></span>
+        <span class="entry-date date published"><time datetime="2010-11-20T00:00:00-05:00"><i class="icon-calendar-empty"></i> November 20, 2010</time></span>
+        
+        
+        <span><a href="http://localhost:4000/2010/11/20/prism-training-kit-4-0-released/" rel="bookmark" title="Prism Training Kit 4.0 Released"><i class="icon-link"></i> Permalink</a></span>
+        
+      </footer>
+      <div class="entry-content">
+        <p>This past week with <a href="http://blogs.southworks.net/dpoza/">Diego</a>, <a href="http://blogs.southworks.net/ejadib/">Ezequiel</a>, <a href="http://blogs.southworks.net/gmaliandi/">Guido</a> and <a href="http://blogs.southworks.net/matiasb/">Matias</a> we worked on updating <a href="http://prismtk.codeplex.com/releases/view/55821">Prism training kit</a> to <a href="http://msdn.microsoft.com/en-us/library/gg406140.aspx">Prism 4.0</a>. Following the trend from the Prism team guys, we updated the version number to Prism Training Kit 4.0. Download the latest version from <a href="http://prismtk.codeplex.com/releases/view/56048">here</a>.</p>
+<p>﻿<a href="http://blogs.southworks.net/dschenkelman/files/2010/11/prismtk.png"><img class="alignnone size-medium wp-image-239" src="http://blogs.southworks.net/dschenkelman/files/2010/11/prismtk-300x125.png" alt="" width="300" height="125" /></a></p>
+<p>I really recommend downloading this release, as we put a lot of effort in getting out there what we believed would be the most useful content. You can get a set of detailed updates and features in <a href="http://blogs.southworks.net/gmaliandi/2010/11/prism-training-kit-4-0-is-out/">Guido's blog</a>, but to summarize the main changes are:</p>
+<ol>
+<li>Updated Modularity, Bootstrapper, Dependency Injection, Communication and UI Composition labs to Prism 4.0.</li>
+<li>Created new labs for MEF and Navigation.</li>
+<li>Fixed bugs from first version of the Training Kit.</li>
+</ol>
+<p><img style="padding-left: 0px;padding-right: 0px;padding-top: 0px;border: 0px" src="http://blogs.southworks.net/dschenkelman/files/2010/11/MEF-LAB1-690x601_thumb.png" border="0" alt="MEF-LAB1-690x601" width="457" height="399" /></p>
+<p>The reason we <em>"left out"</em> the MVVM training is that Karl Shifflett has released the <a href="http://karlshifflett.wordpress.com/2010/11/07/in-the-box-ndash-mvvm-training/">"In the box" training</a> which does a great job covering MVVM scenarios.</p>
+<p>If you have any feedback about the PrismTK, you can use the site's <a href="http://prismtk.codeplex.com/discussions">discussion list</a>, <a href="http://prismtk.codeplex.com/workitem/list/basic">issue tracker</a> or this blog.</p>
+<p>We hope that you find it really useful.</p>
+
+        
+      </div><!-- /.entry-content -->
+    </div><!-- /.entry-wrapper -->
+    <nav class="pagination" role="navigation">
+      
+        <a href="http://localhost:4000/2010/10/24/dynamically-updating-an-applications-functionality-using-ironpython/" class="btn" title="Dynamically updating an application’s functionality using IronPython">Previous article</a>
+      
+      
+        <a href="http://localhost:4000/2011/01/10/how-to-load-prism-modules-packaged-in-a-separate-xap-file-in-an-oob-application/" class="btn" title="How to: Load Prism modules packaged in a separate XAP file in an OOB application">Next article</a>
+      
+    </nav><!-- /.pagination -->
+  </article>
+</div><!-- /#main -->
+
+<div class="footer-wrapper">
+  <footer role="contentinfo">
+    <span>&copy; 2014 Damian Schenkelman. Powered by <a href="http://jekyllrb.com">Jekyll</a> using the <a href="http://mademistakes.com/so-simple/">So Simple Theme</a>.</span>
+<div class="social-icons">
+	<a href="http://twitter.com/dschenkelman" title="Damian Schenkelman on Twitter" target="_blank"><i class="icon-twitter icon-2x"></i></a>
+	
+	
+	<a href="http://linkedin.com/in/damianschenkelman" title="Damian Schenkelman on LinkedIn" target="_blank"><i class="icon-linkedin icon-2x"></i></a>
+	
+	
+	
+	<a href="http://github.com/dschenkelman" title="Damian Schenkelman on Github" target="_blank"><i class="icon-github icon-2x"></i></a>
+	
+</div><!-- /.social-icons -->
+  </footer>
+</div><!-- /.footer-wrapper -->
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="http://localhost:4000/assets/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script src="http://localhost:4000/assets/js/scripts.min.js"></script>
+
+<!-- Jekyll Simple Search option -->
+<script>
+  $(document).ready(function() {
+      $('.search-field').simpleJekyllSearch({
+          jsonFile : 'http://localhost:4000/search.json',
+          searchResults : '.search-results',
+          template : '<li><article><a href="{url}">{title} <span class="entry-date"><time datetime="{date}">{shortdate}</time></span></a></article></li>',
+          noResults: '<p>Nothing found.</p>'
+        });
+  });
+
+  (function( $, window, undefined ) {
+    
+     var bs = {
+          close: $(".icon-remove-sign"),
+          searchform: $(".search-form"),
+          canvas: $("body"),
+          dothis: $('.dosearch')
+      };
+    
+    bs.dothis.on('click', function() {
+      $('.search-wrapper').css({ display: "block" });
+      bs.searchform.toggleClass('active');
+      bs.searchform.find('input').focus();
+      bs.canvas.toggleClass('search-overlay');
+    });
+    
+      bs.close.on('click', function() {
+        $('.search-wrapper').removeAttr( 'style' );
+        bs.searchform.toggleClass('active');
+        bs.canvas.removeClass('search-overlay');
+    });
+  })( jQuery, window );
+</script>
+
+
+	        
+
+</body>
+</html>

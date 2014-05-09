@@ -1,0 +1,47 @@
+---
+layout: post
+title: To Arrow Function or not to Arrow Function
+categories:
+- Emerging Technology
+- JavaScript
+- TypeScript
+tags:
+- Emerging Technology
+- JavaScript
+- TypeScript
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+  dsq_thread_id: '1555845666'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>If you have used TypeScript you are probably aware of the compiled outcome of an Arrow Function (section 4.9.2 of the <a href="http://www.typescriptlang.org/Content/TypeScript%20Language%20Specification.pdf">TypeScript Language Specification</a>). The idea behind using <strong>() =&gt; {…};</strong> instead of <strong>function(){…};</strong> is to have access to the object represented by <em>this</em> in the outer scope, which is what you would expect when using a C# lambda. Of course this feature is particulalry useful in JavaScript because <a href="http://es5.github.com/#x10.4.3"><em>this</em> holds a reference to the object to which a function was applied or called</a>, and more often than not the <em>this </em>inside the function's <a href="http://davidshariff.com/blog/what-is-the-execution-context-in-javascript/">execution context</a> ends up being different from the one in the outer execution context.</p>
+<p>When using an Arrow Function, TypeScript automatically assigns <em>this </em>to a separate variable in the outer execution context (called <em>_this),</em> which can be accessed by the function that results of the compilation of the Arrow Function through its closure. As the previous sentence was probably not the simplest one to digest, take the following TypeScript code snippet as an example:</p>
+<code data-gist-id="18841f8d7d2b08ab0e92" data-gist-file="MyClass.ts"></code>
+<p>The resulting JavaScript is:</p>
+<code data-gist-id="18841f8d7d2b08ab0e92" data-gist-file="MyClass.js"></code>
+<p>As you can see, partialAdd stores <em>this </em>in the local <em>_this</em> variable which is accessible from the function that is returned through its closure. On the other hand, partialAdd2 uses <em>this </em>as the variable, but as I mentioned before <em>this</em> might not be "an instance of MyClass" but something completely different instead.</p>
+<h2>Complex Cases</h2>
+<p>You could (wrongly) deduce that every time you need access to the outer <em>this</em> inside the function you should use an Arrow Function, but what if you need to use both the outer <em>this </em>and the object on which the function was applied? That could be a usual situation in an event handler, <a href="http://api.jquery.com/click/">which applies the callback functions to the target DOM elements when handling the event</a> (for the sake of the example assume that there is no way to other way to access the DOM element other than <em>this</em>).</p>
+<p>In these cases, it is important to understand what the compiler is doing underneath the hood. The two common approaches that would lead to errors are:</p>
+<ol>
+<li><strong>Using an Arrow Function:</strong> this would cause TypeScript's <em>this </em>to shadow the compiled JavaScript's <em>this</em>, not allowing you to access the DOM elements that was clicked inside the click handler.</li>
+<li><strong>Using a function literal: </strong>this would cause the outer <em>this</em> to not be accessible, which is unexpected for developers used to C#.</li>
+</ol>
+<h2>The Answer</h2>
+<p>One possible (and simple) solution to this is the usual workaround (<em>that = this</em>):</p>
+<code data-gist-id="18841f8d7d2b08ab0e92" data-gist-file="MyClass2.ts"></code>
+<p>The following figures show that TypeScript's type inference system confirms the comments from the previous code snippet:</p>
+<p><em>this can be an instance of any type, as it depends on the object on which the function was called</em></p>
+<p><a href="http://blogs.southworks.net/dschenkelman/files/2013/02/image2.png"><img style="padding-left: 0px;padding-right: 0px;padding-top: 0px;border: 0px" src="http://blogs.southworks.net/dschenkelman/files/2013/02/image_thumb2.png" border="0" alt="image" width="494" height="247" /></a></p>
+<p><em>that is an instance of MyClass</em></p>
+<p><a href="http://blogs.southworks.net/dschenkelman/files/2013/02/image3.png"><img style="padding-left: 0px;padding-right: 0px;padding-top: 0px;border: 0px" src="http://blogs.southworks.net/dschenkelman/files/2013/02/image_thumb3.png" border="0" alt="image" width="502" height="247" /></a></p>
+<h2>Conclusion</h2>
+<p>This is not a complex issue, but is one that I've seen a couple of times while working with TypeScript, so hopefully if you ever run into it you will be able to solve it in no time.</p>

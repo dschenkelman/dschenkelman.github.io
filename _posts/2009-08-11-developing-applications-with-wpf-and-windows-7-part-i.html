@@ -1,0 +1,138 @@
+---
+layout: post
+title: Developing applications with WPF and Windows 7 (Part I)
+categories:
+- Disconnected Service Agent
+- DSA
+- p&amp;p
+- Patterns &amp; Practices
+- SCSF
+- Smart Client Software Factory
+- Windows 7
+- Windows 7 Taskbar
+- Windows Presentation Foundation
+- WPF
+tags:
+- Disconnected Service Agent
+- DSA
+- p&amp;p
+- Patterns &amp; Practices
+- SCSF
+- Smart Client Software Factory
+- Windows 7
+- Windows 7 Taskbar
+- Windows Presentation Foundation
+- WPF
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+  dsq_thread_id: '1552821720'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>Last week with <a href="http://blogs.southworks.net/mwoloski/2009/08/11/windows-7-screencast-taskbar-overlayimage-progressbar-thumbnails/">Matias Woloski</a> and <a href="http://blogs.southworks.net/ejadib/2009/08/10/wpf-windows-7-screencast/">Ezequiel Jadib</a> we created a demo for a <a href="http://www.mslatam.com/latam/mediacenter/default.aspx?v=4c66302e-e87b-4a83-bb4a-caacbd22a563">screencast (in Spanish)</a> that shows how to take advantage of  some <a href="http://windows.microsoft.com/en-US/windows7/products/features">Windows 7 features</a> in a <a href="http://windowsclient.net/wpf/default.aspx">WPF</a> application, improving the user experience (after all that is one of the main goals of WPF). You can find the code for the clean application (without Windows 7 functionality) <a href="http://cid-09f63fc7ac065e5e.skydrive.live.com/self.aspx/MSDN%20%7C0%20Technet/SnowShopW7Clean.zip">here</a>, and the fully functional application <a href="http://cid-99e3cd967baf3dc7.skydrive.live.com/self.aspx/MSDN%20%7C0%20TechNet/Windows%207x7/SnowShopW7.zip">over here</a>. In this and <a href="http://blogs.southworks.net/dschenkelman/2009/08/31/developing-application-with-wpf-and-windows-7-part-ii/">future posts</a> I will go over the relevant additions to the application, so you can see how easy it is to take advantage of Windows 7 features in your existing application. At the end of each post I will provide the outcome solution.</p>
+<h4>Demo Scenario</h4>
+<p>The application shows a Snow Board Shop that allows to Ship Orders of different Snow Boards. It also provides support for temporarily connected scenarios using the <a href="http://blogs.southworks.net/dschenkelman/2008/08/04/dsa-application-block-overview/">Disconnected Service Agent Application Block</a> from the <a href="http://msdn.microsoft.com/en-us/library/aa480482.aspx">Smart Client Software Factory</a>.<br />
+<a href="http://blogs.southworks.net/dschenkelman/files/2009/08/snowshop.png"><img class="aligncenter size-full wp-image-119" src="http://blogs.southworks.net/dschenkelman/files/2009/08/snowshop.png" alt="Snowshop" width="500" height="379" align="center" /></a><br />
+The demo shows the following interaction with Windows 7:</p>
+<ul>
+<li>How to: Show connectivity status in the Windows 7 Taskbar [in this post]</li>
+<li>How to: Show progress while shipping orders [in this post]</li>
+<li>How to: Show a thumbnail of the application [coming soon]</li>
+<li>How to: Use Thumbnail buttons [coming soon]</li>
+<li>How to: Open a new application with the Jumplist [coming soon]</li>
+</ul>
+<h4>Implementation Details</h4>
+<ul>
+<li>The demo leverages Windows 7 functionalities through the Microsoft.WindowsAPICodePack.dll and Microsoft.WindowsAPICodePack.Shell.dll. Downloaded from <a href="http://code.msdn.microsoft.com/WindowsAPICodePack">here</a> (WindowsAPICodePack).</li>
+</ul>
+<h4>How to: Show connectivity status in the Taskbar</h4>
+<p>What we wanted to do is show whether the application is connected to the internet (which would in turn enable it to ship orders), without having the window open. What we decided to do is show an icon in the application's taskbar that reflect the connectivity status. To do this, we must first add a reference to System.Drawing.dll and to both assemblies mentioned above (located in the <strong>Lib</strong> folder). Then, update the <strong>UpdateConnectionStatus </strong>method to change the icon based on the status:</p>
+<pre><span style="color: blue">private void </span>UpdateConnectionStatus(<span style="color: blue">bool </span>isConnected)
+        {
+            <span style="color: blue">string </span>status;
+            <span style="color: #2b91af">Icon </span>icon;
+
+            <span style="color: blue">if </span>(isConnected)
+            {
+                status = <span style="color: #a31515">"Online"</span>;
+                icon = <span style="color: blue">new </span><span style="color: #2b91af">Icon</span>(<span style="color: #a31515">"images\Available.ico"</span>);
+
+                StatusLabel.Style = (<span style="color: #2b91af">Style</span>)FindResource(<span style="color: #a31515">"StatusLabelOnline"</span>);
+                StatusLabel.Content = status;
+            }
+            <span style="color: blue">else
+            </span>{
+                status = <span style="color: #a31515">"Offline"</span>;
+                icon = <span style="color: blue">new </span><span style="color: #2b91af">Icon</span>(<span style="color: #a31515">"images\Offline.ico"</span>);
+
+                StatusLabel.Style = (<span style="color: #2b91af">Style</span>)FindResource(<span style="color: #a31515">"StatusLabelOffline"</span>);
+                StatusLabel.Content = status;
+            }
+
+            <span style="color: #2b91af">Taskbar</span>.OverlayImage.Icon = icon;
+            <span style="color: #2b91af">Taskbar</span>.OverlayImage.Text = status;
+        }</pre>
+<p><a href="http://11011.net/software/vspaste"></a></p>
+<p><a href="http://11011.net/software/vspaste"></a></p>
+<p><a href="http://11011.net/software/vspaste"></a></p>
+<p>If you run the application now and connect/disconnect from the Internet, you will notice the icon in the Taskbar changing.</p>
+<p><a href="http://blogs.southworks.net/dschenkelman/files/2009/08/connectivity.png"><img class="aligncenter size-full wp-image-124" src="http://blogs.southworks.net/dschenkelman/files/2009/08/connectivity.png" alt="Taskbar Connectivity" width="500" height="107" /></a></p>
+<h4>How to: Show progress while shipping orders</h4>
+<p>Now that we are able to show connectivity, and are working in a scenario with Offline capabilities it would be good to show the progress of the orders being dispatched without having the application's window open. That's when the Windows 7 taskbar comes to the rescue. Our goal is to show progress, by increasing the progress value as less orders are pending to dispatch. All we have to do is update the handlers of the RequestDispatched and RequestEnqueued events with code like this:</p>
+<pre><span style="color: blue">private delegate void </span><span style="color: #2b91af">OnRequestEnqueuedDelegate</span>(<span style="color: blue">object </span>sender, RequestEnqueuedEventArgs e);
+      <span style="color: blue">private void </span>OnRequestEnqueued(<span style="color: blue">object </span>sender, RequestEnqueuedEventArgs e)
+      {
+          <span style="color: blue">this</span>.UpdateRequestQueue();
+          <span style="color: blue">if </span>(Dispatcher.Thread != System.Threading.<span style="color: #2b91af">Thread</span>.CurrentThread)
+          {
+              Dispatcher.Invoke(<span style="color: blue">new </span><span style="color: #2b91af">OnRequestEnqueuedDelegate</span>(OnRequestEnqueued), sender, e);
+          }
+          <span style="color: blue">else
+          </span>{
+              <span style="color: green">//Start showing progress when the first request is enqueued
+              </span><span style="color: blue">if </span>(manager.RequestQueue.GetCount() == 1)
+                  <span style="color: #2b91af">Taskbar</span>.ProgressBar.State = TaskbarButtonProgressState.Indeterminate;
+
+              <span style="color: #2b91af">Taskbar</span>.ProgressBar.MaxValue = manager.RequestQueue.GetCount();
+              <span style="color: #2b91af">Taskbar</span>.ProgressBar.CurrentValue = 0;
+          }
+
+      }
+
+      <span style="color: blue">private delegate void </span><span style="color: #2b91af">OnRequestDispatchedDelegate</span>(<span style="color: blue">object </span>sender, RequestDispatchedEventArgs e);
+      <span style="color: blue">private void </span>OnRequestDispatched(<span style="color: blue">object </span>sender, RequestDispatchedEventArgs e)
+      {
+          <span style="color: blue">this</span>.UpdateRequestQueue();
+          <span style="color: blue">if </span>(Dispatcher.Thread != System.Threading.<span style="color: #2b91af">Thread</span>.CurrentThread)
+          {
+              Dispatcher.Invoke(<span style="color: blue">new </span><span style="color: #2b91af">OnRequestDispatchedDelegate</span>(OnRequestDispatched), sender, e);
+          }
+          <span style="color: blue">else
+          </span>{   <span style="color: green">//Stop showing progress when there are no more requests
+              </span><span style="color: blue">if </span>(manager.RequestQueue.GetCount() == 0)
+              {
+                  <span style="color: #2b91af">Taskbar</span>.ProgressBar.State = TaskbarButtonProgressState.NoProgress;
+              }
+              <span style="color: blue">else
+              </span>{
+                  <span style="color: #2b91af">Taskbar</span>.ProgressBar.State = TaskbarButtonProgressState.Normal;
+                  <span style="color: #2b91af">Taskbar</span>.ProgressBar.CurrentValue += 1;
+              }
+          }
+      }</pre>
+<p>To be able to see how this works, I would recommend disconnecting from the Internet (so no orders are dispatched) and enqueuing about 20 orders. Then connect, and you will be able to see the progress bar increasing as orders are dispatched.</p>
+<p><a href="http://blogs.southworks.net/dschenkelman/files/2009/08/progress.png"><img class="aligncenter size-medium wp-image-125" src="http://blogs.southworks.net/dschenkelman/files/2009/08/progress.png" alt="Taskbar Progress" width="300" height="100" /></a></p>
+<h4>Outcome</h4>
+<h6>Disclaimer</h6>
+<p>This code is provided “AS IS” with no warranties, and confers no rights.</p>
+<h6>Download</h6>
+<p>You can get source code here: <a href="http://cid-09f63fc7ac065e5e.skydrive.live.com/self.aspx/MSDN%20%7C0%20Technet/SnowShopPart1.zip">SnowShopPart1.zip</a>.</p>
+<p>Stay tuned because I will blog about all the other features soon :) .</p>
+<p>EDIT August 31st 2009: <a href="http://blogs.southworks.net/dschenkelman/2009/08/31/developing-application-with-wpf-and-windows-7-part-ii/">Blogged part 2</a>.</p>

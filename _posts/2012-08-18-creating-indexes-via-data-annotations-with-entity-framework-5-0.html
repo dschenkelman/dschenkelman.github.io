@@ -1,0 +1,60 @@
+---
+layout: post
+title: Creating Indexes via Data Annotations with Entity Framework 5.0
+categories:
+- Entity Framework
+- Entity Framework Code First
+- SQL Indexes
+tags:
+- Entity Framework
+- Entity Framework Code First
+- SQL Indexes
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+  _wp_old_slug: ''
+  dsq_thread_id: '1552822220'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>This week, for a project at Southworks, my friend <a href="http://blogs.southworks.net/mconverti/">Mariano Converti</a> and I had to create indexes in a SQL database for two string type properties of entities that were part of an <a href="http://weblogs.asp.net/scottgu/archive/2010/07/16/code-first-development-with-entity-framework-4.aspx">Entity Framework Code First</a> model. As we were also required to support changes to the model after the application was deployed, we decided to use <a href="http://blogs.msdn.com/b/adonet/archive/2012/02/09/ef-4-3-code-based-migrations-walkthrough.aspx">Entity Framework Code Base Migrations</a>.</p>
+<p>This approach successfully satisfied our requirements, but it required us to add additional migrations to specify the indexes. Thus, I started to research to see if there where other ways to do this, thinking that there was probably an available data annotation to get this done. To my surprise, I wasn't able to find such an attribute when searching the web (for example, this is the list of <a href="http://msdn.microsoft.com/en-us/library/system.componentmodel.dataannotations.aspx">available Data Annotations</a>). Once I realized this, I decided to create the necessary components on my own.</p>
+<table style="border:1px">
+<tbody>
+<tr>
+<td><strong>Update: </strong>After a quick twitter discussion with <a href="http://thedatafarm.com/blog/">@julielerman</a>, I decided to be more specific as to why I think using an attribute is better than code first migrations:</p>
+<ol>
+<li>Code first migrations create a class per migration which results in too many classes. While developing your model changes a lot, so having to create an extra class whenever you discover that you want to add an index is not really confortable (once you have deployed to production however, migrations are probably the way to go).</li>
+<li>Attributes are more descriptive. By just looking at the entity you can determine the indexes that will be created for it, without the need to check a separate class' code.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<h2>Creating the components</h2>
+<p>I found a couple of StackOverflow questions (<a href="http://stackoverflow.com/questions/4995642/add-index-with-entity-framework-code-first-ctp5">here</a> and <a href="http://stackoverflow.com/questions/8262590/entity-framework-code-first-fluent-api-adding-indexes-to-columns">here</a>) from where I got some really useful ideas, such as using the <a href="http://msdn.microsoft.com/en-us/library/system.data.entity.database.executesqlcommand%28VS.103%29.aspx">ExecuteSqlCommand</a> method introduced in Entity Framework 4.1 and detecting the attributes in a <a href="http://msdn.microsoft.com/en-us/library/gg696323%28VS.103%29.aspx">DataBaseInitializer</a>.</p>
+<p>The attribute code is really simple. It forces you to define the index name and gives the possibility of specifying whether the index is unique or not.</p>
+<code data-gist-id="22a6758fdf6818b26702" data-gist-file="IndexAttribute.cs"></code>
+<p>And the Initializer basically goes through the <a href="http://msdn.microsoft.com/en-us/library/gg696460%28VS.103%29.aspx">DbSet&lt;&gt;</a> properties in the <a href="http://msdn.microsoft.com/en-us/library/system.data.entity.dbcontext%28VS.103%29.aspx">DbContext</a> to retrieve the entity table names and check for the Index attribute in the properties in those entities.</p>
+<code data-gist-id="22a6758fdf6818b26702" data-gist-file="IndexInitializer.cs"></code>
+<h2>Trying it out</h2>
+<p>I created a simple console application and ran a couple of tests to see if the data base was correctly created. For example, when using the following entity:</p>
+<code data-gist-id="22a6758fdf6818b26702" data-gist-file="Customer.cs"></code>
+<p>The following table is created.</p>
+<p><a href="http://blogs.southworks.net/dschenkelman/files/2012/08/image.png"><img style="margin: 0px;padding-left: 0px;padding-right: 0px;padding-top: 0px;border-width: 0px" src="http://blogs.southworks.net/dschenkelman/files/2012/08/image_thumb.png" border="0" alt="image" width="244" height="196" /></a></p>
+<p>If, for example the Table and Column name are customized:</p>
+<code data-gist-id="22a6758fdf6818b26702" data-gist-file="CustomerTable.cs"></code>
+<p>We get the following index:</p>
+<p><a href="http://blogs.southworks.net/dschenkelman/files/2012/08/image1.png"><img style="padding-left: 0px;padding-right: 0px;padding-top: 0px;border-width: 0px" src="http://blogs.southworks.net/dschenkelman/files/2012/08/image_thumb1.png" border="0" alt="image" width="425" height="214" /></a></p>
+<h2>What if I already have an Initializer?</h2>
+<p>Well, in this case, a simple approach would be to add the IndexInitializer logic to your own Initializer, but that is not the only way to support the IndexAttribute and keep your initialization logic. During the week I also put together a simple CompositeDatabaseInitializer that can be used to separate the logic in different initializers. You could, for instance, have the IndexInitializer and another one to generate data.</p>
+<code data-gist-id="22a6758fdf6818b26702" data-gist-file="CompositeDatabaseInitializer.cs"></code>
+<h2>Wrapping up</h2>
+<p>There are a lot of improvement opportunities for this implementation (such as adding support for clustered indexes). Nevertheless, features such as support for custom database initializers and the ability to execute SQL statements from the DbContext provide really powerful extensibility capabilities.</p>
+<p>I hope that you can either use the code as is or take some useful ideas out of it.</p>

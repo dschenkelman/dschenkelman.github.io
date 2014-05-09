@@ -1,0 +1,49 @@
+---
+layout: post
+title: 'fakewin8: Easy fakes for Windows Store apps unit tests'
+categories:
+- C#
+- Emerging Technology
+- TDD
+- Test Driven Development
+- Unit Tests
+tags:
+- C#
+- Emerging Technology
+- TDD
+- Unit Tests
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+  dsq_thread_id: '1570185257'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p><span style="font-size: xx-small">In case you are short in time, here's the Github link: </span><a href="https://github.com/dschenkelman/fakewin8"><span style="font-size: xx-small">https://github.com/dschenkelman/fakewin8</span></a><span style="font-size: xx-small">. Otherwise, read on.</span></p>
+<p>If you are reading this, you probably know that due to the changes in the reflection API, all unit testing libraries that depend on the creation of dynamic proxies do not work in Windows RT (for example <a href="https://groups.google.com/forum/#!topic/moqdisc/nP5kS_ZNZP0">Moq</a>). As someone who does a lot of Windows 8 development and makes heavy use of unit tests, this was something that really changed the way I approach unit testing.</p>
+<p>I’ve seen many different proposals to workaround this issue, such as <a href="http://outcoldman.com/en/blog/show/332" target="_blank">having linked files</a>, having the components under test in a portable class library (and then using any mocking framework) and using <a href="http://prismwindowsruntime.codeplex.com/SourceControl/latest#Prism.StoreApps.Tests/Mocks/MockPageViewModel.cs" target="_blank">public properties that expose setters for the methods to fake</a>. While those approaches do work fine (in fact I’ve tried all of them), none of them fully suit my needs. I just did not feel completely comfortable with only one of them.  That’s why I came up with the following.</p>
+<h2>Premises</h2>
+<ol>
+<li>For each interface or base class, I want to create <strong>only one class that can be used as a stub/mock in any test method</strong>. This means that all methods must be easy to setup with different logic for different unit tests.</li>
+<li>No additional components should be required (i.e.: no portable class libraries, no linked files).</li>
+<li>Method invocations should be automatically tracked so assertions can be performed based on them.</li>
+<li>Fake class generation should be automatic. We want to focus on the tests development, not the fakes development.</li>
+</ol>
+<h2>Proposal</h2>
+<p><a href="https://github.com/dschenkelman/fakewin8">fakewin8</a> proposes the usage of classes like <a href="https://github.com/dschenkelman/fakewin8/blob/master/src/FakeWin8/FakeAction.cs">FakeAction </a>and <a href="https://github.com/dschenkelman/fakewin8/blob/master/src/FakeWin8/FakeFunc.cs">FakeFunc</a>, which act as normal <a href="http://msdn.microsoft.com/en-us/library/system.action.aspx" target="_blank">Action</a> and <a href="http://msdn.microsoft.com/en-us/library/bb534960.aspx" target="_blank">Func</a>, but keep track of the number invocations and parameters on each of them.</p>
+<p>For example, for this interface:</p>
+<code data-gist-id="b476d386055a42b3b637" data-gist-file="INavigationService.cs"></code>
+<p>The following fake class should be created (and only this class should be required):</p>
+<code data-gist-id="b476d386055a42b3b637" data-gist-file="FakeNavigationService.cs"></code>
+<p>The <strong>FakeAction</strong> and <strong>FakeFunc </strong>classes (at the moment they support until up to 3 parameters) can be leveraged like this in your unit tests:</p>
+<code data-gist-id="b476d386055a42b3b637" data-gist-file="UnitTests.cs"></code>
+<p>Additionally, given the path to an assembly and an output directory, you can automatically generate the fake classes.</p>
+<pre class="brush: bash;">FakeWin8.Generator.Console.exe &lt;dllPath&gt; &lt;outputDir&gt;</pre>
+<p>The generated code for the sample interface is the following one (no indentation yet):</p>
+<code data-gist-id="b476d386055a42b3b637" data-gist-file="GeneratedFakeNavigationService.cs"></code>

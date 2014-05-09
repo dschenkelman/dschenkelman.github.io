@@ -1,0 +1,29 @@
+---
+layout: post
+title: C# UDP Multicast server and Windows Phone 8 Emulator issue
+categories:
+- C#
+- Emerging Technology
+- Multicast
+- Windows Phone
+tags:
+- C#
+- Multicast
+- Windows Phone
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+  _wp_old_slug: ''
+  dsq_thread_id: '1555838970'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>This is going to be a short one, but could potentially save someone’s time in the future.</p>
+<p>I spent most of the day trying to find out why some simple C# code that was supposed to send multicast packages through the network (similar to the one provided in <a href="http://www.jarloo.com/c-udp-multicasting-tutorial/">this blog post</a>) was not working when running in my laptop.</p>
+<p>Using Wireshark I was not able to capture any of the packages that should have been travelling across my LAN and after trying a whole lot of things what did the trick was disabling the <em>vEthernet (Internal Ethernet Port Windows Phone Emulator Internal Switch)</em><strong> </strong>adapter that is installed with <a href="http://www.microsoft.com/visualstudio/eng/2013-downloads">Visual Studio 2013 Preview</a> as part of the Windows Phone 8 Developer Tools.</p>

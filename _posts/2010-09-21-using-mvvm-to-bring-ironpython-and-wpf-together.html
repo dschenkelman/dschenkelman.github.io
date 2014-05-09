@@ -1,0 +1,102 @@
+---
+layout: post
+title: Using MVVM to bring IronPython and WPF together
+categories:
+- IronPython
+- MVVM
+- Windows Presentation Foundation
+- WPF
+tags:
+- IronPython
+- MVVM
+- Windows Presentation Foundation
+- WPF
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+  dsq_thread_id: '1579706815'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>A couple of weeks ago I decided to start a code kata using IronPython, with the objective of learning how C# and IronPython code could be integrated and used together. I had previously used Python (my favorite choice for University assignments), but this was my first try with the DLR version.</p>
+<p>(If you just can't wait to get to the code, just scroll to the bottom of this post).</p>
+<p>The first step is to get IronPython. As the project is hosted at codeplex, you can simply access <a href="http://ironpython.codeplex.com/">ironpython.codeplex.com</a> and select the <a href="http://ironpython.codeplex.com/releases/view/36280">Downloads</a> tab. I chose to download the latest stable release (v2.6.1).</p>
+<p>I created some simple classes to wrap around Python's e-mail libraries and begun research on how to use them from C# code in a WPF application. The following were some of the most useful resources I found:</p>
+<ul>
+<li><a href="http://www.microsoftpdc.com/2009/FT30">Using Dynamic Languages to Build Scriptable Applications</a> (<a href="http://blogs.msdn.com/b/dinoviehland/">Dino Viehland's</a> talk at PDC 2009)</li>
+<li><a href="http://blogs.msdn.com/b/charlie/archive/2009/10/25/hosting-ironpython-in-a-c-4-0-program.aspx">Running IronPython Scripts from a C# 4.0 Program</a></li>
+<li><a href="http://ironpython.net/documentation/dotnet/">IronPython’s documentation</a> from <a href="http://ironpython.net/">IronPython.net</a></li>
+</ul>
+<p>After the initial spikes, I created a simple application with a single V-VM pair, which let’s you send e-mails using either a Gmail or Hotmail account (disregard the poor-man’s UI).</p>
+<p><a href="http://blogs.southworks.net/dschenkelman/files/2010/09/image.png"><img src="http://blogs.southworks.net/dschenkelman/files/2010/09/image-thumb.png" border="0" alt="image" width="523" height="350" /></a></p>
+<p>Let's go over the <em>pythonic </em>parts of the ViewModel.</p>
+<p>First I defined the following four attributes:</p>
+<blockquote>
+<pre><span style="color: blue">private </span><span style="color: #2b91af">ScriptEngine </span>engine;
+<span style="color: blue">private </span><span style="color: #2b91af">ScriptRuntime </span>python;
+<span style="color: blue">private dynamic </span>emailWrapper;
+<span style="color: blue">private dynamic </span>emailDispatcher;</pre>
+<p><a href="http://11011.net/software/vspaste"></a></p></blockquote>
+<p>The ScriptEngine is used to customize the paths to search for Python modules. Unless the paths are configured correctly, you will get errors when importing modules that are part of Python’s standard library. As the following code shows, the path for the Python standard library and the relative path for my Python modules are being added to the list of paths:</p>
+<pre><span style="color: blue">private void </span>SetPythonLibraryPath()
+        {
+            <span style="color: #2b91af">ICollection</span>&lt;<span style="color: blue">string</span>&gt; paths = engine.GetSearchPaths();
+            paths.Add(<span style="color: #a31515">@"C:\Program Files (x86)\IronPython 2.6 for .NET 4.0\Lib"</span>);
+            paths.Add(<span style="color: #2b91af">Path</span>.Combine(<span style="color: #2b91af">Directory</span>.GetCurrentDirectory(), <span style="color: #a31515">"Python Code"</span>));
+            engine.SetSearchPaths(paths);
+        }</pre>
+<p><a href="http://11011.net/software/vspaste"></a></p>
+<p>Then, I get the ScriptRuntime from the ScriptEngine using its Runtime property. The ScriptRuntime is used to load the python modules into the dynamic fields mentioned above. The emailWrapper and emailDispatcher fields will store the modules with the same name.</p>
+<pre><span style="color: blue">private void </span>LoadPythonModules()
+       {
+           <span style="color: blue">string </span>wrapperPath = <span style="color: #2b91af">Path</span>.Combine(<span style="color: #a31515">"Python Code"</span>, <span style="color: #a31515">"emailWrapper.py"</span>);
+           <span style="color: blue">string </span>dispatcherPath = <span style="color: #2b91af">Path</span>.Combine(<span style="color: #a31515">"Python Code"</span>, <span style="color: #a31515">"emailDispatcher.py"</span>);
+
+           emailDispatcher = python.UseFile(dispatcherPath);
+           emailWrapper = python.UseFile(wrapperPath);
+       }</pre>
+<p><a href="http://11011.net/software/vspaste"></a></p>
+<p><a href="http://11011.net/software/vspaste"></a></p>
+<p>Now that I have access to the modules, I can simply instance classes or call functions from them. This is because the <a href="http://msdn.microsoft.com/en-us/library/dd264741.aspx">dynamic type</a> resolves the operations at runtime.</p>
+<pre><span style="color: blue">private void </span>SendEmail()
+        {
+            ...
+            <span style="color: blue">string </span>providerAccount = <span style="color: #2b91af">String</span>.Format(<span style="color: #a31515">"{0}@{1}.com"</span>, <span style="color: blue">this</span>.UserAccount, <span style="color: blue">this</span>.Provider);
+            <span style="color: blue">dynamic </span>email = emailWrapper.Email(<span style="color: blue">this</span>.Subject, <span style="color: blue">this</span>.ToAddress, providerAccount);
+            email.appendContent(<span style="color: blue">this</span>.Body);
+            <span style="color: blue">dynamic </span>dispatcher = emailDispatcher.EmailDispatcher(providerAccount, <span style="color: blue">this</span>.Password, <span style="color: blue">this</span>.Provider);
+            dispatcher.send(email);             ...
+        }</pre>
+<p><a href="http://11011.net/software/vspaste"></a></p>
+<pre><span style="color: blue">private void </span>PopulateProviders()
+        {
+            <span style="color: blue">this</span>.Providers = <span style="color: blue">new </span><span style="color: #2b91af">ObservableCollection</span>&lt;<span style="color: blue">string</span>&gt;();
+            <span style="color: blue">foreach </span>(<span style="color: blue">string </span>provider <span style="color: blue">in </span>emailDispatcher.getProviders())
+            {
+                <span style="color: blue">this</span>.Providers.Add(provider);
+            }
+        }</pre>
+<p><a href="http://11011.net/software/vspaste"></a></p>
+<table border="2" cellspacing="0" cellpadding="2" width="678">
+<tbody>
+<tr>
+<td width="676" valign="top"><strong>Note: </strong>A way to use python objects while maintaining compile time checking is having Python objects implement CLR interfaces. There might be scenarios in which type safety brings more benefits, but in this case I thought interface implementation was <em>un-pythonic</em>.</td>
+</tr>
+</tbody>
+</table>
+<p>That's pretty much it. I'll probably continue working on this small application, to show a couple more things that can be achieved with this kind of integration. Things that come to mind are:</p>
+<ul>
+<li>Sharing variables between Python and C# scopes</li>
+<li>Changing the application's behavior by updating Python modules without the need to rebuild the application.</li>
+</ul>
+<h3>Downloading the sample</h3>
+<p>You can download the sample code from <a href="http://cid-09f63fc7ac065e5e.office.live.com/self.aspx/p%5E0p%20Samples/EmailClient.zip">here</a>. The code is provided "AS IS" with no warranties and confers no rights.</p>
+<p>I hope this small introductions is useful for you and I'd love to get your thoughts on this approach.</p>
+<h3>Acknowledgements</h3>
+<p>Thanks to <a href="http://blog.salias.com.ar/">Martin Salias</a>, Iron Python expert (among other technologies), for reviewing the code and contributing with ideas, and to <a href="http://blogs.southworks.net/fantivero/">Fer</a>, <a href="http://blogs.southworks.net/matiasb/">Mati</a> and <a href="http://blogs.southworks.net/dpoza">Diego</a> who witnessed the first demo of the application and also provided useful ideas.</p>

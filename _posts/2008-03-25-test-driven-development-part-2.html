@@ -1,0 +1,132 @@
+---
+layout: post
+title: Test driven development (part 2)
+categories:
+- TDD
+- Test Driven Development
+tags: []
+status: publish
+type: post
+published: true
+meta: {}
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">As said in a previous post TDD&rsquo;s objective is getting <em>&ldquo;clean code that works&rdquo;</em>. <span>(Test Driven Development By Example, Kent Beck)</span></font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><span><font size="3"><font face="Calibri">Your starting point is getting the code to work, breaking any rule necessary, disregarding good design and duplication. You will get those things when addressing to the &ldquo;<em>clean code</em>&rdquo; part.</font></font></span></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><span><font size="3"><font face="Calibri">In the previous post I mentioned the three ways of getting your tests to succeed. Here are some extra tips about them:</font></font></span></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><span><font face="Calibri" size="3"></font></span></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.5in"><span style="font-family: Wingdings"><span><font size="3">Ø</font><span style="font: 7pt 'Times New Roman'">  </span></span></span><font size="3"><font face="Calibri"><strong>Fake it:</strong></font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt 0.5in"><font size="3"><font face="Calibri">It&rsquo;s good for your morale to see your tests succeed. This is because you know what you are doing is leading somewhere and that it works.</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt 0.5in"><font size="3"><font face="Calibri">It also keeps your focus on the current situation, not worrying about any future steps.</font></font></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.5in"><span style="font-family: Wingdings"><span><font size="3">Ø</font><span style="font: 7pt 'Times New Roman'">  </span></span></span><font size="3"><font face="Calibri"><strong>Triangulation</strong>: </font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt 0.5in"><font size="3"><font face="Calibri">It&rsquo;s useful when you are not definitely sure what the correct abstraction is. You set different cases in which the test should work and find the &ldquo;generic&rdquo; form of it later.</font></font></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.5in"><span style="font-family: Wingdings"><span><font size="3">Ø</font><span style="font: 7pt 'Times New Roman'">  </span></span></span><font size="3"><font face="Calibri"><strong>Obvious Implementation</strong>: </font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt 0.5in"><font size="3"><font face="Calibri">You should only apply the obvious implementation directly only if you are sure it will work. Otherwise not only the time you were trying to save will be lost, but a lot more will be spent getting rid of the mistakes or starting over.</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt 0.5in"><font size="3"><font face="Calibri">Besides nobody likes to fail, so it is not good for your morale.</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt 0.5in"><font face="Calibri" size="3"></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><em><span><font size="3"><font face="Calibri">&ldquo;You should test:</font></font></span></em></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri"><strong><em><span>&bull; </span></em></strong><em><span>Conditionals</span></em></font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri"><strong><em><span>&bull; </span></em></strong><em><span>Loops</span></em></font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri"><strong><em><span>&bull; </span></em></strong><em><span>Operations</span></em></font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri"><strong><em><span>&bull; </span></em></strong><em><span>Polymorphism</span></em></font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><em><span><font size="3"><font face="Calibri">But only those that you write. Unless you have reason to distrust it, don&rsquo;t test code from others.&rdquo;</font></font></span></em></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri"><span><span> </span>(Test Driven Development By Example, Kent Beck)</span></font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3"></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">When testing it is usually recommended to use the <em>&ldquo;assert first&rdquo; </em><span>(Test Driven Development By Example, Kent Beck) approach. Once you have established what it is that you are supposed to test for by writing the assert as your first step, you know what you need to make the test pass. So you know the things you need to get there an can work your way backwards to create them and get them.</span></font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3"></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3"></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">The key to TDD is to be able to control the gap between your steps. It is very important that you are capable to take really small steps when you do not know where to start from. Once you gain some confidence in what you are doing, try taking bigger steps, always having in mind that should trouble come, you ought to go back to smaller steps. </font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">When refactoring for example, it is very important to take small steps. Do not refactor loads of code at once, instead do it one step at a time.</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">i.e.: If you are seeking to remove duplication, bring the elements closer slowly, and just get rid of the duplication when they do exactly the same.</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3"></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">You should really trust your tests. If you think just having them around is might keep you from making a mistake you should keep them. Also based on the basics of TDD your tests shouldn&rsquo;t relate, meaning that the result of a test is not supposed to affect the outcome of another. When you know that you code works, you can continue developing without worrying the least bit about breaking the existing code.</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Applying the three out of your four extremities should be attached at all times, the same applies to TDD. In its most pure form, you should only make changes when only a step away from getting a test to succeed.</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3"></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Here are some examples of a possibly poor design:</font></font></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.75in"><span style="font-family: Wingdings"><span><font size="3">v</font><span style="font: 7pt 'Times New Roman'">  </span></span></span><em><span><font size="3"><font face="Calibri">&ldquo;Long setup code&mdash;</font></font></span></em></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt 1.5in"><em><span><font size="3"><font face="Calibri">If you have to spend a hundred lines creating the objects for</font></font></span></em></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt 1.5in"><em><span><font size="3"><font face="Calibri">one simple assertion, something is wrong. Your objects are too big and need to </font></font></span></em><em><span><font size="3"><font face="Calibri">be split.</font></font></span></em></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.75in"><span style="font-family: Wingdings"><span><font size="3">v</font><span style="font: 7pt 'Times New Roman'">  </span></span></span><em><span><font size="3"><font face="Calibri">Setup duplication</font></font></span></em></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt 1.5in"><em><span><font size="3"><font face="Calibri">If you can&rsquo;t easily find a common place for common setup </font></font></span></em><em><span><font size="3"><font face="Calibri">code, there are too many objects too tightly intertwingled.</font></font></span></em></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.75in"><span style="font-family: Wingdings"><span><font size="3">v</font><span style="font: 7pt 'Times New Roman'">  </span></span></span><em><span><font size="3"><font face="Calibri">Long running tests</font></font></span></em></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt 1in"><em><span><font size="3"><font face="Calibri">TDD tests that run a long time won&rsquo;t be run often, and</font></font></span></em></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt 1.25in"><em><span><font size="3"><font face="Calibri">often haven&rsquo;t been run for a while, and probably don&rsquo;t work. Worse than this,</font></font></span></em></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt 1.25in"><em><span><font size="3"><font face="Calibri">though, they suggest that testing the bits and pieces of the  application is hard.</font></font></span></em></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt 1.5in"><em><span><font size="3"><font face="Calibri">Difficulty testing bits and pieces is a design problem, and needs to be addressed </font></font></span></em><em><span><font size="3"><font face="Calibri">with design. (The equivalent of 9.8 m/s2 is the ten minute test suite. Suites that </font></font></span></em><em><span><font size="3"><font face="Calibri">take longer than 10 minutes inevitably get trimmed, or the application tuned up, </font></font></span></em><em><span><font size="3"><font face="Calibri">so the suite takes 10 minutes again.)</font></font></span></em></p>
+<p class="MsoListParagraph" style="margin: 0in 0in 0pt 0.75in"><span style="font-family: Wingdings"><span><font size="3">v</font><span style="font: 7pt 'Times New Roman'">  </span></span></span><em><span><font size="3"><font face="Calibri">Fragile tests</font></font></span></em></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt 1in"><em><span><font size="3"><font face="Calibri">Tests that break unexpectedly suggest that one part of the application</font></font></span></em></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt 1.5in"><em><span><font size="3"><font face="Calibri">is surprisingly effecting another part. You need to design until the effect</font></font></span></em></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt 1.5in"><em><span><font size="3"><font face="Calibri">at a distance is eliminated, either by breaking the connection or by bringing the </font></font></span></em><font size="3"><font face="Calibri"><em><span>two parts together.&rdquo;</span></em><span> </span></font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><span><font size="3"><font face="Calibri">(Test Driven Development By Example, Kent Beck)</font></font></span></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><span><font face="Calibri" size="3"></font></span></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><span><font size="3"><font face="Calibri">When using TDD there is a very important difference between doing it alone or as part of a team.</font></font></span></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><span><font size="3"><font face="Calibri">If you do it on your own you should leave the last test broken. This way the next time you get to your code you must pick up the thread and get a hold of what you where trying to do much faster.</font></font></span></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri"><span>Else, if you are a member of a team, you must leave all your tests running. This shows responsibility between teammates but more important, is that you don&rsquo;t know what happened since you last worked.</span></font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3"></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><strong><u><font size="3"><font face="Calibri">Personal Thoughts:</font></font></u></strong></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><strong><u><span style="text-decoration: none"><font face="Calibri" size="3"></font></span></u></strong></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">I think TDD is not for everyone. It is a technique that requires patience, hard work, repetition and most important of all constant testing. </font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Tests are the center stone of TDD. You are basically not supposed write a code implementation without having the test to backup it up first.</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">If you are willing to apply this technique, you must know that it might be reiterative and your code won&rsquo;t flow as fluently as it used to, at least the first times.</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">In my specific case, I think the use of this process will benefit me, since it will allow more confidence while developing, although it will be difficult getting used to test for every implementation.</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Here&rsquo;s a table of Pros and Cons about TDD as I see it.</font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri"></font></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3"></font></p>
+<p class="MsoNormal" style="margin: 0in 0in 0pt">
+<table border="1" cellpadding="0" cellspacing="0" class="MsoTableGrid" style="border: medium none">
+<tbody>
+<tr>
+<td style="padding-right: 5.4pt;padding-left: 5.4pt;padding-bottom: 0in;width: 239.4pt;padding-top: 0in;border: windowtext 1pt solid" valign="top" width="319">
+<p align="center" class="MsoNormal" style="margin: 0in 0in 0pt;text-align: center"><font size="3"><font face="Calibri">Pros</font></font></p>
+</td>
+<td style="padding-right: 5.4pt;padding-left: 5.4pt;padding-bottom: 0in;width: 239.4pt;padding-top: 0in" valign="top" width="319">
+<p align="center" class="MsoNormal" style="margin: 0in 0in 0pt;text-align: center"><font size="3"><font face="Calibri">Cons</font></font></p>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 5.4pt;padding-left: 5.4pt;padding-bottom: 0in;width: 239.4pt;padding-top: 0in" valign="top" width="319">
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Your tests backup your code. This gives you confidence in it.</font></font></p>
+</td>
+<td style="padding-right: 5.4pt;padding-left: 5.4pt;padding-bottom: 0in;width: 239.4pt;padding-top: 0in" valign="top" width="319">
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">As much code is written for tests as it is in the functional code.</font></font></p>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 5.4pt;padding-left: 5.4pt;padding-bottom: 0in;width: 239.4pt;padding-top: 0in" valign="top" width="319">
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">If you need to change your code you can do it, since your tests will not allow you to break the previous working code.</font></font></p>
+</td>
+<td style="padding-right: 5.4pt;padding-left: 5.4pt;padding-bottom: 0in;width: 239.4pt;padding-top: 0in" valign="top" width="319">
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Not everyone is capable of taking small steps. It takes time, practice and will to get this done correctly.</font></font></p>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 5.4pt;padding-left: 5.4pt;padding-bottom: 0in;width: 239.4pt;padding-top: 0in" valign="top" width="319">
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">If a test doesn&rsquo;t work, it doesn&rsquo;t affect the others.</font></font></p>
+</td>
+<td style="padding-right: 5.4pt;padding-left: 5.4pt;padding-bottom: 0in;width: 239.4pt;padding-top: 0in" valign="top" width="319">
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">If a test is not working, you are not supposed to continue until it is fixed. This could get you in a tough spot.</font></font></p>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 5.4pt;padding-left: 5.4pt;padding-bottom: 0in;width: 239.4pt;padding-top: 0in" valign="top" width="319">
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">If you have a project seemingly big for you, allows to divide into smaller instances, setting shorter milestones to accomplish.</font></font></p>
+</td>
+<td style="padding-right: 5.4pt;padding-left: 5.4pt;padding-bottom: 0in;width: 239.4pt;padding-top: 0in" valign="top" width="319">
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3"></font></p>
+</td>
+</tr>
+<tr>
+<td style="padding-right: 5.4pt;padding-left: 5.4pt;padding-bottom: 0in;width: 239.4pt;padding-top: 0in" valign="top" width="319">
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font size="3"><font face="Calibri">Testing first saves time, because it avoids code refactoring due to mistakes done for not having tests.</font></font></p>
+</td>
+<td style="padding-right: 5.4pt;padding-left: 5.4pt;padding-bottom: 0in;width: 239.4pt;padding-top: 0in" valign="top" width="319">
+<p class="MsoNormal" style="margin: 0in 0in 0pt"><font face="Calibri" size="3"></font></p>
+</td>
+</tr>
+</tbody>
+</table>

@@ -1,0 +1,44 @@
+---
+layout: post
+title: MMC 3.0 Sample Plug-In using MVP and Unity
+categories:
+- Guidance
+- MMC
+- MVP Pattern
+- Unity
+tags:
+- Guidance
+- MMC
+- MVP Pattern
+- Unity
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+  _wp_old_slug: ''
+  dsq_thread_id: '1552822134'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>The last couple of days I have been working on a MMC spike that leverage dependency injection and some kind of presentation pattern (in this case MVP), to search for ways to make MMC applications more testable. The scenario I chose for the spike was having a plug-in that could connect/disconnect network adapters through a service that used WMI objects. The sample is very fresh, and there is still work to do to decouple things a bit more (for example, moving strings for WMI objets to config files).</p>
+<p>To work with MMC, you need the <strong>Microsoft.ManagementConsole.dll</strong> assembly, which comes as part of the Windows SDK 6.1 for Windows Server 2008. This is important because versions 7.0 and 7.1 do not include this assembly. Additionally,&nbsp; <em>"MMC is one of the very few extensibility point in the OS that will not support .NET 4. MMC " </em>(from <a href="http://connect.microsoft.com/VisualStudio/feedback/details/474039/can-not-use-net-4-0-to-create-mmc-snapin">this thread</a>), which is why MEF went out the door and in came Unity.</p>
+<p>The <a href="http://msdn.microsoft.com/en-us/library/aa394217%28VS.85%29.aspx">MMC documentation</a>, explains the basics on how to get started, so if you have never coded an MMC plug-in, I recommend you to start there. To summarize things, you are required to inherit from a couple of classes, override some methods, and put some attributes in place to get the ball rolling.&nbsp; The <a href="http://msdn.microsoft.com/en-us/library/aa394217%28VS.85%29.aspx">Hello World Sample</a> goes over this.</p>
+<p><a href="http://blogs.southworks.net/dschenkelman/files/2011/01/image.png"><img style="border-right-width: 0px;padding-left: 0px;padding-right: 0px;border-top-width: 0px;border-bottom-width: 0px;border-left-width: 0px;padding-top: 0px" border="0" alt="image" src="http://blogs.southworks.net/dschenkelman/files/2011/01/image_thumb.png" width="570" height="344"></a></p>
+<h3>Implementation Details</h3>
+<p>One of the decisions I had to take was there to make the calls so Unity would resolve and inject the necessary objects. This can be challenging, specially because we have no control over when our Views are instantiated. As you can see in the following code, MMC makes us set a ViewType for a particular description, but gives to control over how the view itself is created.</p>
+<code data-gist-id="64a2d17fc7e7f3fe3340" data-gist-file="ViewType.cs"></code>
+<p>How does the View get a reference to the presenter? I decided to use the <a href="http://msdn.microsoft.com/en-us/library/microsoft.managementconsole.snapinbase.tag%28VS.85%29.aspx">Tag</a> property of the <a href="http://msdn.microsoft.com/en-us/library/microsoft.managementconsole.snapin_members%28VS.85%29.aspx">SnapIn</a> class to store the container. The View can then access the Tag property, make the necessary cast and resolve the presenter.</p>
+<code data-gist-id="64a2d17fc7e7f3fe3340" data-gist-file="Tag.cs"></code>
+<p>After that, Unity is in the game, so we can resort to constructor injection and normal object resolution. Below is some code from the constructors of the View and Presenter classes.</p>
+<code data-gist-id="64a2d17fc7e7f3fe3340" data-gist-file="MVP.cs"></code>
+<h3>Alternative Approaches</h3>
+<p>Another possible approach I though of could be using a WinForm View&nbsp; instead of a List View, but having it as a placeholder for the real views we want to show depending on the Node that is clicked. This approach leaves the instantiation of the placeholder form to MMC, but would give us control for the instantiation of the other views. This is just an idea, and I might get deeper into this without getting the expected results.</p>
+<h3>Getting the Code and Plug-in</h3>
+<p>You can download the source code from <a href="http://cid-09f63fc7ac065e5e.office.live.com/self.aspx/p%5E0p%20Samples/ConnectionsPlug-in%20Source.zip">here</a>, and the plug-in (built assembly) from <a href="http://cid-09f63fc7ac065e5e.office.live.com/self.aspx/p%5E0p%20Samples/Connections%20MMC%20Plug-in.zip">here</a>. To install the plug-in, open the Windows SDK console, <strong>cd</strong> to the directory where the assemblies are, and run <strong>InstallUtil.exe MMCSpike.dll </strong>(as shown below)<strong>.</strong></p>
+<p><a href="http://blogs.southworks.net/dschenkelman/files/2011/01/image1.png"><img style="border-right-width: 0px;padding-left: 0px;padding-right: 0px;border-top-width: 0px;border-bottom-width: 0px;border-left-width: 0px;padding-top: 0px" border="0" alt="image" src="http://blogs.southworks.net/dschenkelman/files/2011/01/image_thumb1.png" width="552" height="312"></a></p>
+<p>That's all for this post. If I get any deeper with the sample or find other interesting approaches I'll let you know.</p>

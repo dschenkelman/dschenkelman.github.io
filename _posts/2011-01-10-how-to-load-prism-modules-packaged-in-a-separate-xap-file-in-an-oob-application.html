@@ -1,0 +1,57 @@
+---
+layout: post
+title: 'How to: Load Prism modules packaged in a separate XAP file in an OOB application'
+categories:
+- Composite Application Guidance for WPF &amp; SL
+- Guidance
+- p&amp;p
+- Patterns &amp; Practices
+- Prism-v4
+- Remote Module Loading
+- Silverlight
+- Silverlight 4
+tags:
+- Composite Application Guidance for WPF &amp; SL
+- Guidance
+- p&amp;p
+- Patterns &amp; Practices
+- Prism-v4
+- Remote Module Loading
+- Silverlight
+- Silverlight 4
+status: publish
+type: post
+published: true
+meta:
+  _edit_last: '15'
+  dsq_thread_id: '1568574491'
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+<p>I have seen many questions, both in the Codeplex  (<a href="http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=208004">here</a>) and StackOverflow forums (<a href="http://stackoverflow.com/questions/2875121/will-prism-ondemand-module-loading-work-in-an-oob-scenerio">here</a>), asking how to load modules that were packaged for remote module loading in a Silverlight out of browser application.</p>
+<p>I created this sample a couple of months ago, and I thought might be useful for others. <a href="http://cid-09f63fc7ac065e5e.office.live.com/self.aspx/p%5E0p%20Samples/OOBCachingSample.zip">Here</a> you can download the sample I put together using the Modularity QS from Prism 4. You can also download the necessary files separately (<a href="http://cid-09f63fc7ac065e5e.office.live.com/self.aspx/p%5E0p%20Samples/OOBModuleManager.cs">OOBModuleManager.cs</a> and <a href="http://cid-09f63fc7ac065e5e.office.live.com/self.aspx/p%5E0p%20Samples/CachingXapModuleTypeLoader.cs">CachingXapModuleTypeLoader.cs</a>)</p>
+<p>The following are the highlights and steps to follow to run the sample:</p>
+<ol>
+<li>Open the solution is under <strong>PrismV4\Quickstarts\Modularity\Silverlight\ModularityWithUnity</strong>.</li>
+<li>Make sure the Web Site project is set as startup project.</li>
+<li>Open the <strong>CachingXapModuleTypeLoader</strong> and <strong>OOBModuleManager </strong>to see how they work. Also check out how the <strong>OOBModuleManager</strong> is registered in the Bootstrapper's <strong>ConfigureContainer</strong> method.</li>
+<li>Run the application. Load all 6 modules.</li>
+<li>Install the application (add to Desktop and Start Menu).</li>
+<li>Close web browser and OOB window.</li>
+<li>Check in Systray that <a href="http://localhost:portX">http://localhost:portX</a> is not running. If it is, stop the site.</li>
+<li>Open OOB App from desktop.</li>
+<li>Load modules, they should load correctly.</li>
+</ol>
+<p><a href="http://blogs.southworks.net/dschenkelman/files/2011/01/image001.jpg"><img style="padding-left: 0px;padding-right: 0px;padding-top: 0px;border: 0px" src="http://blogs.southworks.net/dschenkelman/files/2011/01/image001_thumb.jpg" border="0" alt="image001" width="562" height="325" /></a></p>
+<table border="2" cellspacing="0" cellpadding="2" width="1129">
+<tbody>
+<tr>
+<td width="1125" valign="top"><strong>Note</strong>: Modules B, D, E &amp; F are loaded remotely, in background, not from main xap or however the Prism docs are explaining it (if you open Iso Storage you’ll find the .xap files there).</td>
+</tr>
+</tbody>
+</table>
+<p>I hope this is useful for you in case you are required to implement this scenario.</p>

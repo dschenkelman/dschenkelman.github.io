@@ -1,0 +1,254 @@
+<!doctype html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if (IE 7)&!(IEMobile)]><html class="no-js lt-ie9 lt-ie8" lang="en"><![endif]-->
+<!--[if (IE 8)&!(IEMobile)]><html class="no-js lt-ie9" lang="en"><![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"><!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<title>WebBrowser control Quickstart for the Composite Application Guidance for WPF and Silverlight (Prism-v2) &#8211; A sea of code</title>
+<meta name="description" content="Pseudo-random thoughts related to software development...">
+<meta name="keywords" content="Composite Application Guidance for WPF &amp; SL, Event Aggregation, p&amp;p, Patterns &amp; Practices, Prism-v2, WCF, Windows Presentation Foundation, WPF">
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://localhost:4000/images/site-logo.jpg">
+<meta name="twitter:title" content="WebBrowser control Quickstart for the Composite Application Guidance for WPF and Silverlight (Prism-v2)">
+<meta name="twitter:description" content="Pseudo-random thoughts related to software development...">
+<meta name="twitter:creator" content="@dschenkelman">
+
+<!-- Open Graph -->
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WebBrowser control Quickstart for the Composite Application Guidance for WPF and Silverlight (Prism-v2)">
+<meta property="og:description" content="Pseudo-random thoughts related to software development...">
+<meta property="og:url" content="http://localhost:4000/2009/06/23/webbrowser-control-quickstart-for-the-composite-application-guidance-for-wpf-and-silverlight-prism-v2/">
+<meta property="og:site_name" content="A sea of code">
+
+
+
+
+
+<link rel="canonical" href="http://localhost:4000/2009/06/23/webbrowser-control-quickstart-for-the-composite-application-guidance-for-wpf-and-silverlight-prism-v2/">
+<link href="http://localhost:4000/feed.xml" type="application/atom+xml" rel="alternate" title="A sea of code Feed">
+
+
+<!-- http://t.co/dKP3o1e -->
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="http://localhost:4000/assets/css/main.min.css">
+<!-- Webfonts -->
+<script src="//use.edgefonts.net/source-sans-pro:n2,i2,n3,i3,n4,i4,n6,i6,n7,i7,n9,i9;source-code-pro:n4,n7;volkhov.js"></script>
+
+<meta http-equiv="cleartype" content="on">
+
+<!-- Load Modernizr -->
+<script src="http://localhost:4000/assets/js/vendor/modernizr-2.6.2.custom.min.js"></script>
+
+<!-- Icons -->
+<!-- 16x16 -->
+<link rel="shortcut icon" href="http://localhost:4000/favicon.ico">
+<!-- 32x32 -->
+<link rel="shortcut icon" href="http://localhost:4000/favicon.png">
+<!-- 57x57 (precomposed) for iPhone 3GS, pre-2011 iPod Touch and older Android devices -->
+<link rel="apple-touch-icon-precomposed" href="http://localhost:4000/images/apple-touch-icon-precomposed.png">
+<!-- 72x72 (precomposed) for 1st generation iPad, iPad 2 and iPad mini -->
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://localhost:4000/images/apple-touch-icon-72x72-precomposed.png">
+<!-- 114x114 (precomposed) for iPhone 4, 4S, 5 and post-2011 iPod Touch -->
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://localhost:4000/images/apple-touch-icon-114x114-precomposed.png">
+<!-- 144x144 (precomposed) for iPad 3rd and 4th generation -->
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://localhost:4000/images/apple-touch-icon-144x144-precomposed.png">
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/gist-embed/1.7/gist-embed.min.js"></script>
+
+</head>
+
+<body id="post">
+
+<div class="navigation-wrapper">
+	<nav role="navigation" id="site-nav" class="animated drop">
+	    <ul>
+	        
+			<li>
+				
+					<a href="http://localhost:4000/">Home</a>
+				 
+			</li>
+	        
+			<li>
+				
+					<a href="http://localhost:4000/about/">About</a>
+				 
+			</li>
+	        
+			<li>
+				
+					<a href="/articles/">Articles</a>
+				 
+			</li>
+	        
+	        <li><a href="http://localhost:4000/feed.xml" title="Atom/RSS feed"><i class="icon-rss"></i> Feed</a></li>
+	        <li class="dosearch"><i class="icon-search"></i> Search</li>
+	    </ul>
+	</nav>
+</div><!-- /.navigation-wrapper -->
+
+<!--[if lt IE 9]><div class="upgrade"><strong><a href="http://whatbrowser.org/">Your browser is quite old!</strong> Why not upgrade to a different browser to better enjoy this site?</a></div><![endif]-->
+
+<div class="search-wrapper">
+	<div class="search-form">
+		<input type="text" class="search-field" placeholder="Search...">
+		<i class="icon-remove-sign icon-2x"></i>
+		<ul class="search-results post-list"></ul><!-- /.search-results -->
+	</div><!-- /.search-form -->
+</div><!-- ./search-wrapper -->
+
+<header class="masthead">
+	<div class="wrap">
+        
+    		<a href="http://localhost:4000/" class="site-logo" rel="home" title="A sea of code"><img src="http://localhost:4000/images/site-logo.jpg" width="200" height="200" alt="A sea of code logo" class="animated fadeInUp"></a>
+        
+        <h1 class="site-title animated fadeIn"><a href="http://localhost:4000/">A sea of code</a></h1>
+		<h2 class="site-description animated fadeIn" itemprop="description">Pseudo-random thoughts related to software development...</h2>
+	</div>
+</header><!-- /.masthead -->
+
+
+<div id="main" role="main">
+  <article class="hentry">
+    
+    <div class="entry-wrapper">
+      <header class="entry-header">
+        <span class="entry-tags"><a href="http://localhost:4000/tags/#Composite Application Guidance for WPF &amp; SL" title="Pages tagged Composite Application Guidance for WPF &amp; SL">Composite Application Guidance for WPF &amp; SL</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#Event Aggregation" title="Pages tagged Event Aggregation">Event Aggregation</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#p&amp;p" title="Pages tagged p&amp;p">p&amp;p</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#Patterns &amp; Practices" title="Pages tagged Patterns &amp; Practices">Patterns &amp; Practices</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#Prism-v2" title="Pages tagged Prism-v2">Prism-v2</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#WCF" title="Pages tagged WCF">WCF</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#Windows Presentation Foundation" title="Pages tagged Windows Presentation Foundation">Windows Presentation Foundation</a>&nbsp;&bull;&nbsp;<a href="http://localhost:4000/tags/#WPF" title="Pages tagged WPF">WPF</a></span>
+        
+          <h1 class="entry-title">WebBrowser control Quickstart for the Composite Application Guidance for WPF and Silverlight (Prism-v2)</h1>
+        
+      </header>
+      <footer class="entry-meta">
+        <img src="http://localhost:4000/images/bio-photo.jpg" alt="Damian Schenkelman photo" class="author-photo">
+        <span class="author vcard">By <span class="fn"><a href="http://localhost:4000/about/" title="About Damian Schenkelman">Damian Schenkelman</a></span></span>
+        <span class="entry-date date published"><time datetime="2009-06-23T00:00:00-04:00"><i class="icon-calendar-empty"></i> June 23, 2009</time></span>
+        
+        
+        <span><a href="http://localhost:4000/2009/06/23/webbrowser-control-quickstart-for-the-composite-application-guidance-for-wpf-and-silverlight-prism-v2/" rel="bookmark" title="WebBrowser control Quickstart for the Composite Application Guidance for WPF and Silverlight (Prism-v2)"><i class="icon-link"></i> Permalink</a></span>
+        
+      </footer>
+      <div class="entry-content">
+        <p>Last week, with <a href="http://blogs.southworks.net/matiasb/">Matias Bonaventura</a>, <a href="http://blogs.southworks.net/jdominguez/">Julian Dominguez</a> and <a href="http://blogs.southworks.net/pcostantini/">Pablo Constantini</a>, we created a WPF demo application using Prism-v2 that shows both way interaction between different modules of the application and different <a href="http://msdn.microsoft.com/en-us/library/system.windows.controls.webbrowser.aspx">WPF WebBrowser controls</a>.</p>
+<p>Below you can find some of the highlights of how this application works. The demo shows interaction between the WPF application and a Web application hosted in a WebBrowser control. How this is done is explained with further detail in the blog post.</p>
+<h4>Quickstart Overview</h4>
+<p>The demo has the following main components:</p>
+<ul>
+<li><strong>CustomersModule</strong>: This module is responsible for handling the information of the different customers. It gets the information from a <a href="http://msdn.microsoft.com/en-us/netframework/aa663324.aspx">WCF</a> WebService. It has a single view, CustomerView, with a DataGrid to show the customers.  The view is placed in the "CustomersRegion" (top left of the screen).</li>
+<li><strong>LocationModule</strong>: This module contains a single view which in turn hosts a <a href="http://msdn.microsoft.com/en-us/library/system.windows.controls.webbrowser.aspx">WPF WebBrowser control</a> (and a progress bar to show when the page is loading). This control shows the place of residence of the customer through Bing Maps. This view is placed in the "LocationRegion" (bottom of the screen).</li>
+<li><strong>OrdersModule</strong>: This module contains a single view which has a <a href="http://msdn.microsoft.com/en-us/library/system.windows.controls.webbrowser.aspx">WPF WebBrowser control</a>. This control shows a different ASP.NET page with a customer order, based on the customer that is selected in the CustomersView DataGrid. The view is shown in the "OrdersRegion".</li>
+<li>A Web Application that allows shipping different customer orders.</li>
+<li>A WCF service that manages Customers and Orders (this is for the Web app and the WPF app to share the same data).</li>
+</ul>
+<p>The image below shows the layout of the application:<br />
+<a href="http://blogs.southworks.net/dschenkelman/files/2009/06/demolayout.png"><img class="alignnone size-full wp-image-104" src="http://blogs.southworks.net/dschenkelman/files/2009/06/demolayout.png" alt="Demo UI Layout" width="500" height="334" /></a></p>
+<h4>How does the application work?</h4>
+<p>When a customer from the DataGrid is selected a command is executed (through an <a href="http://blogs.southworks.net/jdominguez/2008/08/icommand-for-silverlight-with-attached-behaviors/">attached behavior</a> with the DataGrid's SelectionChanged event). This command publishes an event using the <a href="http://msdn.microsoft.com/en-us/library/dd458915.aspx">EventAggregator</a> to notify the Presenter's of the OrdersView and LocationView in the other modules.</p>
+<p>The OrdersView updates the page it shows in the WebBrowser control, and the LocationView updates the customer's address in a BingMap.</p>
+<p>When the user clicks the <strong>"Ship Order" </strong>button from the WebSite hosted in the WebBroser control from the OrdersView:</p>
+<ol>
+<li>The WCF Web Service is updated with the data of the Shipped Order (marks the order as shipped).</li>
+<li>The view listens to the published JS event in the site hosted by the WebBrowser control and notifies its Presenter (I go over how this communication takes place later in this post).</li>
+<li>The Presenter fires an event through EventAggregator.</li>
+<li>The event is handled by the CustomersViewModel which updates the customer list through the WebService.</li>
+<li>The Customers DataGrid is updated.</li>
+</ol>
+<h4>Implementation Specifics</h4>
+<p>To enable the <strong>WebSite</strong> to communicate with the <strong>WebBrowser </strong>control (via JS events) the following steps were performed:</p>
+<ol>
+<li>Created the <strong>OrdersScriptableModel</strong> class (located in the <strong>OrdersView</strong> code behind), which is serialized as JS.</li>
+<li>Fire a JS event from this class in the page and this in turn notifies the view.</li>
+<li>Publish an event (using the <strong>EventAggregator</strong>) to establish communication with the <strong>CustomersViewModel</strong> to update the customers list (performing a call to the WebService).</li>
+</ol>
+<p>There are other possible approaches, such as going over the different controls in the current <strong>WebBrowser.Document</strong> to listen for JS events.</p>
+<p>You can also check out some tips about using WCF services in Prism in <a href="http://blogs.southworks.net/matiasb/2009/06/20/how-to-consume-wcf-services-from-composite-application-guidance-for-wpf-and-silverlightprism-v2-modules/">this post</a> by Matias.</p>
+<h4>Source Code</h4>
+<h6>Disclaimer</h6>
+<p>This code is provided "AS IS" with no warranties, and confers no rights.</p>
+<h6>Download</h6>
+<p>We uploaded the sample to the <a href="http://compositewpf.codeplex.com/">Prism codeplex site</a>. You can get the sample from <a href="http://compositewpf.codeplex.com/Project/Download/FileDownload.aspx?DownloadId=72581">here</a>.</p>
+<p>Hope this sample application is useful!!!</p>
+
+        
+      </div><!-- /.entry-content -->
+    </div><!-- /.entry-wrapper -->
+    <nav class="pagination" role="navigation">
+      
+        <a href="http://localhost:4000/2009/06/05/how-to-drag-and-drop-wpf-views-between-regions-in-prism-v2/" class="btn" title="How to: Drag and Drop WPF Views between Regions in Prism-v2">Previous article</a>
+      
+      
+        <a href="http://localhost:4000/2009/06/27/how-to-drag-and-drop-silverlight-views-between-regions-in-prism-v2/" class="btn" title="How to: Drag and Drop Silverlight Views between Regions in Prism-v2">Next article</a>
+      
+    </nav><!-- /.pagination -->
+  </article>
+</div><!-- /#main -->
+
+<div class="footer-wrapper">
+  <footer role="contentinfo">
+    <span>&copy; 2014 Damian Schenkelman. Powered by <a href="http://jekyllrb.com">Jekyll</a> using the <a href="http://mademistakes.com/so-simple/">So Simple Theme</a>.</span>
+<div class="social-icons">
+	<a href="http://twitter.com/dschenkelman" title="Damian Schenkelman on Twitter" target="_blank"><i class="icon-twitter icon-2x"></i></a>
+	
+	
+	<a href="http://linkedin.com/in/damianschenkelman" title="Damian Schenkelman on LinkedIn" target="_blank"><i class="icon-linkedin icon-2x"></i></a>
+	
+	
+	
+	<a href="http://github.com/dschenkelman" title="Damian Schenkelman on Github" target="_blank"><i class="icon-github icon-2x"></i></a>
+	
+</div><!-- /.social-icons -->
+  </footer>
+</div><!-- /.footer-wrapper -->
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="http://localhost:4000/assets/js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
+<script src="http://localhost:4000/assets/js/scripts.min.js"></script>
+
+<!-- Jekyll Simple Search option -->
+<script>
+  $(document).ready(function() {
+      $('.search-field').simpleJekyllSearch({
+          jsonFile : 'http://localhost:4000/search.json',
+          searchResults : '.search-results',
+          template : '<li><article><a href="{url}">{title} <span class="entry-date"><time datetime="{date}">{shortdate}</time></span></a></article></li>',
+          noResults: '<p>Nothing found.</p>'
+        });
+  });
+
+  (function( $, window, undefined ) {
+    
+     var bs = {
+          close: $(".icon-remove-sign"),
+          searchform: $(".search-form"),
+          canvas: $("body"),
+          dothis: $('.dosearch')
+      };
+    
+    bs.dothis.on('click', function() {
+      $('.search-wrapper').css({ display: "block" });
+      bs.searchform.toggleClass('active');
+      bs.searchform.find('input').focus();
+      bs.canvas.toggleClass('search-overlay');
+    });
+    
+      bs.close.on('click', function() {
+        $('.search-wrapper').removeAttr( 'style' );
+        bs.searchform.toggleClass('active');
+        bs.canvas.removeClass('search-overlay');
+    });
+  })( jQuery, window );
+</script>
+
+
+	        
+
+</body>
+</html>
