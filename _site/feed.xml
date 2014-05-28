@@ -2,26 +2,233 @@
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
 <title type="text">A sea of code</title>
 <generator uri="https://github.com/mojombo/jekyll">Jekyll</generator>
-<link rel="self" type="application/atom+xml" href="http://localhost:4000/feed.xml" />
-<link rel="alternate" type="text/html" href="http://localhost:4000/" />
-<updated>2014-05-09T01:26:35-04:00</updated>
-<id>http://localhost:4000/</id>
+<link rel="self" type="application/atom+xml" href="/feed.xml" />
+<link rel="alternate" type="text/html" href="/" />
+<updated>2014-05-27T23:37:24-04:00</updated>
+<id>/</id>
 <author>
   <name>Damian Schenkelman</name>
-  <uri>http://localhost:4000/</uri>
+  <uri>/</uri>
   <email>you@email.com</email>
 </author>
 
 
 <entry>
+  <title type="html"><![CDATA[Creating friendly frozen object APIs using ECMAScript 6 Proxies]]></title>
+  <link rel="alternate" type="text/html" href="/2014/05/23/creating-friendly-frozen-object-apis-using-ecmascript-6-proxies/"/>
+  <id>/2014/05/23/creating-friendly-frozen-object-apis-using-ecmascript-6-proxies</id>
+  <published>2014-05-23T00:00:00-04:00</published>
+  <updated>2014-05-23T00:00:00-04:00</updated>
+  <author>
+    <name>Damian Schenkelman</name>
+    <uri></uri>
+    <email>you@email.com</email>
+  </author>
+  <content type="html">&lt;p&gt;There is a lot of talk nowadays related to the benefits of immutability in programming languages. Functional languages such as &lt;a href=&quot;http://www.tiobe.com/index.php/content/paperinfo/tpci/index.html&quot;&gt;F# and Scala&lt;/a&gt; are gaining more popularity because of this. Commonly considered object oriented languages such as C# and Java go &lt;em&gt;more functional&lt;/em&gt; with each release, &lt;a href=&quot;http://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html&quot;&gt;Java including lambdas&lt;/a&gt; in version 8 (although that is not directly related to immutability) and C#  having the &lt;a href=&quot;http://msdn.microsoft.com/en-us/library/dn385366(v=vs.110).aspx&quot;&gt;immutable collections&lt;/a&gt; and new features in version 6 such as get only auto-properties, initializers for automatically implemented properties and primary constructors, which &lt;a href=&quot;https://msmvps.com/blogs/jon_skeet/archive/2014/04/04/c-6-first-reactions.aspx&quot;&gt;can be combined together to write immutable classes/structures with less code&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Usually in those cases, the most highlighted benefit of immutability is that since you don’t have to worry about mutable state you can write &lt;strong&gt;lock free multithreaded code&lt;/strong&gt;, a thing that is becoming more important as the processing power of one CPU core is not going to continue growing in the future (unless until Quantum computers arrive, but I have no idea of how that would work). That benefit comes from the guarantees that computers can make about immutable state.&lt;/p&gt;
+
+&lt;h1 id=&quot;immutability-in-ecmascript-5&quot;&gt;Immutability in ECMAScript 5&lt;/h1&gt;
+&lt;p&gt;ECMAScript 5 introduced the ability to make objects immutable through the use of &lt;code&gt;Object.freeze(obj)&lt;/code&gt;. As the &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze&quot;&gt;documentation&lt;/a&gt; explains, the method:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Prevents the addition of new properties to the object.&lt;/li&gt;
+  &lt;li&gt;Prevents the removal of existing properties&lt;/li&gt;
+  &lt;li&gt;Prevents changes on any of the characteristics of existing properties.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;em&gt;“In essence the object is made effectively immutable.”&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Considering the current state of JavaScript writing multithreaded is not one of the goals for which this feature was designed. Nevertheless, considering JavaScript’s dynamic nature I think it was done because:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;It should be potentially possible for engines to optimize code based on the knowledge that an object is immutable (although it seems &lt;a href=&quot;https://code.google.com/p/chromium/issues/detail?id=115960&quot;&gt;that is not the case right now&lt;/a&gt;).&lt;/li&gt;
+  &lt;li&gt;Sometimes it’s easier to reason about things if you are sure they won’t change.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;apis-for-working-with-immutable-elements&quot;&gt;APIs for working with immutable elements&lt;/h1&gt;
+&lt;p&gt;Considering all of the above, a fairly common scenario would be to want to create a new object similar to an existing one but changing some values from the original object. F# provides the following syntax for records through the usage of &lt;code&gt;with&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;fsharp&quot;&gt;&lt;span class=&quot;k&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Point&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;Y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;point&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;X&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;point2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;point&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;X&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;A similar API in C# would look like this (and some pains about it are documented in &lt;a href=&quot;http://blogs.msdn.com/b/mostlytrue/archive/2014/05/12/misadventures-in-immutability.aspx&quot;&gt;this post&lt;/a&gt;):&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;csharp&quot;&gt;&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Point&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;readonly&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;readonly&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;Point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Point&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;WithX&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;Point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Point&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;WithY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;Point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;X&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;get&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Y&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;get&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;p&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;p2&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;WithX&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;To achieve the same thing in JavaScript we could create methods for each &lt;em&gt;field&lt;/em&gt;, similar to the C# example. That could be either manual or automatic, the latter by calling a function passing the object as a parameter and creating a function for each &lt;em&gt;field&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;And then there’s another option…&lt;/p&gt;
+
+&lt;h1 id=&quot;using-proxy-to-implement-the-api&quot;&gt;Using Proxy to implement the API&lt;/h1&gt;
+&lt;p&gt;The first thing we need to do is agree on how the API will be consumed. My proposal is:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Vehicle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;hasEngine&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;hasWheels&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;hasEngine&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;hasEngine&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;hasWheels&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;hasWheels&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Car&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;make&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;hp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;hp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;hp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;make&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;make&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;model&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;Car&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;prototype&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Vehicle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;car&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;immutable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Car&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;Hyundai&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;Elantra&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;car2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;car&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;withHp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;car&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;hp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// creating with an existing property and a new value&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;withHasMirrors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// creating with a new property;&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;car2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;hp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// prints 30&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;car2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;hasMirrors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// prints true&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Now let’s set some requirements:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;When calling &lt;code&gt;immutable(obj)&lt;/code&gt; the object &lt;code&gt;obj&lt;/code&gt; becomes immutable.&lt;/li&gt;
+  &lt;li&gt;The &lt;code&gt;with...&lt;/code&gt; methods only perform a shallow copy. They should maintain the prototype chain.&lt;/li&gt;
+  &lt;li&gt;Only &lt;em&gt;fields&lt;/em&gt; can be set using &lt;code&gt;with...&lt;/code&gt;, methods can’t.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Before we get into the implementation details it’s important to remark that the &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy&quot;&gt;Proxy feature&lt;/a&gt; is part of the &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/JavaScript/ECMAScript_6_support_in_Mozilla&quot;&gt;unfinished ECMAScript 6 specification&lt;/a&gt;. The &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy&quot;&gt;documentation&lt;/a&gt; is really good so I won’t delve into the details of how the feature works.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;A potential implementation could look like this:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;immutable&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;isFunction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;getType&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{};&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;f&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;getType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;[object Function]&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;shallowCopy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;copy&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getPrototypeOf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+
+    &lt;span class=&quot;nb&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getOwnPropertyNames&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;forEach&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+      &lt;span class=&quot;nx&quot;&gt;copy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;copy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;immutable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;proxy&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Proxy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;nx&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;originalName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;originalName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;indexOf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;with&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;originalName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+          &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;capitalizedName&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;originalName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;substring&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+          &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;capitalizedName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;charAt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toLowerCase&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;capitalizedName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;slice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+          &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;attribute&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+          &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;attribute&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;isFunction&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;attribute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)){&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+              &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;copy&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;shallowCopy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+              &lt;span class=&quot;nx&quot;&gt;copy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+              &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;immutable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;copy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+          &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;originalName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+    &lt;span class=&quot;nb&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;freeze&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;proxy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;})();&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h1 id=&quot;testing-things-out&quot;&gt;Testing things out&lt;/h1&gt;
+&lt;p&gt;At the time of writing the &lt;a href=&quot;http://kangax.github.io/compat-table/es6/&quot;&gt;only browser that supports the latest version of the specification&lt;/a&gt; is Firefox. I’m using version 29.0.1 and running &lt;a href=&quot;https://gist.github.com/dschenkelman/99e0453d58cea7e02d62&quot;&gt;this gist&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The output is:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sample&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;js&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;59&lt;/span&gt;
+&lt;span class=&quot;s2&quot;&gt;&amp;quot;Hyundai&amp;quot;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sample&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;js&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;60&lt;/span&gt;
+&lt;span class=&quot;s2&quot;&gt;&amp;quot;Elantra&amp;quot;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sample&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;js&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;61&lt;/span&gt;
+&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sample&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;js&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;62&lt;/span&gt;
+&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sample&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;js&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;63&lt;/span&gt;
+&lt;span class=&quot;kc&quot;&gt;undefined&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sample&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;js&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;64&lt;/span&gt;
+&lt;span class=&quot;mi&quot;&gt;30&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sample&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;js&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;68&lt;/span&gt;
+&lt;span class=&quot;s2&quot;&gt;&amp;quot;Hyundai&amp;quot;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sample&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;js&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;69&lt;/span&gt;
+&lt;span class=&quot;s2&quot;&gt;&amp;quot;Elantra&amp;quot;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sample&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;js&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;70&lt;/span&gt;
+&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sample&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;js&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;71&lt;/span&gt;
+&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sample&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;js&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;72&lt;/span&gt;
+&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sample&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;js&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;73&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+
+  &lt;p&gt;&lt;a href=&quot;/2014/05/23/creating-friendly-frozen-object-apis-using-ecmascript-6-proxies/&quot;&gt;Creating friendly frozen object APIs using ECMAScript 6 Proxies&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;&quot;&gt;A sea of code&lt;/a&gt; on May 23, 2014.&lt;/p&gt;</content>
+</entry>
+
+
+<entry>
+  <title type="html"><![CDATA[git checkout -b Auth0]]></title>
+  <link rel="alternate" type="text/html" href="/2014/05/20/git-checkout-b-auth0/"/>
+  <id>/2014/05/20/git-checkout-b-auth0</id>
+  <published>2014-05-20T00:00:00-04:00</published>
+  <updated>2014-05-20T00:00:00-04:00</updated>
+  <author>
+    <name>Damian Schenkelman</name>
+    <uri></uri>
+    <email>you@email.com</email>
+  </author>
+  <content type="html">&lt;p&gt;After more than 6 years working at &lt;a href=&quot;blogs.southworks.net&quot;&gt;Southworks&lt;/a&gt;, I have decided to take on a new challenge (which might be evident due to the blog change). I got the amazing opportunity to start working there right out of high school (in the words of ABBA &lt;em&gt;“young and sweet, only seventeen”&lt;/em&gt;) and was able to work with and learn from a great group of people who, by the way, also get some pretty cool stuff done.&lt;/p&gt;
+
+&lt;p&gt;I started my new adventure yesterday by joining &lt;a href=&quot;https://auth0.com&quot;&gt;Auth0&lt;/a&gt;. There is also an &lt;a href=&quot;https://auth0.com/about&quot;&gt;incredible team&lt;/a&gt; of people there, which includes &lt;a href=&quot;https://twitter.com/woloski&quot;&gt;@woloski&lt;/a&gt;, &lt;a href=&quot;https://twitter.com/fedejack&quot;&gt;@fedejack&lt;/a&gt; and &lt;a href=&quot;https://twitter.com/sebasiaco&quot;&gt;@sebasiaco&lt;/a&gt;, all of whom I met during our time at Southworks.&lt;/p&gt;
+
+&lt;figure&gt;
+  &lt;img src=&quot;/images/posts/branch.png&quot; alt=&quot;git checkout -b Auth0&quot; /&gt;
+&lt;/figure&gt;
+
+&lt;p&gt;This is going to be a great opportunity for me to get an idea of what it’s like to work with a radically different set of technologies. I’m (mostly) used to C#, Azure and working on Windows and now I’ll get to use a Mac to develop using node.js (and if I’m to believe &lt;a href=&quot;https://twitter.com/woloski&quot;&gt;@woloski&lt;/a&gt; &lt;em&gt;“once you try Mac you won’t go back”&lt;/em&gt;).&lt;/p&gt;
+
+&lt;p&gt;I’m also going to get the chance to do one of the things I love the most as a software developer, which is creating components for other software developers. The thought of working on &lt;a href=&quot;https://auth0.com/availability-trust&quot;&gt;the platform&lt;/a&gt; one day and jumping to one of &lt;a href=&quot;https://auth0.com/how-it-works#apps-connections&quot;&gt;the many SDKs&lt;/a&gt; any other day, always with the goal in mind of improving the experience of other fellow developers is really exciting.&lt;/p&gt;
+
+&lt;p&gt;As for this blog’s contents, as you can guess they will probably start to get a bit more varied. I still love C# as a language and expect to continue contributing to open source projects such as &lt;a href=&quot;http://github.com/scriptcs/scriptcs&quot;&gt;scriptcs&lt;/a&gt; (although I’m on a cold streak right now) and I also plan to slowly continue &lt;a href=&quot;https://github.com/dschenkelman/fakewin8/tree/fsharp&quot;&gt;learning F#&lt;/a&gt; so there will still be content similar to the old one. At the same time, I really hope there will be content related to JS, identity, working at a startup and many other things, since that means I’ll be learning and that makes me happy :)&lt;/p&gt;
+
+  &lt;p&gt;&lt;a href=&quot;/2014/05/20/git-checkout-b-auth0/&quot;&gt;git checkout -b Auth0&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;&quot;&gt;A sea of code&lt;/a&gt; on May 20, 2014.&lt;/p&gt;</content>
+</entry>
+
+
+<entry>
   <title type="html"><![CDATA[[Spanish] Desarrollo multi-plataforma con Visual Studio 2013 e introducción a Xamarin (en español)]]></title>
-  <link rel="alternate" type="text/html" href="http://localhost:4000/2014/01/07/spanish-desarrollo-multi-plataforma-con-visual-studio-2013-e-introduccin-a-xamarin-en-espaol/"/>
-  <id>http://localhost:4000/2014/01/07/spanish-desarrollo-multi-plataforma-con-visual-studio-2013-e-introduccin-a-xamarin-en-espaol</id>
+  <link rel="alternate" type="text/html" href="/2014/01/07/spanish-desarrollo-multi-plataforma-con-visual-studio-2013-e-introduccin-a-xamarin-en-espaol/"/>
+  <id>/2014/01/07/spanish-desarrollo-multi-plataforma-con-visual-studio-2013-e-introduccin-a-xamarin-en-espaol</id>
   <published>2014-01-07T00:00:00-05:00</published>
   <updated>2014-01-07T00:00:00-05:00</updated>
   <author>
     <name>Damian Schenkelman</name>
-    <uri>http://localhost:4000</uri>
+    <uri></uri>
     <email>you@email.com</email>
   </author>
   <content type="html">&lt;p&gt;&lt;em&gt;For those who don’t read Spanish, this blog post provides details about the Visual Studio 2013 launch for Latin America, particulary a cross-platform development talk that included Xamarin.&lt;/em&gt;&lt;/p&gt;
@@ -38,19 +245,19 @@
 &lt;/ol&gt;
 &lt;p&gt;Al final de la charla hubo una sesión de preguntas y respuestas en la cual hubo preguntas muy interesantes. Esperamos que les pueda ser útil en caso de estar comenzando a aprender sobre Xamarin.&lt;/p&gt;
 
-  &lt;p&gt;&lt;a href=&quot;http://localhost:4000/2014/01/07/spanish-desarrollo-multi-plataforma-con-visual-studio-2013-e-introduccin-a-xamarin-en-espaol/&quot;&gt;[Spanish] Desarrollo multi-plataforma con Visual Studio 2013 e introducción a Xamarin (en español)&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;http://localhost:4000&quot;&gt;A sea of code&lt;/a&gt; on January 07, 2014.&lt;/p&gt;</content>
+  &lt;p&gt;&lt;a href=&quot;/2014/01/07/spanish-desarrollo-multi-plataforma-con-visual-studio-2013-e-introduccin-a-xamarin-en-espaol/&quot;&gt;[Spanish] Desarrollo multi-plataforma con Visual Studio 2013 e introducción a Xamarin (en español)&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;&quot;&gt;A sea of code&lt;/a&gt; on January 07, 2014.&lt;/p&gt;</content>
 </entry>
 
 
 <entry>
   <title type="html"><![CDATA[scriptcs: Acceptance tests with XBehave.net]]></title>
-  <link rel="alternate" type="text/html" href="http://localhost:4000/2013/12/25/scriptcs-acceptance-tests-with-xbehave-net/"/>
-  <id>http://localhost:4000/2013/12/25/scriptcs-acceptance-tests-with-xbehave-net</id>
+  <link rel="alternate" type="text/html" href="/2013/12/25/scriptcs-acceptance-tests-with-xbehave-net/"/>
+  <id>/2013/12/25/scriptcs-acceptance-tests-with-xbehave-net</id>
   <published>2013-12-25T00:00:00-05:00</published>
   <updated>2013-12-25T00:00:00-05:00</updated>
   <author>
     <name>Damian Schenkelman</name>
-    <uri>http://localhost:4000</uri>
+    <uri></uri>
     <email>you@email.com</email>
   </author>
   <content type="html">&lt;p&gt;One of the challenges we face when merging pull requests in &lt;a href=&quot;https://github.com/scriptcs/scriptcs&quot;&gt;scriptcs&lt;/a&gt; is making sure all features are still working. Executing our unit tests for every pull request definitely helps as it helps catch many mistakes, but some others go unnoticed due to integration issues (different components, the file server, assembly versions).&lt;/p&gt;
@@ -81,19 +288,19 @@ And a directory for the package and each of its dependencies is created&lt;/p&gt
 &lt;li&gt;The scenario under test is easier to understand for everyone reading the test.&lt;/li&gt;
 &lt;/ol&gt;
 
-  &lt;p&gt;&lt;a href=&quot;http://localhost:4000/2013/12/25/scriptcs-acceptance-tests-with-xbehave-net/&quot;&gt;scriptcs: Acceptance tests with XBehave.net&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;http://localhost:4000&quot;&gt;A sea of code&lt;/a&gt; on December 25, 2013.&lt;/p&gt;</content>
+  &lt;p&gt;&lt;a href=&quot;/2013/12/25/scriptcs-acceptance-tests-with-xbehave-net/&quot;&gt;scriptcs: Acceptance tests with XBehave.net&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;&quot;&gt;A sea of code&lt;/a&gt; on December 25, 2013.&lt;/p&gt;</content>
 </entry>
 
 
 <entry>
   <title type="html"><![CDATA[scriptcs: Reducing startup time by caching compiled .dlls]]></title>
-  <link rel="alternate" type="text/html" href="http://localhost:4000/2013/12/04/scriptcs-reducing-startup-time-by-caching-compiled-dlls/"/>
-  <id>http://localhost:4000/2013/12/04/scriptcs-reducing-startup-time-by-caching-compiled-dlls</id>
+  <link rel="alternate" type="text/html" href="/2013/12/04/scriptcs-reducing-startup-time-by-caching-compiled-dlls/"/>
+  <id>/2013/12/04/scriptcs-reducing-startup-time-by-caching-compiled-dlls</id>
   <published>2013-12-04T00:00:00-05:00</published>
   <updated>2013-12-04T00:00:00-05:00</updated>
   <author>
     <name>Damian Schenkelman</name>
-    <uri>http://localhost:4000</uri>
+    <uri></uri>
     <email>you@email.com</email>
   </author>
   <content type="html">&lt;p&gt;A &lt;a href=&quot;https://github.com/scriptcs/scriptcs/pull/485#issuecomment-27433217&quot;&gt;couple of weeks ago&lt;/a&gt; we introduced a new &lt;a href=&quot;https://github.com/scriptcs/scriptcs&quot;&gt;scriptcs&lt;/a&gt; feature (available through the nightly builds) that allows you to execute your scripts, compile them to a .dll, and store it in a hidden folder for caching purposes. This greatly reduces start-up time (although there is still room for improvement) as we execute the .dll if it is available, thus avoiding some steps that we would need to perform otherwise.&lt;/p&gt;
@@ -106,19 +313,19 @@ And a directory for the package and each of its dependencies is created&lt;/p&gt
 &lt;p&gt;If you have any ideas go ahead and create a &lt;a href=&quot;https://github.com/scriptcs/scriptcs/issues/new&quot; target=&quot;_blank&quot;&gt;new issue&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Have fun scripting!!&lt;/p&gt;
 
-  &lt;p&gt;&lt;a href=&quot;http://localhost:4000/2013/12/04/scriptcs-reducing-startup-time-by-caching-compiled-dlls/&quot;&gt;scriptcs: Reducing startup time by caching compiled .dlls&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;http://localhost:4000&quot;&gt;A sea of code&lt;/a&gt; on December 04, 2013.&lt;/p&gt;</content>
+  &lt;p&gt;&lt;a href=&quot;/2013/12/04/scriptcs-reducing-startup-time-by-caching-compiled-dlls/&quot;&gt;scriptcs: Reducing startup time by caching compiled .dlls&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;&quot;&gt;A sea of code&lt;/a&gt; on December 04, 2013.&lt;/p&gt;</content>
 </entry>
 
 
 <entry>
   <title type="html"><![CDATA[Asynchronous I/O in C#: Why tasks (a.k.a. promises, futures)?]]></title>
-  <link rel="alternate" type="text/html" href="http://localhost:4000/2013/11/29/asynchronous-io-in-c-why-tasks-a-k-a-promises-futures/"/>
-  <id>http://localhost:4000/2013/11/29/asynchronous-io-in-c-why-tasks-a-k-a-promises-futures</id>
+  <link rel="alternate" type="text/html" href="/2013/11/29/asynchronous-io-in-c-why-tasks-a-k-a-promises-futures/"/>
+  <id>/2013/11/29/asynchronous-io-in-c-why-tasks-a-k-a-promises-futures</id>
   <published>2013-11-29T00:00:00-05:00</published>
   <updated>2013-11-29T00:00:00-05:00</updated>
   <author>
     <name>Damian Schenkelman</name>
-    <uri>http://localhost:4000</uri>
+    <uri></uri>
     <email>you@email.com</email>
   </author>
   <content type="html">&lt;p&gt;In previous posts I provided an &lt;a href=&quot;http://blogs.southworks.net/dschenkelman/2013/08/02/asynchronous-io-in-c-introduction/&quot;&gt;introduction to asynchronous I/O in C#&lt;/a&gt;, and also &lt;a href=&quot;http://blogs.southworks.net/dschenkelman/2013/10/29/asynchronous-io-in-c-io-completion-ports/&quot;&gt;dug a bit deeper into I/O completion ports&lt;/a&gt;, which is one of the possible mechanisms that the .NET frameworks uses to accomplish this.&lt;/p&gt;
@@ -159,19 +366,19 @@ And a directory for the package and each of its dependencies is created&lt;/p&gt
 &lt;/ul&gt;
 &lt;code data-gist-id=&quot;af129e88ebb996f2a152&quot; data-gist-file=&quot;Cancellation.cs&quot;&gt;&lt;/code&gt;
 
-  &lt;p&gt;&lt;a href=&quot;http://localhost:4000/2013/11/29/asynchronous-io-in-c-why-tasks-a-k-a-promises-futures/&quot;&gt;Asynchronous I/O in C#: Why tasks (a.k.a. promises, futures)?&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;http://localhost:4000&quot;&gt;A sea of code&lt;/a&gt; on November 29, 2013.&lt;/p&gt;</content>
+  &lt;p&gt;&lt;a href=&quot;/2013/11/29/asynchronous-io-in-c-why-tasks-a-k-a-promises-futures/&quot;&gt;Asynchronous I/O in C#: Why tasks (a.k.a. promises, futures)?&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;&quot;&gt;A sea of code&lt;/a&gt; on November 29, 2013.&lt;/p&gt;</content>
 </entry>
 
 
 <entry>
   <title type="html"><![CDATA[Asynchronous I/O in C#: I/O Completion Ports]]></title>
-  <link rel="alternate" type="text/html" href="http://localhost:4000/2013/10/29/asynchronous-io-in-c-io-completion-ports/"/>
-  <id>http://localhost:4000/2013/10/29/asynchronous-io-in-c-io-completion-ports</id>
+  <link rel="alternate" type="text/html" href="/2013/10/29/asynchronous-io-in-c-io-completion-ports/"/>
+  <id>/2013/10/29/asynchronous-io-in-c-io-completion-ports</id>
   <published>2013-10-29T00:00:00-04:00</published>
   <updated>2013-10-29T00:00:00-04:00</updated>
   <author>
     <name>Damian Schenkelman</name>
-    <uri>http://localhost:4000</uri>
+    <uri></uri>
     <email>you@email.com</email>
   </author>
   <content type="html">&lt;p&gt;I finally got around to writing this blog post as I feel it has been a personal debt for some time now. After &lt;a href=&quot;http://blogs.southworks.net/dschenkelman/2013/08/02/asynchronous-io-in-c-introduction/&quot;&gt;introducing async I/O in C#&lt;/a&gt;, I spent a lot of time thinking about how to write about the topic of this blog post so let&#39;s jump right into it.&lt;/p&gt;
@@ -212,19 +419,19 @@ And a directory for the package and each of its dependencies is created&lt;/p&gt
 &lt;li&gt;&lt;strong&gt;CompletionPortThreadsSample&lt;/strong&gt;:Shows that some asynchronous callbacks are invoked in completion port threads, while others are invoked in worked threads.&lt;/li&gt;
 &lt;/ol&gt;
 
-  &lt;p&gt;&lt;a href=&quot;http://localhost:4000/2013/10/29/asynchronous-io-in-c-io-completion-ports/&quot;&gt;Asynchronous I/O in C#: I/O Completion Ports&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;http://localhost:4000&quot;&gt;A sea of code&lt;/a&gt; on October 29, 2013.&lt;/p&gt;</content>
+  &lt;p&gt;&lt;a href=&quot;/2013/10/29/asynchronous-io-in-c-io-completion-ports/&quot;&gt;Asynchronous I/O in C#: I/O Completion Ports&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;&quot;&gt;A sea of code&lt;/a&gt; on October 29, 2013.&lt;/p&gt;</content>
 </entry>
 
 
 <entry>
   <title type="html"><![CDATA[[Spanish] Webcast Disponible: Arquitectura MVVM para la construcción de aplicaciones Windows Store]]></title>
-  <link rel="alternate" type="text/html" href="http://localhost:4000/2013/09/24/spanish-webcast-disponible-arquitectura-mvvm-para-la-construccin-de-aplicaciones-windows-store/"/>
-  <id>http://localhost:4000/2013/09/24/spanish-webcast-disponible-arquitectura-mvvm-para-la-construccin-de-aplicaciones-windows-store</id>
+  <link rel="alternate" type="text/html" href="/2013/09/24/spanish-webcast-disponible-arquitectura-mvvm-para-la-construccin-de-aplicaciones-windows-store/"/>
+  <id>/2013/09/24/spanish-webcast-disponible-arquitectura-mvvm-para-la-construccin-de-aplicaciones-windows-store</id>
   <published>2013-09-24T00:00:00-04:00</published>
   <updated>2013-09-24T00:00:00-04:00</updated>
   <author>
     <name>Damian Schenkelman</name>
-    <uri>http://localhost:4000</uri>
+    <uri></uri>
     <email>you@email.com</email>
   </author>
   <content type="html">&lt;p&gt;&lt;em&gt;For those who don’t read Spanish, this blog post provides details about a Spanish speaking webcast that &lt;a href=&quot;http://blogs.southworks.net/dpoza&quot;&gt;Diego Poza&lt;/a&gt; and I presented last week for the MSDN Latin American community.&lt;/em&gt;&lt;/p&gt;
@@ -256,19 +463,19 @@ And a directory for the package and each of its dependencies is created&lt;/p&gt
 &lt;li&gt;&lt;a href=&quot;https://github.com/dschenkelman/fakewin8&quot;&gt;FakeWin8&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-  &lt;p&gt;&lt;a href=&quot;http://localhost:4000/2013/09/24/spanish-webcast-disponible-arquitectura-mvvm-para-la-construccin-de-aplicaciones-windows-store/&quot;&gt;[Spanish] Webcast Disponible: Arquitectura MVVM para la construcción de aplicaciones Windows Store&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;http://localhost:4000&quot;&gt;A sea of code&lt;/a&gt; on September 24, 2013.&lt;/p&gt;</content>
+  &lt;p&gt;&lt;a href=&quot;/2013/09/24/spanish-webcast-disponible-arquitectura-mvvm-para-la-construccin-de-aplicaciones-windows-store/&quot;&gt;[Spanish] Webcast Disponible: Arquitectura MVVM para la construcción de aplicaciones Windows Store&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;&quot;&gt;A sea of code&lt;/a&gt; on September 24, 2013.&lt;/p&gt;</content>
 </entry>
 
 
 <entry>
   <title type="html"><![CDATA[Webcast: Modernización de aplicaciones WPF de línea de negocio (spanish)]]></title>
-  <link rel="alternate" type="text/html" href="http://localhost:4000/2013/08/19/webcast-modernizacion-de-aplicaciones-wpf-de-linea-de-negocio/"/>
-  <id>http://localhost:4000/2013/08/19/webcast-modernizacion-de-aplicaciones-wpf-de-linea-de-negocio</id>
+  <link rel="alternate" type="text/html" href="/2013/08/19/webcast-modernizacion-de-aplicaciones-wpf-de-linea-de-negocio/"/>
+  <id>/2013/08/19/webcast-modernizacion-de-aplicaciones-wpf-de-linea-de-negocio</id>
   <published>2013-08-19T00:00:00-04:00</published>
   <updated>2013-08-19T00:00:00-04:00</updated>
   <author>
     <name>Damian Schenkelman</name>
-    <uri>http://localhost:4000</uri>
+    <uri></uri>
     <email>you@email.com</email>
   </author>
   <content type="html">&lt;p&gt;&lt;font size=&quot;2&quot;&gt;For those who don’t read Spanish, this blog post provides details about an upcoming Spanish speaking webcast for the MSDN Latin American community.&lt;/font&gt;&lt;/p&gt;
@@ -290,19 +497,19 @@ And a directory for the package and each of its dependencies is created&lt;/p&gt
 &lt;/ul&gt;
 &lt;p&gt;Esperamos que puedan asistir!&lt;/p&gt;
 
-  &lt;p&gt;&lt;a href=&quot;http://localhost:4000/2013/08/19/webcast-modernizacion-de-aplicaciones-wpf-de-linea-de-negocio/&quot;&gt;Webcast: Modernización de aplicaciones WPF de línea de negocio (spanish)&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;http://localhost:4000&quot;&gt;A sea of code&lt;/a&gt; on August 19, 2013.&lt;/p&gt;</content>
+  &lt;p&gt;&lt;a href=&quot;/2013/08/19/webcast-modernizacion-de-aplicaciones-wpf-de-linea-de-negocio/&quot;&gt;Webcast: Modernización de aplicaciones WPF de línea de negocio (spanish)&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;&quot;&gt;A sea of code&lt;/a&gt; on August 19, 2013.&lt;/p&gt;</content>
 </entry>
 
 
 <entry>
   <title type="html"><![CDATA[fakewin8: Configuring valid parameters for fake methods]]></title>
-  <link rel="alternate" type="text/html" href="http://localhost:4000/2013/08/06/fakewin8-configuring-valid-parameters-for-fake-methods/"/>
-  <id>http://localhost:4000/2013/08/06/fakewin8-configuring-valid-parameters-for-fake-methods</id>
+  <link rel="alternate" type="text/html" href="/2013/08/06/fakewin8-configuring-valid-parameters-for-fake-methods/"/>
+  <id>/2013/08/06/fakewin8-configuring-valid-parameters-for-fake-methods</id>
   <published>2013-08-06T00:00:00-04:00</published>
   <updated>2013-08-06T00:00:00-04:00</updated>
   <author>
     <name>Damian Schenkelman</name>
-    <uri>http://localhost:4000</uri>
+    <uri></uri>
     <email>you@email.com</email>
   </author>
   <content type="html">&lt;p&gt;Yesterday I &lt;a href=&quot;http://blogs.southworks.net/dschenkelman/2013/08/04/fakewin8-easy-fakes-for-windows-store-apps-unit-tests/&quot; target=&quot;_blank&quot;&gt;blogged about fakewin8&lt;/a&gt;, a set of components that leverage code generation to create fake classes, which can be used to simplify unit testing in environments where dynamic proxy generation is not a viable option. If you are developing Windows Store or Windows Phone apps you should take it for a spin to see how it feels like.&lt;/p&gt;
@@ -315,19 +522,19 @@ And a directory for the package and each of its dependencies is created&lt;/p&gt
 &lt;p&gt;For the common scenario where any possible value is acceptable for a particular parameter, you can use &lt;span style=&quot;font-family: Consolas&quot;&gt;Any&amp;lt;T&amp;gt;.IsOK() &lt;/span&gt;which creates a &lt;span style=&quot;font-family: Consolas&quot;&gt;Func&amp;lt;T, bool&amp;gt;&lt;/span&gt; that always returns true:&lt;/p&gt;
 &lt;code data-gist-id=&quot;04e749d3d85e0f6b2d71&quot; data-gist-file=&quot;Any.cs&quot; data-gist-hide-footer=&quot;true&quot;&gt;&lt;/code&gt;
 
-  &lt;p&gt;&lt;a href=&quot;http://localhost:4000/2013/08/06/fakewin8-configuring-valid-parameters-for-fake-methods/&quot;&gt;fakewin8: Configuring valid parameters for fake methods&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;http://localhost:4000&quot;&gt;A sea of code&lt;/a&gt; on August 06, 2013.&lt;/p&gt;</content>
+  &lt;p&gt;&lt;a href=&quot;/2013/08/06/fakewin8-configuring-valid-parameters-for-fake-methods/&quot;&gt;fakewin8: Configuring valid parameters for fake methods&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;&quot;&gt;A sea of code&lt;/a&gt; on August 06, 2013.&lt;/p&gt;</content>
 </entry>
 
 
 <entry>
   <title type="html"><![CDATA[fakewin8: Easy fakes for Windows Store apps unit tests]]></title>
-  <link rel="alternate" type="text/html" href="http://localhost:4000/2013/08/04/fakewin8-easy-fakes-for-windows-store-apps-unit-tests/"/>
-  <id>http://localhost:4000/2013/08/04/fakewin8-easy-fakes-for-windows-store-apps-unit-tests</id>
+  <link rel="alternate" type="text/html" href="/2013/08/04/fakewin8-easy-fakes-for-windows-store-apps-unit-tests/"/>
+  <id>/2013/08/04/fakewin8-easy-fakes-for-windows-store-apps-unit-tests</id>
   <published>2013-08-04T00:00:00-04:00</published>
   <updated>2013-08-04T00:00:00-04:00</updated>
   <author>
     <name>Damian Schenkelman</name>
-    <uri>http://localhost:4000</uri>
+    <uri></uri>
     <email>you@email.com</email>
   </author>
   <content type="html">&lt;p&gt;&lt;span style=&quot;font-size: xx-small&quot;&gt;In case you are short in time, here&#39;s the Github link: &lt;/span&gt;&lt;a href=&quot;https://github.com/dschenkelman/fakewin8&quot;&gt;&lt;span style=&quot;font-size: xx-small&quot;&gt;https://github.com/dschenkelman/fakewin8&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot;font-size: xx-small&quot;&gt;. Otherwise, read on.&lt;/span&gt;&lt;/p&gt;
@@ -353,19 +560,19 @@ And a directory for the package and each of its dependencies is created&lt;/p&gt
 &lt;p&gt;The generated code for the sample interface is the following one (no indentation yet):&lt;/p&gt;
 &lt;code data-gist-id=&quot;b476d386055a42b3b637&quot; data-gist-file=&quot;GeneratedFakeNavigationService.cs&quot;&gt;&lt;/code&gt;
 
-  &lt;p&gt;&lt;a href=&quot;http://localhost:4000/2013/08/04/fakewin8-easy-fakes-for-windows-store-apps-unit-tests/&quot;&gt;fakewin8: Easy fakes for Windows Store apps unit tests&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;http://localhost:4000&quot;&gt;A sea of code&lt;/a&gt; on August 04, 2013.&lt;/p&gt;</content>
+  &lt;p&gt;&lt;a href=&quot;/2013/08/04/fakewin8-easy-fakes-for-windows-store-apps-unit-tests/&quot;&gt;fakewin8: Easy fakes for Windows Store apps unit tests&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;&quot;&gt;A sea of code&lt;/a&gt; on August 04, 2013.&lt;/p&gt;</content>
 </entry>
 
 
 <entry>
   <title type="html"><![CDATA[Asynchronous I/O in C#: Introduction]]></title>
-  <link rel="alternate" type="text/html" href="http://localhost:4000/2013/08/02/asynchronous-io-in-c-introduction/"/>
-  <id>http://localhost:4000/2013/08/02/asynchronous-io-in-c-introduction</id>
+  <link rel="alternate" type="text/html" href="/2013/08/02/asynchronous-io-in-c-introduction/"/>
+  <id>/2013/08/02/asynchronous-io-in-c-introduction</id>
   <published>2013-08-02T00:00:00-04:00</published>
   <updated>2013-08-02T00:00:00-04:00</updated>
   <author>
     <name>Damian Schenkelman</name>
-    <uri>http://localhost:4000</uri>
+    <uri></uri>
     <email>you@email.com</email>
   </author>
   <content type="html">&lt;p&gt;Last week with &lt;a href=&quot;http://blogs.southworks.net/mconverti&quot; target=&quot;_blank&quot;&gt;Mariano Converti&lt;/a&gt;, we gave the first in a series of presentations related to how asynchronous I/O works in C#. The idea is to start from the low level components that allow asynchronous I/O to take place and to finish with how the &lt;a href=&quot;http://msdn.microsoft.com/en-us/library/vstudio/hh191443.aspx&quot; target=&quot;_blank&quot;&gt;async/await&lt;/a&gt;&lt;em&gt; &lt;/em&gt;constructs work. As each of the presentations takes place, either Mariano or I will write a blog post summarizing the core concepts and also providing a link to a GitHub repo with all the samples.&lt;/p&gt;
@@ -402,19 +609,19 @@ And a directory for the package and each of its dependencies is created&lt;/p&gt
 &lt;p&gt;The fact that this constructs are so &lt;span style=&quot;text-decoration: line-through&quot;&gt;magical&lt;/span&gt; powerful means that developers don’t need completely understand how things are working under the hood. Nevertheless, in many scenarios it is important to understand how this operations work in order to take full advantage of them and use them correctly.&lt;/p&gt;
 &lt;p&gt;The next blog post, based on the first talk, will deal with a kind of low level component that is heavily used in Windows to support asynchronous I/O: &lt;a href=&quot;http://msdn.microsoft.com/en-us/library/windows/desktop/aa365198(v=vs.85).aspx&quot; target=&quot;_blank&quot;&gt;I/O Completion Ports&lt;/a&gt;.&lt;/p&gt;
 
-  &lt;p&gt;&lt;a href=&quot;http://localhost:4000/2013/08/02/asynchronous-io-in-c-introduction/&quot;&gt;Asynchronous I/O in C#: Introduction&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;http://localhost:4000&quot;&gt;A sea of code&lt;/a&gt; on August 02, 2013.&lt;/p&gt;</content>
+  &lt;p&gt;&lt;a href=&quot;/2013/08/02/asynchronous-io-in-c-introduction/&quot;&gt;Asynchronous I/O in C#: Introduction&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;&quot;&gt;A sea of code&lt;/a&gt; on August 02, 2013.&lt;/p&gt;</content>
 </entry>
 
 
 <entry>
   <title type="html"><![CDATA[Intro to OWIN talk and a simple IP filtering middleware sample]]></title>
-  <link rel="alternate" type="text/html" href="http://localhost:4000/2013/07/17/intro-to-owin-talk-and-a-simple-ip-filtering-middleware-sample/"/>
-  <id>http://localhost:4000/2013/07/17/intro-to-owin-talk-and-a-simple-ip-filtering-middleware-sample</id>
+  <link rel="alternate" type="text/html" href="/2013/07/17/intro-to-owin-talk-and-a-simple-ip-filtering-middleware-sample/"/>
+  <id>/2013/07/17/intro-to-owin-talk-and-a-simple-ip-filtering-middleware-sample</id>
   <published>2013-07-17T00:00:00-04:00</published>
   <updated>2013-07-17T00:00:00-04:00</updated>
   <author>
     <name>Damian Schenkelman</name>
-    <uri>http://localhost:4000</uri>
+    <uri></uri>
     <email>you@email.com</email>
   </author>
   <content type="html">&lt;p&gt;Last week I introduced OWIN during a brown bag talk at Southworks. I’m by no means an expert on the subject, but the reason I decided to do it was that I felt it was very hard for me to find a single blog post/video that provided the information required to understand what OWIN was, why it exists and how it can be used.&lt;/p&gt;
@@ -433,38 +640,38 @@ And a directory for the package and each of its dependencies is created&lt;/p&gt
 &lt;p&gt;This is by no means a full intro to OWIN (for that refer to the resources provided in Github), but I hope it provides an initial idea of the kind of things that you can do with OWIN and Katana.&lt;/p&gt;
 &lt;p&gt;If you have feedback please let me know.&lt;/p&gt;
 
-  &lt;p&gt;&lt;a href=&quot;http://localhost:4000/2013/07/17/intro-to-owin-talk-and-a-simple-ip-filtering-middleware-sample/&quot;&gt;Intro to OWIN talk and a simple IP filtering middleware sample&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;http://localhost:4000&quot;&gt;A sea of code&lt;/a&gt; on July 17, 2013.&lt;/p&gt;</content>
+  &lt;p&gt;&lt;a href=&quot;/2013/07/17/intro-to-owin-talk-and-a-simple-ip-filtering-middleware-sample/&quot;&gt;Intro to OWIN talk and a simple IP filtering middleware sample&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;&quot;&gt;A sea of code&lt;/a&gt; on July 17, 2013.&lt;/p&gt;</content>
 </entry>
 
 
 <entry>
   <title type="html"><![CDATA[C# UDP Multicast server and Windows Phone 8 Emulator issue]]></title>
-  <link rel="alternate" type="text/html" href="http://localhost:4000/2013/07/06/c-udp-multicast-server-and-windows-phone-8-emulator-issue/"/>
-  <id>http://localhost:4000/2013/07/06/c-udp-multicast-server-and-windows-phone-8-emulator-issue</id>
+  <link rel="alternate" type="text/html" href="/2013/07/06/c-udp-multicast-server-and-windows-phone-8-emulator-issue/"/>
+  <id>/2013/07/06/c-udp-multicast-server-and-windows-phone-8-emulator-issue</id>
   <published>2013-07-06T00:00:00-04:00</published>
   <updated>2013-07-06T00:00:00-04:00</updated>
   <author>
     <name>Damian Schenkelman</name>
-    <uri>http://localhost:4000</uri>
+    <uri></uri>
     <email>you@email.com</email>
   </author>
   <content type="html">&lt;p&gt;This is going to be a short one, but could potentially save someone’s time in the future.&lt;/p&gt;
 &lt;p&gt;I spent most of the day trying to find out why some simple C# code that was supposed to send multicast packages through the network (similar to the one provided in &lt;a href=&quot;http://www.jarloo.com/c-udp-multicasting-tutorial/&quot;&gt;this blog post&lt;/a&gt;) was not working when running in my laptop.&lt;/p&gt;
 &lt;p&gt;Using Wireshark I was not able to capture any of the packages that should have been travelling across my LAN and after trying a whole lot of things what did the trick was disabling the &lt;em&gt;vEthernet (Internal Ethernet Port Windows Phone Emulator Internal Switch)&lt;/em&gt;&lt;strong&gt; &lt;/strong&gt;adapter that is installed with &lt;a href=&quot;http://www.microsoft.com/visualstudio/eng/2013-downloads&quot;&gt;Visual Studio 2013 Preview&lt;/a&gt; as part of the Windows Phone 8 Developer Tools.&lt;/p&gt;
 
-  &lt;p&gt;&lt;a href=&quot;http://localhost:4000/2013/07/06/c-udp-multicast-server-and-windows-phone-8-emulator-issue/&quot;&gt;C# UDP Multicast server and Windows Phone 8 Emulator issue&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;http://localhost:4000&quot;&gt;A sea of code&lt;/a&gt; on July 06, 2013.&lt;/p&gt;</content>
+  &lt;p&gt;&lt;a href=&quot;/2013/07/06/c-udp-multicast-server-and-windows-phone-8-emulator-issue/&quot;&gt;C# UDP Multicast server and Windows Phone 8 Emulator issue&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;&quot;&gt;A sea of code&lt;/a&gt; on July 06, 2013.&lt;/p&gt;</content>
 </entry>
 
 
 <entry>
   <title type="html"><![CDATA[scriptcs TCP client and server Script Pack: ScriptCs.Net]]></title>
-  <link rel="alternate" type="text/html" href="http://localhost:4000/2013/06/03/scriptcs-tcp-client-and-server-script-pack-scriptcs-net/"/>
-  <id>http://localhost:4000/2013/06/03/scriptcs-tcp-client-and-server-script-pack-scriptcs-net</id>
+  <link rel="alternate" type="text/html" href="/2013/06/03/scriptcs-tcp-client-and-server-script-pack-scriptcs-net/"/>
+  <id>/2013/06/03/scriptcs-tcp-client-and-server-script-pack-scriptcs-net</id>
   <published>2013-06-03T00:00:00-04:00</published>
   <updated>2013-06-03T00:00:00-04:00</updated>
   <author>
     <name>Damian Schenkelman</name>
-    <uri>http://localhost:4000</uri>
+    <uri></uri>
     <email>you@email.com</email>
   </author>
   <content type="html">&lt;p&gt;Last week, I gave a brown bag talk at Southworks about scriptcs and one of the things I explained in depth were &lt;a href=&quot;http://blog.martindoms.com/2013/05/14/building-scriptcs-script-pack/&quot;&gt;script packs&lt;/a&gt;. If this is the first time you hear about scriptcs be sure to check:&lt;/p&gt;
@@ -485,19 +692,19 @@ And a directory for the package and each of its dependencies is created&lt;/p&gt
 &lt;h2&gt;Future&lt;/h2&gt;
 &lt;p&gt;At the moment I intend to continue adding features as I see fit, but your feedback will definitely be welcome either in the form of PRs or &lt;a href=&quot;https://github.com/dschenkelman/scriptcs-net/issues&quot;&gt;issues&lt;/a&gt;.  Most of the features that will be added are going to be used to implement a multi-user interactive REPL that leverages this script pack for communication and &lt;a href=&quot;http://nuget.org/packages/ScriptCs.Core&quot;&gt;ScriptCs.Core&lt;/a&gt; to interpret the scripts.&lt;/p&gt;
 
-  &lt;p&gt;&lt;a href=&quot;http://localhost:4000/2013/06/03/scriptcs-tcp-client-and-server-script-pack-scriptcs-net/&quot;&gt;scriptcs TCP client and server Script Pack: ScriptCs.Net&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;http://localhost:4000&quot;&gt;A sea of code&lt;/a&gt; on June 03, 2013.&lt;/p&gt;</content>
+  &lt;p&gt;&lt;a href=&quot;/2013/06/03/scriptcs-tcp-client-and-server-script-pack-scriptcs-net/&quot;&gt;scriptcs TCP client and server Script Pack: ScriptCs.Net&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;&quot;&gt;A sea of code&lt;/a&gt; on June 03, 2013.&lt;/p&gt;</content>
 </entry>
 
 
 <entry>
   <title type="html"><![CDATA[Taking NDepend 4 Code Query over LINQ for a spin with Needle Container]]></title>
-  <link rel="alternate" type="text/html" href="http://localhost:4000/2013/05/25/taking-ndepend-4-code-query-over-linq-for-a-spin-with-needle-container/"/>
-  <id>http://localhost:4000/2013/05/25/taking-ndepend-4-code-query-over-linq-for-a-spin-with-needle-container</id>
+  <link rel="alternate" type="text/html" href="/2013/05/25/taking-ndepend-4-code-query-over-linq-for-a-spin-with-needle-container/"/>
+  <id>/2013/05/25/taking-ndepend-4-code-query-over-linq-for-a-spin-with-needle-container</id>
   <published>2013-05-25T00:00:00-04:00</published>
   <updated>2013-05-25T00:00:00-04:00</updated>
   <author>
     <name>Damian Schenkelman</name>
-    <uri>http://localhost:4000</uri>
+    <uri></uri>
     <email>you@email.com</email>
   </author>
   <content type="html">&lt;p&gt;Some time ago I blogged (&lt;a href=&quot;http://blogs.southworks.net/dschenkelman/2011/02/18/needle-dependency-injection-container-alpha-0-1-version-released/&quot;&gt;here&lt;/a&gt; and &lt;a href=&quot;http://blogs.southworks.net/dschenkelman/2011/07/18/needle-container-fluency-and-mapping-types/&quot;&gt;here&lt;/a&gt;) about &lt;a href=&quot;http://needlecontainer.codeplex.com/&quot;&gt;Needle&lt;/a&gt; , a dependency injection container I used to work on when procrastinating. As I’m planning to spend some time working on updates I thought it would be a good idea to use &lt;a href=&quot;http://www.ndepend.com/&quot;&gt;NDepend 4&lt;/a&gt; and get a sense of possible improvements I could tackle before getting to work on the new features.&lt;/p&gt;
@@ -515,19 +722,19 @@ And a directory for the package and each of its dependencies is created&lt;/p&gt
 &lt;p&gt;Amazingly having developed without that rule in mind only 10 out of 240 methods were detected as offenders.&lt;/p&gt;
 &lt;p&gt;As you can see the ability to create custom rules using all the power and flexibility of Code Query over LINQ is definitely a tool worth considering to enforce common practices among all developers in a project or company. I believe that the fact that they are easy to write and understand is also a major plus as each team/developer can create their own subset to suit their particular needs, leveraging all their existing LINQ knowledge.&lt;/p&gt;
 
-  &lt;p&gt;&lt;a href=&quot;http://localhost:4000/2013/05/25/taking-ndepend-4-code-query-over-linq-for-a-spin-with-needle-container/&quot;&gt;Taking NDepend 4 Code Query over LINQ for a spin with Needle Container&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;http://localhost:4000&quot;&gt;A sea of code&lt;/a&gt; on May 25, 2013.&lt;/p&gt;</content>
+  &lt;p&gt;&lt;a href=&quot;/2013/05/25/taking-ndepend-4-code-query-over-linq-for-a-spin-with-needle-container/&quot;&gt;Taking NDepend 4 Code Query over LINQ for a spin with Needle Container&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;&quot;&gt;A sea of code&lt;/a&gt; on May 25, 2013.&lt;/p&gt;</content>
 </entry>
 
 
 <entry>
   <title type="html"><![CDATA[To Arrow Function or not to Arrow Function]]></title>
-  <link rel="alternate" type="text/html" href="http://localhost:4000/2013/02/08/to-arrow-function-or-not-to-arrow-function/"/>
-  <id>http://localhost:4000/2013/02/08/to-arrow-function-or-not-to-arrow-function</id>
+  <link rel="alternate" type="text/html" href="/2013/02/08/to-arrow-function-or-not-to-arrow-function/"/>
+  <id>/2013/02/08/to-arrow-function-or-not-to-arrow-function</id>
   <published>2013-02-08T00:00:00-05:00</published>
   <updated>2013-02-08T00:00:00-05:00</updated>
   <author>
     <name>Damian Schenkelman</name>
-    <uri>http://localhost:4000</uri>
+    <uri></uri>
     <email>you@email.com</email>
   </author>
   <content type="html">&lt;p&gt;If you have used TypeScript you are probably aware of the compiled outcome of an Arrow Function (section 4.9.2 of the &lt;a href=&quot;http://www.typescriptlang.org/Content/TypeScript%20Language%20Specification.pdf&quot;&gt;TypeScript Language Specification&lt;/a&gt;). The idea behind using &lt;strong&gt;() =&amp;gt; {…};&lt;/strong&gt; instead of &lt;strong&gt;function(){…};&lt;/strong&gt; is to have access to the object represented by &lt;em&gt;this&lt;/em&gt; in the outer scope, which is what you would expect when using a C# lambda. Of course this feature is particulalry useful in JavaScript because &lt;a href=&quot;http://es5.github.com/#x10.4.3&quot;&gt;&lt;em&gt;this&lt;/em&gt; holds a reference to the object to which a function was applied or called&lt;/a&gt;, and more often than not the &lt;em&gt;this &lt;/em&gt;inside the function&#39;s &lt;a href=&quot;http://davidshariff.com/blog/what-is-the-execution-context-in-javascript/&quot;&gt;execution context&lt;/a&gt; ends up being different from the one in the outer execution context.&lt;/p&gt;
@@ -554,19 +761,19 @@ And a directory for the package and each of its dependencies is created&lt;/p&gt
 &lt;h2&gt;Conclusion&lt;/h2&gt;
 &lt;p&gt;This is not a complex issue, but is one that I&#39;ve seen a couple of times while working with TypeScript, so hopefully if you ever run into it you will be able to solve it in no time.&lt;/p&gt;
 
-  &lt;p&gt;&lt;a href=&quot;http://localhost:4000/2013/02/08/to-arrow-function-or-not-to-arrow-function/&quot;&gt;To Arrow Function or not to Arrow Function&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;http://localhost:4000&quot;&gt;A sea of code&lt;/a&gt; on February 08, 2013.&lt;/p&gt;</content>
+  &lt;p&gt;&lt;a href=&quot;/2013/02/08/to-arrow-function-or-not-to-arrow-function/&quot;&gt;To Arrow Function or not to Arrow Function&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;&quot;&gt;A sea of code&lt;/a&gt; on February 08, 2013.&lt;/p&gt;</content>
 </entry>
 
 
 <entry>
   <title type="html"><![CDATA[Creating Indexes via Data Annotations with Entity Framework 5.0]]></title>
-  <link rel="alternate" type="text/html" href="http://localhost:4000/2012/08/18/creating-indexes-via-data-annotations-with-entity-framework-5-0/"/>
-  <id>http://localhost:4000/2012/08/18/creating-indexes-via-data-annotations-with-entity-framework-5-0</id>
+  <link rel="alternate" type="text/html" href="/2012/08/18/creating-indexes-via-data-annotations-with-entity-framework-5-0/"/>
+  <id>/2012/08/18/creating-indexes-via-data-annotations-with-entity-framework-5-0</id>
   <published>2012-08-18T00:00:00-04:00</published>
   <updated>2012-08-18T00:00:00-04:00</updated>
   <author>
     <name>Damian Schenkelman</name>
-    <uri>http://localhost:4000</uri>
+    <uri></uri>
     <email>you@email.com</email>
   </author>
   <content type="html">&lt;p&gt;This week, for a project at Southworks, my friend &lt;a href=&quot;http://blogs.southworks.net/mconverti/&quot;&gt;Mariano Converti&lt;/a&gt; and I had to create indexes in a SQL database for two string type properties of entities that were part of an &lt;a href=&quot;http://weblogs.asp.net/scottgu/archive/2010/07/16/code-first-development-with-entity-framework-4.aspx&quot;&gt;Entity Framework Code First&lt;/a&gt; model. As we were also required to support changes to the model after the application was deployed, we decided to use &lt;a href=&quot;http://blogs.msdn.com/b/adonet/archive/2012/02/09/ef-4-3-code-based-migrations-walkthrough.aspx&quot;&gt;Entity Framework Code Base Migrations&lt;/a&gt;.&lt;/p&gt;
@@ -605,19 +812,19 @@ And a directory for the package and each of its dependencies is created&lt;/p&gt
 &lt;p&gt;There are a lot of improvement opportunities for this implementation (such as adding support for clustered indexes). Nevertheless, features such as support for custom database initializers and the ability to execute SQL statements from the DbContext provide really powerful extensibility capabilities.&lt;/p&gt;
 &lt;p&gt;I hope that you can either use the code as is or take some useful ideas out of it.&lt;/p&gt;
 
-  &lt;p&gt;&lt;a href=&quot;http://localhost:4000/2012/08/18/creating-indexes-via-data-annotations-with-entity-framework-5-0/&quot;&gt;Creating Indexes via Data Annotations with Entity Framework 5.0&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;http://localhost:4000&quot;&gt;A sea of code&lt;/a&gt; on August 18, 2012.&lt;/p&gt;</content>
+  &lt;p&gt;&lt;a href=&quot;/2012/08/18/creating-indexes-via-data-annotations-with-entity-framework-5-0/&quot;&gt;Creating Indexes via Data Annotations with Entity Framework 5.0&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;&quot;&gt;A sea of code&lt;/a&gt; on August 18, 2012.&lt;/p&gt;</content>
 </entry>
 
 
 <entry>
   <title type="html"><![CDATA[Microsoft Media Platform Video Editor (former RCE) 2.0 just released]]></title>
-  <link rel="alternate" type="text/html" href="http://localhost:4000/2011/10/03/microsoft-media-platform-video-editor-former-rce-2-0-just-released/"/>
-  <id>http://localhost:4000/2011/10/03/microsoft-media-platform-video-editor-former-rce-2-0-just-released</id>
+  <link rel="alternate" type="text/html" href="/2011/10/03/microsoft-media-platform-video-editor-former-rce-2-0-just-released/"/>
+  <id>/2011/10/03/microsoft-media-platform-video-editor-former-rce-2-0-just-released</id>
   <published>2011-10-03T00:00:00-04:00</published>
   <updated>2011-10-03T00:00:00-04:00</updated>
   <author>
     <name>Damian Schenkelman</name>
-    <uri>http://localhost:4000</uri>
+    <uri></uri>
     <email>you@email.com</email>
   </author>
   <content type="html">&lt;p&gt;Today, the new version of the Microsoft Media Platform (MMP) Video Editor &lt;a href=&quot;http://archive.msdn.microsoft.com/VideoEditor/Release/ProjectReleases.aspx?ReleaseId=5763&quot;&gt;was released&lt;/a&gt; to the public. The new release is based on Silverlight 5, and has a lot (really a lot!) of new features (fully listed below), such as a UI based on floating windows, and a new Sub-Clip tool which gives editors more control when creating clips.&lt;/p&gt;
@@ -658,19 +865,19 @@ And a directory for the package and each of its dependencies is created&lt;/p&gt
 &lt;p&gt;If you have comments, questions, suggestions or any issue, please visit the &lt;a href=&quot;http://archive.msdn.microsoft.com/VideoEditor&quot;&gt;MMP Video Editor community site&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;We hope enjoy this new version and have a lot of fun editing!!!&lt;/p&gt;
 
-  &lt;p&gt;&lt;a href=&quot;http://localhost:4000/2011/10/03/microsoft-media-platform-video-editor-former-rce-2-0-just-released/&quot;&gt;Microsoft Media Platform Video Editor (former RCE) 2.0 just released&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;http://localhost:4000&quot;&gt;A sea of code&lt;/a&gt; on October 03, 2011.&lt;/p&gt;</content>
+  &lt;p&gt;&lt;a href=&quot;/2011/10/03/microsoft-media-platform-video-editor-former-rce-2-0-just-released/&quot;&gt;Microsoft Media Platform Video Editor (former RCE) 2.0 just released&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;&quot;&gt;A sea of code&lt;/a&gt; on October 03, 2011.&lt;/p&gt;</content>
 </entry>
 
 
 <entry>
   <title type="html"><![CDATA[Needle Container: Fluency and Mapping Types]]></title>
-  <link rel="alternate" type="text/html" href="http://localhost:4000/2011/07/18/needle-container-fluency-and-mapping-types/"/>
-  <id>http://localhost:4000/2011/07/18/needle-container-fluency-and-mapping-types</id>
+  <link rel="alternate" type="text/html" href="/2011/07/18/needle-container-fluency-and-mapping-types/"/>
+  <id>/2011/07/18/needle-container-fluency-and-mapping-types</id>
   <published>2011-07-18T00:00:00-04:00</published>
   <updated>2011-07-18T00:00:00-04:00</updated>
   <author>
     <name>Damian Schenkelman</name>
-    <uri>http://localhost:4000</uri>
+    <uri></uri>
     <email>you@email.com</email>
   </author>
   <content type="html">&lt;p&gt;&lt;a href=&quot;http://blogs.southworks.net/dschenkelman/2011/02/18/needle-dependency-injection-container-alpha-0-1-version-released/&quot;&gt;Back in February&lt;/a&gt;, I blogged about &lt;a href=&quot;http://needlecontainer.codeplex.com/&quot;&gt;Needle&lt;/a&gt;, a dependency injection container that I was developing. In that post, I listed some of the most relevant features Needle has, one of them being its Fluent API. I thought it would be a would idea to talk about Needle again, but this time sharing some code and ideas behind it.&lt;/p&gt;
@@ -701,67 +908,7 @@ And a directory for the package and each of its dependencies is created&lt;/p&gt
 &lt;p&gt;I hope you found this post fun, and that you try out Needle and its fluent API sometime. You can download Needle from &lt;a href=&quot;http://needlecontainer.codeplex.com/releases/view/60894&quot;&gt;here&lt;/a&gt; or through Nuget:&lt;/p&gt;
 &lt;pre class=&quot;brush: csharp;&quot;&gt;PM&amp;gt; Install-Package NeedleContainer&lt;/pre&gt;
 
-  &lt;p&gt;&lt;a href=&quot;http://localhost:4000/2011/07/18/needle-container-fluency-and-mapping-types/&quot;&gt;Needle Container: Fluency and Mapping Types&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;http://localhost:4000&quot;&gt;A sea of code&lt;/a&gt; on July 18, 2011.&lt;/p&gt;</content>
-</entry>
-
-
-<entry>
-  <title type="html"><![CDATA[Binding to View Model properties in Data Templates. The RootBinding Markup Extension]]></title>
-  <link rel="alternate" type="text/html" href="http://localhost:4000/2011/06/26/binding-to-view-model-properties-in-data-templates-the-rootbinding-markup-extension/"/>
-  <id>http://localhost:4000/2011/06/26/binding-to-view-model-properties-in-data-templates-the-rootbinding-markup-extension</id>
-  <published>2011-06-26T00:00:00-04:00</published>
-  <updated>2011-06-26T00:00:00-04:00</updated>
-  <author>
-    <name>Damian Schenkelman</name>
-    <uri>http://localhost:4000</uri>
-    <email>you@email.com</email>
-  </author>
-  <content type="html">&lt;p&gt;If you work with Silverlight and MVVM, you must have probably been forced to do some weird thing to bind to a property in your view model (say a Command) from a DataTemplate. Some of the common approaches I have seen and used myself are:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Using some kind of binding helper as a View’s resource.&lt;/li&gt;
-&lt;li&gt;Having a View Model wrap the entity of each collection item, and add the command to the View Model.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Although these are perfectly valid approaches, they require extra work compared to the good old {Binding} syntax we are all used to.&lt;/p&gt;
-&lt;p&gt;Now that Silverlight 5 Beta is out, we can take advantage of the &lt;a href=&quot;http://msdn.microsoft.com/en-us/library/system.windows.markup.markupextension(VS.96).aspx&quot;&gt;XAML Markup Extensions&lt;/a&gt; to help is in this kind of tasks, using a simpler and more intuitive approach.&lt;/p&gt;
-&lt;p&gt;I have created a &lt;strong&gt;RootBindingExtension&lt;/strong&gt;, which can be used as follows:&lt;/p&gt;
-&lt;code data-gist-id=&quot;714725b67ed06edb2436&quot; data-gist-file=&quot;Usage.xaml&quot;&gt;&lt;/code&gt;
-&lt;p&gt;The &lt;strong&gt;RootBindingExtension &lt;/strong&gt;uses the &lt;strong&gt;Path&lt;/strong&gt; property to create a Binding that binds to a property of that name in the View’s &lt;strong&gt;DataContext&lt;/strong&gt;.&lt;/p&gt;
-&lt;code data-gist-id=&quot;714725b67ed06edb2436&quot; data-gist-file=&quot;RootBindingExtension.cs&quot;&gt;&lt;/code&gt;
-&lt;p&gt;You can download the RootBindingExtension and a sample that uses it from &lt;a href=&quot;https://skydrive.live.com/#!/?cid=09f63fc7ac065e5e&amp;amp;sc=documents&amp;amp;nl=1&amp;amp;uc=2&amp;amp;id=9F63FC7AC065E5E%21215&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;Let me know if you have used it.&lt;/p&gt;
-
-  &lt;p&gt;&lt;a href=&quot;http://localhost:4000/2011/06/26/binding-to-view-model-properties-in-data-templates-the-rootbinding-markup-extension/&quot;&gt;Binding to View Model properties in Data Templates. The RootBinding Markup Extension&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;http://localhost:4000&quot;&gt;A sea of code&lt;/a&gt; on June 26, 2011.&lt;/p&gt;</content>
-</entry>
-
-
-<entry>
-  <title type="html"><![CDATA[Microsoft Media Platform Video Editor SP2 Released]]></title>
-  <link rel="alternate" type="text/html" href="http://localhost:4000/2011/06/01/microsoft-media-platform-video-editor-sp2-released/"/>
-  <id>http://localhost:4000/2011/06/01/microsoft-media-platform-video-editor-sp2-released</id>
-  <published>2011-06-01T00:00:00-04:00</published>
-  <updated>2011-06-01T00:00:00-04:00</updated>
-  <author>
-    <name>Damian Schenkelman</name>
-    <uri>http://localhost:4000</uri>
-    <email>you@email.com</email>
-  </author>
-  <content type="html">&lt;p&gt;On Monday, Microsoft released the &lt;a href=&quot;http://archive.msdn.microsoft.com/VideoEditor/Release/ProjectReleases.aspx?ReleaseId=5312&quot;&gt;Service Pack 2&lt;/a&gt; version of the &lt;a href=&quot;http://archive.msdn.microsoft.com/VideoEditor&quot;&gt;Microsoft Media Platform Video Editor&lt;/a&gt; (formerly known as RCE).&lt;/p&gt;
-&lt;p&gt;&lt;a href=&quot;http://blogs.southworks.net/dschenkelman/files/2011/06/image.png&quot;&gt;&lt;img style=&quot;padding-left: 0px;padding-right: 0px;padding-top: 0px;border: 0px&quot; src=&quot;http://blogs.southworks.net/dschenkelman/files/2011/06/image_thumb.png&quot; border=&quot;0&quot; alt=&quot;image&quot; width=&quot;576&quot; height=&quot;273&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;This version includes all the &lt;a href=&quot;http://blogs.southworks.net/ejadib/2011/01/14/silverlight-rough-cut-editor-sp1-released/&quot;&gt;new features and bug fixes that were included in SP1&lt;/a&gt;, an important fix for an issue that occurs when playing live smooth streaming videos and a minor fix in the &lt;a href=&quot;http://blogs.southworks.net/ejadib/2010/05/27/composite-stream-manifest-csm-generator-rough-cut-editor-rce/&quot;&gt;Composite Stream Manifest generator&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;Full descriptions of the issues are provided below in case you have run into them.&lt;/p&gt;
-&lt;h2&gt;&lt;strong&gt;Issues Description&lt;/strong&gt;&lt;/h2&gt;
-&lt;h5&gt;&lt;strong&gt;Live Smooth Streaming Videos without text tracks fails on playback&lt;/strong&gt;&lt;/h5&gt;
-&lt;p&gt;When playing a live smooth streaming video without any text tracks, a message is shown explaining that the video can&#39;t be played.&lt;br /&gt;
-The log has the following related entry: &lt;em&gt;&quot;Exception: Failed to parse manifest: Index was out of range. Must be non-negative and less than the size of the collection.&quot;&lt;/em&gt;&lt;/p&gt;
-&lt;h5&gt;&lt;strong&gt;First chunk duration are not generated sometimes&lt;/strong&gt;&lt;/h5&gt;
-&lt;p&gt;In some scenarios, the duration of the first chunk of the video and audio streams is not generated.&lt;/p&gt;
-&lt;p&gt;The error message when playing the generated CSM is the following: &lt;em&gt;&quot;&lt;/em&gt;&lt;em&gt;Caught exception trying to parse main manifest: First audio chunk in clip 1 [start time = &lt;strong&gt;X&lt;/strong&gt;, duration = &lt;strong&gt;Y&lt;/strong&gt;] does not contain clip start position &lt;strong&gt;Z&lt;/strong&gt;]&lt;em&gt;&quot;, &lt;/em&gt;&lt;/em&gt;where X, Y and Z are values that depend on your clips. For more information on common issues when generating and using CSMs, please check this&lt;a href=&quot;http://blogs.southworks.net/ejadib/2010/02/05/common-mistakes-issues-when-creating-and-using-composite-stream-manifests-csm/&quot;&gt; blog post&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;em&gt; &lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;Hopefully, you will find this new release useful.&lt;/p&gt;
-&lt;p&gt;If you have comments, questions, suggestions or any issue, please visit the &lt;a href=&quot;http://archive.msdn.microsoft.com/VideoEditor&quot;&gt;MMP Video Editor community site&lt;/a&gt;.&lt;/p&gt;
-
-
-  &lt;p&gt;&lt;a href=&quot;http://localhost:4000/2011/06/01/microsoft-media-platform-video-editor-sp2-released/&quot;&gt;Microsoft Media Platform Video Editor SP2 Released&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;http://localhost:4000&quot;&gt;A sea of code&lt;/a&gt; on June 01, 2011.&lt;/p&gt;</content>
+  &lt;p&gt;&lt;a href=&quot;/2011/07/18/needle-container-fluency-and-mapping-types/&quot;&gt;Needle Container: Fluency and Mapping Types&lt;/a&gt; was originally published by Damian Schenkelman at &lt;a href=&quot;&quot;&gt;A sea of code&lt;/a&gt; on July 18, 2011.&lt;/p&gt;</content>
 </entry>
 
 </feed>
