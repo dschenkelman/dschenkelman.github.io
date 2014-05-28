@@ -1,0 +1,26 @@
+---
+layout: post
+title: 'mongo-select: A module to simplify mongodb projections'
+categories:
+- mongodb
+- node.js
+status: publish
+comments: true
+type: post
+published: true
+author:
+  login: dschenkelman
+  email: damian.schenkelman@gmail.com
+  display_name: Damian Schenkelman
+  first_name: Damian
+  last_name: Schenkelman
+---
+Today I started to work on adding field selection capabilities to some of the endpoints used by the [Auth0 app](http://app.auth0.com). Part of that involves updating the mongodb queries to [limit the fields returned by them](http://docs.mongodb.org/manual/tutorial/project-fields-from-query-results/).
+
+As this work will probably span a set of queries, I decided to create a module to simplify the creation of the projection objects used for the queries. That's how **mongo-select** came to be:
+* [Github site](https://github.com/dschenkelman/mongo-select)
+* [NPM site](https://www.npmjs.org/package/mongo-select)
+
+As the mongodb [documentation](http://docs.mongodb.org/manual/tutorial/project-fields-from-query-results/) clearly explains, you can either
+* Determine a set of fields to include by specifying their name and a related _truthy_ value `{ name: true }`.
+* Determine a set of fields to exclude by specifying their name and a related _falsy_ value `{ name: false }`.
