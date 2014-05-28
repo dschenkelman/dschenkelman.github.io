@@ -40,7 +40,7 @@ npm install mongo-select
 ## Basic example
 The following sample code shows how you can work with the [native mongodb NodeJs driver](https://github.com/mongodb/node-mongodb-native) to exclude the _user_ field:
 {% highlight javascript %}
-var select = require('mongo-select');
+var select = require('mongo-select').select();
 var mongodb = require('mongodb');
 
 var MongoClient = mongodb.MongoClient;
@@ -59,7 +59,7 @@ MongoClient.connect('mongodb://127.0.0.1:27017/test', function(err, db) {
 ## Including fields
 To include fields use the following:
 {% highlight javascript %}
-var select = require('mongo-select');
+var select = require('mongo-select').select();
 
 var projection = select.include(['name', 'email', 'children.name']).make();
 
@@ -69,7 +69,7 @@ console.log(projection); // { 'name': false, 'email': false, 'children.name': fa
 ## Excluding fields, no _id and chaining
 You can also exclude fields using the exclude method and the `_id` field using `noId()`. You can chain exclusions/inclusions and `noId()`. One thing to consider is that in order to provide a fluent interface the chaining methods begin with `_`. Otherwise this might affect documents with fields named _exclude_, _include_, _noId_.
 {% highlight javascript %}
-var select = require('mongo-select');
+var select = require('mongo-select').select();
 
 var projection = select.exclude(['name'])._exclude(['email', 'children.name'])._noId();
 
@@ -79,7 +79,7 @@ console.log(projection); // { '_id': false, 'name': false, 'email': false, 'chil
 ## Permanent exclusion/inclusion
 Sometimes it is important to always exclude or include a set of fields. That means that if they were permanently excluded and then specifically included they won't make it into the projection and viceversa:
 {% highlight javascript %}
-var select = require('mongo-select');
+var select = require('mongo-select').select();
 
 select.exclude(['name', 'email', 'children.name'])._always();
 
