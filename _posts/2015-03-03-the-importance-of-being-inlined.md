@@ -141,7 +141,7 @@ pjs(buff).map(function(pixel){
 });
 {% endhighlight %}
 
-We [created a benchmark](http://jsperf.com/pjs-map-inlining) to understand the difference between the initial version (the one in which functions were not inlined) and the final one (with inlining in charge of the developer).
+We [created a benchmark](http://jsperf.com/pjs-map-inlining/3) to understand the difference between the initial version (the one in which functions were not inlined) and the final one (with inlining in charge of the developer).
 
 The results for it are displayed in the following figure:
 <figure>
