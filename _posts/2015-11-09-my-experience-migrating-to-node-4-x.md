@@ -36,7 +36,12 @@ One of the things I found is that version 1.4.x of the `mongodb` module can't us
 
 After migrating to version 2.x.x of the `mongodb` module, we found a [bug with reconnections](https://github.com/christkv/mongodb-core/pull/54) that resulted in uncaught exceptions. I've sent a PR that has been merged and I'm waiting for a new version with the fix to be released.
 
-# Conclusion
+## Update
+My friend [Julian Duque](https://twitter.com/julian_duque) shared the amazing  [`upgrade-ready`](https://www.npmjs.com/package/upgrade-ready) tool which can be used "_to help with the process of upgrading modules to the latest version of Node.js (v4), it will check dependencies against a Node.js version"_.
+
+You can check out [this video](https://vimeo.com/143012359) of how it works.
+
+## Conclusion
 All in all, the path to node.js 4.x.x is not an particularly tough one, but it has a lot of detours.
 
 One key takeway from this, is that having LOTS automated when doing this kind of updates is really important, as it can help you catch errors early in the update process.
