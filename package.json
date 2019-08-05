@@ -1,26 +1,28 @@
 {
-  "name": "so-simple-theme",
-  "author": "Michael Rose <michael@mademistakes.com>",
-  "homepage": "http://mmistakes.github.io/so-simple-theme/",
+  "name": "damian-schenkelman-blog",
   "repository": {
     "type": "git",
-    "url": "git://github.com/mmistakes/so-simple-theme.git"
+    "url": "git://github.com/dschenkelman/dschenkelman.github.io.git"
+  },
+  "scripts": {
+    "install": "yum install ruby23-devel.x86_64 && gem install jekyll bundler --no-ri --no-rdoc && bundle install",
+    "build": "jekyll build && mv _site public"
   },
   "bugs": {
-    "url": "https://github.com/mmistakes/so-simple-theme/issues"
+    "url": "https://github.com/dschenkelman/dschenkelman.github.io/issues"
   },
   "engines": {
-    "node": ">= 0.10.0"
+    "node": ">=10.0"
   },
   "devDependencies": {
-    "grunt": "~0.4.1",
+    "grunt": "~1.0.3",
     "grunt-cli": "^1.3.2",
-    "grunt-contrib-clean": "~0.5.0",
-    "grunt-contrib-imagemin": "~0.2.0",
+    "grunt-contrib-clean": "~2.0.0",
+    "grunt-contrib-imagemin": "~3.1.0",
     "grunt-contrib-jshint": "~0.6.3",
-    "grunt-contrib-uglify": "~0.2.2",
-    "grunt-contrib-watch": "~0.5.2",
+    "grunt-contrib-uglify": "~4.0.1",
+    "grunt-contrib-watch": "~1.1.0",
     "grunt-recess": "~0.3.5",
-    "grunt-svgmin": "~0.2.0"
+    "grunt-svgmin": "~6.0.0"
   }
 }

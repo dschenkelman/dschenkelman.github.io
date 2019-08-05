@@ -1,9 +1,11 @@
 source 'https://rubygems.org'
 
 gem 'jekyll'
+gem 'pygments.rb'
 gem 'kramdown'
 gem 'coderay'
 gem 'rake'
 gem 'thor'
 gem 'activesupport'
 gem 'stringex'
+gem 'json'
